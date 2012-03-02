@@ -16,7 +16,7 @@ OBJ90 = ijj_tuple.o iij_tuple.o
 OBJCPU = ijk_tuple.o
 OBJGPU = ijk_tuple_acc.o
 
-all: $(PROGRAM).x $(PROGRAM_GPU).x
+all: $(PROGRAM).x 
 
 $(PROGRAM).x : $(MOD) $(OBJ) $(OBJ90) $(OBJCPU) Makefile
 	$(FC) $(FCFLAGS) -Onoacc -o $(PROGRAM).x $(MOD) $(OBJ) $(OBJ90) $(OBJCPU) -L../lib -lddi

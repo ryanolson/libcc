@@ -39,7 +39,7 @@ implicit none
 
   if(ddi_me.eq.0) then
     input = 80
-    open(unit=input, file='ar6.triples.restart', status='old', action='read',form='unformatted',access='sequential')
+    open(unit=input, file='triples.restart', status='old', action='read',form='unformatted',access='sequential')
     read(input) no
     read(input) nu
   end if
