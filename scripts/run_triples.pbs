@@ -1,0 +1,19 @@
+#!/usr/bin/tcsh
+#PBS -c n
+#PBS -r n
+#PBS -p 20
+#PBS -V
+#PBS -N test384
+#PBS -l mppwidth=384
+#PBS -l mppnppn=4
+#PBS -l walltime=00:15:00
+#PBS -q qcnodes
+#PBS -j oe
+#PBS -S /usr/bin/ksh
+#
+cd $PBS_O_WORKDIR
+setenv DDI_DS_PER_NODE 1
+setenv MPICH_PTL_MATCH_OFF 1
+# limit coredumpsize 256megabytes
+aprun -n 384 -cc cpu ./triples.x >& out.triples.$PBS_JOBID.log
+

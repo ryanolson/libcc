@@ -1,0 +1,9 @@
+#!/bin/sh
+pat_report $1 > prof.flat
+pat_report -b calltree $1 > prof.calltree
+pat_report -b fu,callers $1 > prof.funccall
+pat_report -b fu,ca -s show_callers=fu,source,line $1 > prof.funccallall
+pat_report -d ti%,ti,max_ti,min_ti $1 > prof.bal
+pat_report -b fu,pe $1 > prof.balfunc
+pat_report -d ti%,ti,tr -b fu,pe='[mmm]' $1 > prof.balminmaxmed
+

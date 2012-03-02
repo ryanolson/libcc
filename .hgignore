@@ -1,0 +1,12 @@
+syntax: glob
+
+*.o
+*.x
+*.mod
+*.lst
+*.opt
+*.cg
+*.log
+*.ap2
+*.xf
+*.o[1-9]*

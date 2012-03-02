@@ -1,0 +1,6 @@
+#!/bin/tcsh
+
+make triples.x
+module load craype-accel-nvidia20
+module list
+make triples-gpu.x
