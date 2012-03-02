@@ -1,0 +1,59 @@
+
+
+Device Arrays
+
+Resident for the Entire Calculation
+===================================
+* EH (NO)
+* EP (NU)
+* T1 (NOU)
+* VM (NO3U)
+
+Resident for an IJK Tuple
+=========================
+* VOE_IJ, VOE_JI, VOE_IK, VOE_KI, VOE_JK, VOE_KJ (NU2)
+* T2_I, T2_J, T2_K (NU2O)
+* VE_I, VE_J, VE_K (NU3 - xfered as NUTR*NU)
+
+Data Storage
+============
+
+* VOE and T2 might be in distributed arrays or on disk
+* VE is in a distributed array or on disk
+
+The storage component will be abstrated so that a non-blocking
+GET option can be done on VE, VOE and/or T2.
+
+
+End Goal Pseudo Code
+====================
+
+1) Transfer EH, EP, T1, VM to Device
+
+2) Create V3 on the Device (NU3)
+
+3) Start IJK Tuples loop
+
+4) Issue Non-blocking GETs on any arrays stored in
+   local shared memory.  Issue VE > T2 > VOE.
+   Note: the ijk_tuple routine can execute without VOE.
+   Note: check to ensure that the data is not already
+   on the device from the previous iteration.  The new
+   I might be the old K, if so copy the data.
+
+5) If T2 is in local shared memory, start
+   transfering T2_I, T2_J and T2_K async to the device,
+   if the values are not already present from a previous
+   IJK tuple.  Look at the old values, the new I might be 
+   the old K, if so copy the data.
+
+6) When an non-blocking VE_x GET is ready, immediate 
+   copy it to the device, and when it land on the device
+   execute the blow up kernel.  Depending on storage, you
+   may be transfering NUTR elements at a time which blow
+   up to NU2.
+
+7) As soon as VE_{IJK} and T2_{IJK} are on the device,
+   execute the ijk_tuples kernel that forms V3.
+
+8)
