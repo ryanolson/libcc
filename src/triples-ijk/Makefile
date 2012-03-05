@@ -1,7 +1,8 @@
 # Triples makefile
 
 PROGRAM=triples
-PROGRAM_GPU=triples-gpu
+PROGRAM_CUDA=triples-cuda
+PROGRAM_ACC=triples-acc
 
 FC = ftn
 FCFLAGS_PGI = -i8 -fastsse -Munroll -tp shanghai-64 -Mfpmisalign
@@ -14,15 +15,19 @@ MOD = common_cc.o
 OBJ = ddcc_aux.o t1wt3.o t3squa.o triples.o ddcc_t_ijj_iij_big.o ddcc_t_ijk_big.o  
 OBJ90 = ijj_tuple.o iij_tuple.o 
 OBJCPU = ijk_tuple.o
-OBJGPU = ijk_tuple_acc.o
+OBJACC = ijk_tuple_acc.o
+OBJCUDA = ijk_tuple_cuda.o
 
 all: $(PROGRAM).x 
 
 $(PROGRAM).x : $(MOD) $(OBJ) $(OBJ90) $(OBJCPU) Makefile
 	$(FC) $(FCFLAGS) -Onoacc -o $(PROGRAM).x $(MOD) $(OBJ) $(OBJ90) $(OBJCPU) -L../ddi-onesided -lddi
 
-$(PROGRAM_GPU).x : $(MOD) $(OBJ) $(OBJ90) $(OBJGPU) Makefile
-	$(FC) $(FCFLAGS) -o $(PROGRAM_GPU).x $(MOD) $(OBJ) $(OBJ90) $(OBJGPU) -L../ddi-onesided -lddi
+$(PROGRAM_ACC).x : $(MOD) $(OBJ) $(OBJ90) $(OBJACC) Makefile
+	$(FC) $(FCFLAGS) -o $(PROGRAM_ACC).x $(MOD) $(OBJ) $(OBJ90) $(OBJACC) -L../lib -lddi
+
+$(PROGRAM_CUDA).x : $(MOD) $(OBJ) $(OBJ90) $(OBJCUDA) Makefile
+	$(FC) $(FCFLAGS) -Onoacc -o $(PROGRAM_CUDA).x $(MOD) $(OBJ) $(OBJ90) $(OBJCUDA) -L../lib -lddi
 
 $(PROGRAM).x-pat : triples.x
 	@make clean
