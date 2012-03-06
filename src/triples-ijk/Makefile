@@ -9,6 +9,10 @@ FCFLAGS_PGI = -i8 -fastsse -Munroll -tp shanghai-64 -Mfpmisalign
 FCFLAGS_CCE = -sdefault64 -target=linux -rm -rd -O2,ipa5 -Onoomp
 FCFLAGS_CCE = -sdefault64 -rm -rd -O2,ipa5 -Onoomp
 
+NVCC = nvcc
+NVFLAGS = -arch sm_20 -Xptxas=-v
+CUDA_LIBS = -lcublas -lcudart
+
 FCFLAGS = $(FCFLAGS_CCE)
 
 MOD = common_cc.o
@@ -16,7 +20,7 @@ OBJ = ddcc_aux.o t1wt3.o t3squa.o triples.o ddcc_t_ijj_iij_big.o ddcc_t_ijk_big.
 OBJ90 = ijj_tuple.o iij_tuple.o 
 OBJCPU = ijk_tuple.o
 OBJACC = ijk_tuple_acc.o
-OBJCUDA = ijk_tuple_cuda.o
+OBJCUDA = ijk_tuple_cuda.o ijk_tuple_cuda_wrapper.o ijk_tuple_cuda_kernels.o
 
 all: $(PROGRAM).x 
 
@@ -27,7 +31,7 @@ $(PROGRAM_ACC).x : $(MOD) $(OBJ) $(OBJ90) $(OBJACC) Makefile
 	$(FC) $(FCFLAGS) -o $(PROGRAM_ACC).x $(MOD) $(OBJ) $(OBJ90) $(OBJACC) -L../lib -lddi
 
 $(PROGRAM_CUDA).x : $(MOD) $(OBJ) $(OBJ90) $(OBJCUDA) Makefile
-	$(FC) $(FCFLAGS) -Onoacc -o $(PROGRAM_CUDA).x $(MOD) $(OBJ) $(OBJ90) $(OBJCUDA) -L../lib -lddi
+	$(FC) $(FCFLAGS) -Onoacc -o $(PROGRAM_CUDA).x $(MOD) $(OBJ) $(OBJ90) $(OBJCUDA) -L../lib -lddi $(CUDA_LIBS)
 
 $(PROGRAM).x-pat : triples.x
 	@make clean
@@ -36,6 +40,9 @@ $(PROGRAM).x-pat : triples.x
 
 %.o : %.f common_cc.f90 Makefile
 	$(FC) $(FCFLAGS) -c $*.f
+
+%.o : %.cu ijk_tuple_cuda_kernels.h
+	$(NVCC) $(NVFLAGS) -c $*.cu
 
 # triples.o : triples.f90
 

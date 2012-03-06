@@ -47,22 +47,29 @@ integer nr, sr, veoff
 call div_even(nu2,smp_np,smp_me,nr,sr)
 veoff = (sr-1)*nu + 1
 
+
+
 ! note: the syncs between dgemms are required because each dgemm is updating a 
 ! different disjoint portion of v3.
 
 ! transform v3
 ! call trant3_4(nu,v3)
 ! #2 & #9
-call dgemm('n','n',nr,nu,no,om,t2_j(sr,1),nu2,vm_ki,no,zero,v3(sr),nu2)       ! #2: Type A
-call dgemm('t','t',nr,nu,nu,one,ve_j(veoff),nu,t2_k(1,i),nu,one,v3(sr),nu2)   ! #9: Type BT
+!jlb call dgemm('n','n',nr,nu,no,om,t2_j(sr,1),nu2,vm_ki,no,zero,v3(sr),nu2)       ! #2: Type A
+!jlb call dgemm('t','t',nr,nu,nu,one,ve_j(veoff),nu,t2_k(1,i),nu,one,v3(sr),nu2)   ! #9: Type BT
 ! transform v3
-call trant3_1(nu,v3) 
+!jlb call trant3_1(nu,v3) 
+!call ijk_tuple_cuda_wrapper(i, nr, sr, veoff, nu, no, t2_j, vm_ki, v3, &
+!                            ve_j, t2_k )
 ! #4 & #7
-call dgemm('t','t',nu,nr,no,om,vm_ji,no,t2_k(sr,1),nu2,one,v3(veoff),nu)      ! #4: Type AT
-call dgemm('n','n',nu,nr,nu,one,t2_j(1,i),nu,ve_k(veoff),nu,one,v3(veoff),nu) ! #7: Type B
+!jlb call dgemm('t','t',nu,nr,no,om,vm_ji,no,t2_k(sr,1),nu2,one,v3(veoff),nu)      ! #4: Type AT
+
+!jlb call dgemm('n','n',nu,nr,nu,one,t2_j(1,i),nu,ve_k(veoff),nu,one,v3(veoff),nu) ! #7: Type B
 ! transform v3
-call trant3_4(nu,v3)
+!jlb call trant3_4(nu,v3)
 ! #0 & #11
+call ijk_tuple_cuda_wrapper(nu,no,i,j,k,t2_i,t2_j,t2_k,vm_ij,vm_ji,vm_ik, &
+    vm_ki,vm_jk,vm_kj,ve_i,ve_j,ve_k,v3)
 call dgemm('n','n',nr,nu,no,om,t2_i(sr,1),nu2,vm_kj,no,one,v3(sr),nu2)        ! #0: Type A
 call dgemm('t','t',nr,nu,nu,one,ve_i(veoff),nu,t2_k(1,j),nu,one,v3(sr),nu2)   ! #11: Type BT
 call smp_sync()

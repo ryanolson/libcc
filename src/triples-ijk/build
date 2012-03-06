@@ -1,7 +1,10 @@
 #!/bin/tcsh
 
 make triples.x
-make triples-cuda.x
-module load craype-accel-nvidia20
+module load cuda
+module load gcc/4.5.3
 module list
-make triples-acc.x
+make triples-cuda.x
+#module load craype-accel-nvidia20
+#module list
+#make triples-acc.x
