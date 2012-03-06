@@ -68,25 +68,25 @@ veoff = (sr-1)*nu + 1
 ! transform v3
 !jlb call trant3_4(nu,v3)
 ! #0 & #11
+!jlb call dgemm('n','n',nr,nu,no,om,t2_i(sr,1),nu2,vm_kj,no,one,v3(sr),nu2)        ! #0: Type A
+!jlb call dgemm('t','t',nr,nu,nu,one,ve_i(veoff),nu,t2_k(1,j),nu,one,v3(sr),nu2)   ! #11: Type BT
+!jlb call smp_sync()
+! #8 & #3
+!jlb call dgemm('n','n',nu,nr,nu,one,t2_i(1,k),nu,ve_j(veoff),nu,one,v3(veoff),nu) ! #8: Type B
+!jlb call dgemm('t','t',nu,nr,no,om,vm_ik,no,t2_j(sr,1),nu2,one,v3(veoff),nu)      ! #3: Type AT
+! transform v3
+!jlb call trant3_1(nu,v3)
+! #1 & #10
+!jlb call dgemm('n','n',nr,nu,no,om,t2_i(sr,1),nu2,vm_jk,no,one,v3(sr),nu2)        ! #1: Type A
+!jlb call dgemm('t','t',nr,nu,nu,one,ve_i(veoff),nu,t2_j(1,k),nu,one,v3(sr),nu2)   ! #10: Type BT
+!jlb call smp_sync()
+! #6 & #5
+!jlb call dgemm('n','n',nu,nr,nu,one,t2_i(1,j),nu,ve_k(veoff),nu,one,v3(veoff),nu) ! #6: Type B
+!jlb call dgemm('t','t',nu,nr,no,om,vm_ij,no,t2_k(sr,1),nu2,one,v3(veoff),nu)      ! #5: Type AT
+! transform v3
+!jlb call trant3_1(nu,v3)
 call ijk_tuple_cuda_wrapper(nu,no,i,j,k,t2_i,t2_j,t2_k,vm_ij,vm_ji,vm_ik, &
     vm_ki,vm_jk,vm_kj,ve_i,ve_j,ve_k,v3)
-call dgemm('n','n',nr,nu,no,om,t2_i(sr,1),nu2,vm_kj,no,one,v3(sr),nu2)        ! #0: Type A
-call dgemm('t','t',nr,nu,nu,one,ve_i(veoff),nu,t2_k(1,j),nu,one,v3(sr),nu2)   ! #11: Type BT
-call smp_sync()
-! #8 & #3
-call dgemm('n','n',nu,nr,nu,one,t2_i(1,k),nu,ve_j(veoff),nu,one,v3(veoff),nu) ! #8: Type B
-call dgemm('t','t',nu,nr,no,om,vm_ik,no,t2_j(sr,1),nu2,one,v3(veoff),nu)      ! #3: Type AT
-! transform v3
-call trant3_1(nu,v3)
-! #1 & #10
-call dgemm('n','n',nr,nu,no,om,t2_i(sr,1),nu2,vm_jk,no,one,v3(sr),nu2)        ! #1: Type A
-call dgemm('t','t',nr,nu,nu,one,ve_i(veoff),nu,t2_j(1,k),nu,one,v3(sr),nu2)   ! #10: Type BT
-call smp_sync()
-! #6 & #5
-call dgemm('n','n',nu,nr,nu,one,t2_i(1,j),nu,ve_k(veoff),nu,one,v3(veoff),nu) ! #6: Type B
-call dgemm('t','t',nu,nr,no,om,vm_ij,no,t2_k(sr,1),nu2,one,v3(veoff),nu)      ! #5: Type AT
-! transform v3
-call trant3_1(nu,v3)
 
 if(smp_me.eq.0) call zerot3(v3,nu)
 call smp_sync()
