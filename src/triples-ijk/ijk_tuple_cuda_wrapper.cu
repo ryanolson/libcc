@@ -114,10 +114,27 @@ void ijk_tuple_cuda_wrapper_(
 
   const int blockx = 512;
 
+  long int numblocks = ( nu3 / blockx ) + 1;
+
   dim3 block(blockx,1,1);
-  dim3 grid( 
-       (nu3 / block.x) % 65534 + 1,
-       (nu3 / block.x) / 65534 + 1, 1);
+  long int gridx = 1;
+  long int gridy = 1;
+
+  if( numblocks <= 65535 )
+  {
+    gridx = numblocks;
+  } else
+  if( numblocks > 65535 && numblocks < (long int) 65535 * (long int )65535 )
+  {
+    gridx =  (long int) ceil( sqrt( (double) numblocks ) );
+    gridy = gridx;
+  } else
+  {
+    printf("too large grid requested...exiting\n");
+    exit( 911 );
+  } /* end if */
+
+  dim3 grid( gridx, gridy, 1 );
 
 //  printf("nu3 %d\n", nu3);
 
@@ -155,6 +172,7 @@ void ijk_tuple_cuda_wrapper_(
 	   d_ve_k, nu, &one,
 	   d_v3, nu );
 
+#if 1
 
   trant3_4_kernel<<< grid, block >>>( nu, d_v3 );
   CUDA_ERROR_CHECK();
@@ -265,7 +283,7 @@ void ijk_tuple_cuda_wrapper_(
 
   trant3_1_kernel<<< grid, block >>>( nu, d_v3 );
   CUDA_ERROR_CHECK();
-
+#endif
 /* 
  * final copy back of v3
  */
