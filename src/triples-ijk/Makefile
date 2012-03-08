@@ -20,7 +20,8 @@ OBJ = ddcc_aux.o t1wt3.o t3squa.o triples.o ddcc_t_ijj_iij_big.o ddcc_t_ijk_big.
 OBJ90 = ijj_tuple.o iij_tuple.o 
 OBJCPU = ijk_tuple.o
 OBJACC = ijk_tuple_acc.o
-OBJCUDA = ijk_tuple_cuda.o ijk_tuple_cuda_wrapper.o ijk_tuple_cuda_kernels.o
+OBJCUDA = ijk_tuple_cuda.o ijk_tuple_cuda_wrapper.o ijk_tuple_cuda_kernels.o \
+	  t1wt2_cuda_wrapper.o t1wt2_cuda_kernels.o
 
 all: $(PROGRAM).x 
 
@@ -41,7 +42,7 @@ $(PROGRAM).x-pat : triples.x
 %.o : %.f common_cc.f90 Makefile
 	$(FC) $(FCFLAGS) -c $*.f
 
-%.o : %.cu ijk_tuple_cuda_kernels.h
+%.o : %.cu cuda_kernels.h
 	$(NVCC) $(NVFLAGS) -c $*.cu
 
 # triples.o : triples.f90
