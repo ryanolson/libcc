@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "cuda_runtime.h"
 #include "cublas_v2.h"
-#include "ijk_tuple_cuda_kernels.h"
+#include "cuda_kernels.h"
 
 //#define NO_CUDA_DEBUG
 #ifndef NO_CUDA_DEBUG
