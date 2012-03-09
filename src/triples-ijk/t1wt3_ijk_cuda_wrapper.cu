@@ -3,6 +3,8 @@
 #include "cublas_v2.h"
 #include "cuda_kernels.h"
 
+#define NV_WARPSIZE 32
+
 //#define NO_CUDA_DEBUG
 #ifndef NO_CUDA_DEBUG
 #define CUDA_ERROR_CHECK()                                                                     \
@@ -24,7 +26,7 @@
 
 
 extern "C" {
-void t1wt2_cuda_wrapper_(
+void t1wt3_ijk_cuda_wrapper_(
     long int *p_i,
     long int *p_j,
     long int *p_k,
@@ -57,11 +59,13 @@ void t1wt2_cuda_wrapper_(
   long int nu2 = nu * nu;
   long int nu3 = nu2 * nu;
 
+  double x3;
+
   double *d_t1;
   double *d_voe_ij, *d_voe_ji, *d_voe_ik, *d_voe_ki, *d_voe_kj, *d_voe_jk;
   double *d_v3;
   double *d_eh, *d_ep;
-  double *d_etd;
+  double *d_x3, *d_etd_reduce;
 
   size_t numbytes;
 
@@ -126,28 +130,30 @@ void t1wt2_cuda_wrapper_(
   CUDA_ERROR_CHECK();
 
   numbytes = sizeof(double);
-  cudaStat = cudaMalloc( (void **) &d_etd, numbytes );
+  cudaStat = cudaMalloc( (void **) &d_x3, numbytes );
   CUDA_ERROR_CHECK();
-  cudaMemcpy( d_etd, etd, numbytes, cudaMemcpyHostToDevice );
+  cudaMemset( d_x3, 0, numbytes );
   CUDA_ERROR_CHECK();
 
+  int device = 0;
+  cudaDeviceProp deviceProp;
+  cudaGetDeviceProperties( &deviceProp, device );
 
-  const int blockx = 512;
+  const int blockx = deviceProp.warpSize * 6;
+//  const int blockx = 35;
 
-  long int numblocks = ( nu3 / blockx ) + 1;
+//  printf("warpSize is %d\n",blockx);
+  const int blocky = 1;
 
-  dim3 block(blockx,1,1);
+  dim3 block(blockx,blocky,1);
+
   long int gridx = 1;
   long int gridy = 1;
 
-  if( numblocks <= 65535 )
+  if( nu <= 65535 )
   {
-    gridx = numblocks;
-  } else
-  if( numblocks > 65535 && numblocks < (long int) 65535 * (long int )65535 )
-  {
-    gridx =  (long int) ceil( sqrt( (double) numblocks ) );
-    gridy = gridx;
+    gridx = nu;
+    gridy = nu;
   } else
   {
     printf("too large grid requested...exiting\n");
@@ -156,24 +162,52 @@ void t1wt2_cuda_wrapper_(
 
   dim3 grid( gridx, gridy, 1 );
 
-//  printf("nu3 %d\n", nu3);
-
-//  printf("block x y z %d %d %d\n",block.x,block.y,block.z);
-//  printf("grid x y z %d %d %d\n",grid.x,grid.y,grid.z);
-  trant3_1_kernel<<< grid, block >>>( nu, d_v3 );
+  numbytes = sizeof(double) * (gridx * gridy) ;
+  cudaStat = cudaMalloc( (void **) &d_etd_reduce, numbytes );
   CUDA_ERROR_CHECK();
 
+/*
+ * set the temporary array to zero it will be used for the reduction
+ */
+
+  cudaMemset( d_etd_reduce, 0, numbytes );
+  CUDA_ERROR_CHECK();
+
+  printf("nu %d\n", nu);
+
+  printf("block x y z %d %d %d\n",block.x,block.y,block.z);
+  printf("grid x y z %d %d %d\n",grid.x,grid.y,grid.z);
+
+  t1wt3_cuda_kernel<<< grid, block >>>( i, j, k, no, nu, d_v3,
+       d_voe_ij, d_voe_ji, d_voe_ik, d_voe_ki, d_voe_jk, d_voe_kj, 
+       d_t1, d_eh, d_ep, d_etd_reduce );
+  CUDA_ERROR_CHECK();
+
+//  printf("total array size %ld\n",gridx * gridy );
+  reduce_etd_kernel<<<1,1>>>( gridx * gridy, d_etd_reduce, d_x3 );
 /* 
  * final copy back of v3
  */
 
+#if 1
   numbytes = sizeof(double) * nu * no;
   cudaMemcpy( t1, d_t1, numbytes, cudaMemcpyDeviceToHost );
   CUDA_ERROR_CHECK();
-
+#endif
   numbytes = sizeof(double);
-  cudaMemcpy( etd, d_etd, numbytes, cudaMemcpyDeviceToHost );
+  cudaMemcpy( &x3, d_x3, numbytes, cudaMemcpyDeviceToHost );
   CUDA_ERROR_CHECK();
+
+//  printf("C etd %e x3 %e\n",*etd,x3);
+
+  if( i == j || j == k ) 
+  {
+    *etd = (*etd) + x3 * 0.5;
+  } /* end if */
+  else
+  {
+    *etd = (*etd) + x3;
+  } /* end else */
 
   cudaFree( d_voe_ij );
   CUDA_ERROR_CHECK();
@@ -194,6 +228,10 @@ void t1wt2_cuda_wrapper_(
   cudaFree( d_ep );
   CUDA_ERROR_CHECK();
   cudaFree( d_v3 );
+  CUDA_ERROR_CHECK();
+  cudaFree( d_x3 );
+  CUDA_ERROR_CHECK();
+  cudaFree( d_etd_reduce );
   CUDA_ERROR_CHECK();
 
   return;
