@@ -294,7 +294,7 @@ call ddi_sync(1234)
 if(ddi_me.eq.0) then
    ijk_stop = mpi_wtime()
    if(ddi_me.eq.0) write(6,9001) (ijk_stop-ijk_start)
- 9001 format('walltime=',F15.5)
+ 9001 format('ijk time=',F15.5)
 end if
 
 ! counters and load-balancing for iij and ijj tuples
