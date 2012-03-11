@@ -19,10 +19,10 @@ OBJGPU = ijk_tuple_acc.o
 all: $(PROGRAM).x 
 
 $(PROGRAM).x : $(MOD) $(OBJ) $(OBJ90) $(OBJCPU) Makefile
-	$(FC) $(FCFLAGS) -Onoacc -o $(PROGRAM).x $(MOD) $(OBJ) $(OBJ90) $(OBJCPU) -L../lib -lddi
+	$(FC) $(FCFLAGS) -Onoacc -o $(PROGRAM).x $(MOD) $(OBJ) $(OBJ90) $(OBJCPU) -L../ddi-onesided -lddi
 
 $(PROGRAM_GPU).x : $(MOD) $(OBJ) $(OBJ90) $(OBJGPU) Makefile
-	$(FC) $(FCFLAGS) -o $(PROGRAM_GPU).x $(MOD) $(OBJ) $(OBJ90) $(OBJGPU) -L../lib -lddi
+	$(FC) $(FCFLAGS) -o $(PROGRAM_GPU).x $(MOD) $(OBJ) $(OBJ90) $(OBJGPU) -L../ddi-onesided -lddi
 
 $(PROGRAM).x-pat : triples.x
 	@make clean
