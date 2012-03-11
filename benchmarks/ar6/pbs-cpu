@@ -1,0 +1,26 @@
+#!/usr/bin/tcsh
+#PBS -N ar6-cpu
+#PBS -l mppwidth=2048
+#PBS -l mppnppn=32
+#PBS -l walltime=04:00:00
+#PBS -j oe
+#PBS -S /usr/bin/tcsh
+#
+cd $PBS_O_WORKDIR
+#aprun -n64 -N1 ../triples-gpu.x
+#aprun -n 512 -N8 -cc 1,3,5,7,9,11,13,15 ../triples.x
+#aprun -n 512 -N8 -cc 1,3,5,7,9,11,13,14 -r1 ../triples-ijk.x # core specialization
+
+
+#aprun -n 1024 -N16 -d2 ../triples.x | tee ar6-1024-N16.out
+#aprun -n 512 -N16 -d2 ../triples.x  | tee ar6-0512-N16.out
+#aprun -n 256 -N16 -d2 ../triples.x  | tee ar6-0256-N16.out
+#aprun -n 128 -N16 -d2 ../triples.x  | tee ar6-0128-N16.out
+#aprun -n 64 -N16 -d2 ../triples.x  | tee ar6-0064-N16.out
+
+aprun -n 512 -N8 -d2 ../triples.x | tee ar6-0512-N8.out
+aprun -n 256 -N8 -d2 ../triples.x | tee ar6-0256-N8.out
+aprun -n 128 -N8 -d2 ../triples.x | tee ar6-0128-N8.out
+aprun -n  64 -N8 -d2 ../triples.x | tee ar6-0064-N8.out
+aprun -n  32 -N8 -d2 ../triples.x | tee ar6-0032-N8.out
+
