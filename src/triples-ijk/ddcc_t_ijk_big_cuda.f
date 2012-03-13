@@ -4,8 +4,9 @@
       IMPLICIT NONE
 C
       INTEGER NO,NU,I,J,K,t3off
+      integer ioff, joff
 C
-      DOUBLE PRECISION T1(*),VM(NO,NU,NO,NO),
+      DOUBLE PRECISION T1(NU,*),VM(NO,NU,NO,NO),
      &                 V3(*),T3(*),TMP(NU*NU), VOE(NU,NU,NO,NO),
      &                 O1(*),EH(NO),EP(NU),T2(NU*NU,NO,NO),
      &                 ve_i(*),ve_j(*),ve_k(*) 
@@ -38,6 +39,11 @@ C
       call t1wt3_ijk_cuda_wrapper(i,j,k,no,nu,v3,
      &              voe(1,1,i,j),voe(1,1,j,i),voe(1,1,i,k),voe(1,1,k,i),
      &              voe(1,1,j,k),voe(1,1,k,j),t1,eh,ep,etd)
+!      do joff = 1, no
+!      do ioff = 1, nu
+!        write(6,*)'ioff,joff, t1 ', ioff, joff, t1(ioff,joff)
+!      enddo
+!      enddo
       RETURN
       END
 
