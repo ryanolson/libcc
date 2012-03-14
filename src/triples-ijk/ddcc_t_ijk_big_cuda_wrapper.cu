@@ -409,7 +409,7 @@ void ddcc_t_ijk_big_cuda_wrapper_(
 
 //  const int blockx = deviceProp.warpSize * 6;
   block.x = SHARED_REDUCTION_SIZE;
-//  const int blockx = 32;
+//    block.x = 128;
 
 //  printf("warpSize is %d\n",blockx);
   block.y = 1;

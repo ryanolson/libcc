@@ -8,14 +8,38 @@
 
 extern "C" {
 
-__device__ void warpReduce( volatile double *sdata, int tid )
+__device__ void warpReduce( volatile double *sdata )
 {
-  sdata[tid] += sdata[tid + 32];
-  sdata[tid] += sdata[tid + 16];
-  sdata[tid] += sdata[tid +  8];
-  sdata[tid] += sdata[tid +  4];
-  sdata[tid] += sdata[tid +  2];
-  sdata[tid] += sdata[tid +  1];
+#if 1
+  if( blockDim.x >= 64 && blockDim.x % 32 == 0 )
+  {
+    for( unsigned int s = blockDim.x / 2; s > 32; s >>= 1)
+    {
+      if( threadIdx.x < s ) 
+         sdata[threadIdx.x] += sdata[threadIdx.x + s];
+      __syncthreads();
+    } /* end for */
+    if( threadIdx.x < 32 ) 
+    {
+      sdata[threadIdx.x] += sdata[threadIdx.x + 32];
+      sdata[threadIdx.x] += sdata[threadIdx.x + 16];
+      sdata[threadIdx.x] += sdata[threadIdx.x +  8];
+      sdata[threadIdx.x] += sdata[threadIdx.x +  4];
+      sdata[threadIdx.x] += sdata[threadIdx.x +  2];
+      sdata[threadIdx.x] += sdata[threadIdx.x +  1];
+    } /* end if */
+  }
+  else
+#endif
+  {
+    if( threadIdx.x == 0 )
+    {
+      for( int idx = 1; idx < blockDim.x; idx++ )
+      {
+        sdata[0] += sdata[idx];
+      } /* end for */
+    } /* end if */
+  } /* end */
 } /* end warp Reduce */
 
 __global__ void etd_cuda_kernel( const int i, const int j, const int k, 
@@ -83,7 +107,7 @@ loop_end:
 
   double temp = 0.0;
 
-#if 1
+#if 0
   if( threadIdx.x == 0 )
   {
     for( int idx = 0; idx < blockDim.x; idx++ )
@@ -105,7 +129,11 @@ loop_end:
 
   if( threadIdx.x == 0 ) etd_reduce[offset] = etd_shared[0];
 #endif
+#if 1
+  warpReduce( etd_shared );
+#endif
   __syncthreads();
+  if( threadIdx.x == 0 ) etd_reduce[offset] = etd_shared[0];
 
 
 
@@ -196,7 +224,7 @@ loop_end:
   double tempi = 0.0, tempj = 0.0, tempk = 0.0;
 
   int offi = INDX(a,i-1,0,nu);
-
+#if 0
   if( threadIdx.x == 0 ) 
   {
     for( int idx = 0; idx < blockDim.x; idx++ )
@@ -205,6 +233,10 @@ loop_end:
     } /* end for */
     t1[offi] += tempi;
   } /* end if */
+#endif
+  warpReduce( etd_shared );
+  __syncthreads();
+  if( threadIdx.x == 0 ) t1[offi] += etd_shared[0];
 
   __syncthreads();
 
@@ -213,7 +245,7 @@ loop_end:
   __syncthreads();
 
   int offj = INDX(a,j-1,0,nu);
-
+#if 0
   if( threadIdx.x == 0 ) 
   {
     for( int idx = 0; idx < blockDim.x; idx++ )
@@ -222,6 +254,10 @@ loop_end:
     } /* end for */
     t1[offj] += tempj;
   } /* end if */
+#endif
+  warpReduce( etd_shared );
+  __syncthreads();
+  if( threadIdx.x == 0 ) t1[offj] += etd_shared[0];
 
   __syncthreads();
 
@@ -230,7 +266,7 @@ loop_end:
   __syncthreads();
 
   int offk = INDX(a,k-1,0,nu);
-
+#if 0
   if( threadIdx.x == 0 ) 
   {
     for( int idx = 0; idx < blockDim.x; idx++ )
@@ -239,6 +275,10 @@ loop_end:
     } /* end for */
     t1[offk] += tempk;
   } /* end if */
+#endif
+  warpReduce( etd_shared );
+  __syncthreads();
+  if( threadIdx.x == 0 ) t1[offk] += etd_shared[0];
 
 #if 1
 
@@ -311,7 +351,7 @@ loop_end1:
   tempi = 0.0, tempj = 0.0, tempk = 0.0;
 
   offi = INDX(b,i-1,0,nu);
-
+#if 0
   if( threadIdx.x == 0 ) 
   {
     for( int idx = 0; idx < blockDim.x; idx++ )
@@ -320,6 +360,10 @@ loop_end1:
     } /* end for */
     t1[offi] += tempi;
   } /* end if */
+#endif
+  warpReduce( etd_shared );
+  __syncthreads();
+  if( threadIdx.x == 0 ) t1[offi] += etd_shared[0];
 
   __syncthreads();
 
@@ -328,7 +372,7 @@ loop_end1:
   __syncthreads();
 
   offj = INDX(b,j-1,0,nu);
-
+#if 0
   if( threadIdx.x == 0 ) 
   {
     for( int idx = 0; idx < blockDim.x; idx++ )
@@ -337,6 +381,10 @@ loop_end1:
     } /* end for */
     t1[offj] += tempj;
   } /* end if */
+#endif
+  warpReduce( etd_shared );
+  __syncthreads();
+  if( threadIdx.x == 0 ) t1[offj] += etd_shared[0];
 
   __syncthreads();
 
@@ -345,7 +393,7 @@ loop_end1:
   __syncthreads();
 
   offk = INDX(b,k-1,0,nu);
-
+#if 0
   if( threadIdx.x == 0 ) 
   {
     for( int idx = 0; idx < blockDim.x; idx++ )
@@ -354,6 +402,10 @@ loop_end1:
     } /* end for */
     t1[offk] += tempk;
   } /* end if */
+#endif
+  warpReduce( etd_shared );
+  __syncthreads();
+  if( threadIdx.x == 0 ) t1[offk] += etd_shared[0];
 #endif
 } /* end t1a_cuda_kernel */
 
