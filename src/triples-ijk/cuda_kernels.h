@@ -2,7 +2,7 @@
                        + ( (b) * (ld) ) \
                        + ( (a) ) )
 
-#define SHARED_REDUCTION_SIZE 192
+#define SHARED_REDUCTION_SIZE 128
 
 extern "C" {
 
