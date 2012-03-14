@@ -20,9 +20,9 @@ OBJ = ddcc_aux.o t1wt3.o t3squa.o triples.o ddcc_t_ijj_iij_big.o
 OBJ90 = ijj_tuple.o iij_tuple.o 
 OBJCPU = ijk_tuple.o ddcc_t_ijk_big.o
 OBJACC = ijk_tuple_acc.o ddcc_t_ijk_big.o
-OBJCUDA = ijk_tuple_cuda.o ijk_tuple_cuda_wrapper.o ijk_tuple_cuda_kernels.o \
-	  t1wt3_ijk_cuda_wrapper.o t1wt3_ijk_cuda_kernels.o \
-	  ddcc_t_ijk_big_cuda.o
+OBJCUDA = ijk_tuple_cuda_kernels.o \
+	  t1wt3_ijk_cuda_kernels.o \
+	  ddcc_t_ijk_big_cuda.o ddcc_t_ijk_big_cuda_wrapper.o
 
 all: $(PROGRAM).x 
 

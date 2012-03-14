@@ -17,12 +17,20 @@ C
       DOUBLE PRECISION ZERO,ONE,OM
       PARAMETER(ZERO=0.0D+00,ONE=1.0D+00,OM=-1.0D+00)
 C
-      call ijk_tuple(i,j,k,t2(1,1,i),t2(1,1,j),t2(1,1,k),
+!      call ijk_tuple(i,j,k,t2(1,1,i),t2(1,1,j),t2(1,1,k),
+!     &               vm(1,1,i,j),vm(1,1,j,i),vm(1,1,i,k),
+!     &               vm(1,1,k,i),vm(1,1,j,k),vm(1,1,k,j),
+!     &               ve_i,ve_j,ve_k,v3)
+
+!      call smp_sync()
+      call ddcc_t_ijk_big_cuda_wrapper(nu,no,i,j,k,t2(1,1,i),t2(1,1,j),
+     &               t2(1,1,k),
      &               vm(1,1,i,j),vm(1,1,j,i),vm(1,1,i,k),
      &               vm(1,1,k,i),vm(1,1,j,k),vm(1,1,k,j),
-     &               ve_i,ve_j,ve_k,v3)
-
-      call smp_sync()
+     &               ve_i,ve_j,ve_k,v3,
+     &               voe(1,1,i,j),voe(1,1,j,i),voe(1,1,i,k),
+     &               voe(1,1,k,i),voe(1,1,j,k),voe(1,1,k,j),
+     &               t1, eh, ep, etd )
 C
 !     CALL T3SQUA_SMP(I,J,K,NO,NU,O1,T2,V3,EH,EP)
 !     DEH=EH(I)+EH(J)+EH(K)
@@ -33,12 +41,12 @@ C
 !     KTMP=K
 !     CALL DRT1WT3IJK_SMP(ITMP,JTMP,KTMP,NO,NU,T1,VOE,V3,T3)
 !rmo- t3off = 8*nu2*smp_me+1
-      call t1wt3_ijk_temp(i,j,k,no,nu,v3,
-     &              voe(1,1,i,j),voe(1,1,j,i),voe(1,1,i,k),voe(1,1,k,i),
-     &              voe(1,1,j,k),voe(1,1,k,j),t1,eh,ep)
-      call t1wt3_ijk_cuda_wrapper(i,j,k,no,nu,v3,
-     &              voe(1,1,i,j),voe(1,1,j,i),voe(1,1,i,k),voe(1,1,k,i),
-     &              voe(1,1,j,k),voe(1,1,k,j),t1,eh,ep,etd)
+!      call t1wt3_ijk_temp(i,j,k,no,nu,v3,
+!     &              voe(1,1,i,j),voe(1,1,j,i),voe(1,1,i,k),voe(1,1,k,i),
+!     &              voe(1,1,j,k),voe(1,1,k,j),t1,eh,ep)
+!      call t1wt3_ijk_cuda_wrapper(i,j,k,no,nu,v3,
+!     &              voe(1,1,i,j),voe(1,1,j,i),voe(1,1,i,k),voe(1,1,k,i),
+!     &              voe(1,1,j,k),voe(1,1,k,j),t1,eh,ep,etd)
 !      do joff = 1, no
 !      do ioff = 1, nu
 !        write(6,*)'ioff,joff, t1 ', ioff, joff, t1(ioff,joff)
