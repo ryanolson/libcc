@@ -75,6 +75,9 @@ void t1wt3_ijk_cuda_wrapper_(
   cudaMemcpy( d_v3, v3, numbytes, cudaMemcpyHostToDevice );
   CUDA_ERROR_CHECK();
 
+  cudaBindTexture(&offsetA, tex_x_double_v3, (int2 *)d_v3, numbytes);
+  CUDA_ERROR_CHECK();
+
   numbytes = sizeof(double) * nu2;
   cudaStat = cudaMalloc( (void **) &d_voe_ij, numbytes );
   CUDA_ERROR_CHECK();
@@ -179,6 +182,8 @@ void t1wt3_ijk_cuda_wrapper_(
   printf("block x y z %d %d %d\n",block.x,block.y,block.z);
   printf("grid x y z %d %d %d\n",grid.x,grid.y,grid.z);
 
+
+
   etd_cuda_kernel<<< grid, block >>>( i, j, k, no, nu, d_v3,
        d_voe_ij, d_voe_ji, d_voe_ik, d_voe_ki, d_voe_jk, d_voe_kj, 
        d_t1, d_eh, d_ep, d_etd_reduce );
@@ -221,6 +226,9 @@ void t1wt3_ijk_cuda_wrapper_(
   {
     *etd = (*etd) + x3;
   } /* end else */
+
+  cudaUnbindTexture(tex_x_double_v3);
+  CUDA_ERROR_CHECK();
 
   cudaFree( d_voe_ij );
   CUDA_ERROR_CHECK();

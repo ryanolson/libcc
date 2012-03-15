@@ -1,7 +1,9 @@
 #include <stdio.h>
-#include "cuda_runtime.h"
+#include "cuda_runtime_api.h"
 #include "cublas_v2.h"
 #include "cuda_kernels.h"
+#include "ijk_tuple_cuda_kernels.cu"
+#include "t1wt3_ijk_cuda_kernels.cu"
 
 //#define NO_CUDA_DEBUG
 #ifndef NO_CUDA_DEBUG
@@ -21,7 +23,6 @@
 #else
 #define CUDA_ERROR_CHECK() {}
 #endif
-
 
 extern "C" {
 void ddcc_t_ijk_big_cuda_wrapper_(
@@ -93,6 +94,8 @@ void ddcc_t_ijk_big_cuda_wrapper_(
   CUDA_ERROR_CHECK();
   cudaMemcpy( d_v3, v3, numbytes, cudaMemcpyHostToDevice );
   CUDA_ERROR_CHECK();
+
+
 
   stat = cublasCreate( &handle );
 
@@ -448,6 +451,19 @@ void ddcc_t_ijk_big_cuda_wrapper_(
   printf("block x y z %d %d %d\n",block.x,block.y,block.z);
   printf("grid x y z %d %d %d\n",grid.x,grid.y,grid.z);
 
+  numbytes = sizeof(double) * nu3;
+  cudaError_t errt = cudaBindTexture(NULL, tex_x_double_v3, d_v3, numbytes);
+        if( errt != cudaSuccess)
+        {
+                printf("can not bind to texture \n");
+                return;
+        }
+
+  cudaDeviceSetCacheConfig( cudaFuncCachePreferL1 );
+  CUDA_ERROR_CHECK();
+
+  
+
   etd_cuda_kernel<<< grid, block >>>( i, j, k, no, nu, d_v3,
        d_voe_ij, d_voe_ji, d_voe_ik, d_voe_ki, d_voe_jk, d_voe_kj, 
        d_t1, d_eh, d_ep, d_etd_reduce );
@@ -480,9 +496,9 @@ void ddcc_t_ijk_big_cuda_wrapper_(
   cudaMemcpy( &x3, d_x3, numbytes, cudaMemcpyDeviceToHost );
   CUDA_ERROR_CHECK();
 
-  numbytes = sizeof(double) * nu3;
-  cudaMemcpy( v3, d_v3, numbytes, cudaMemcpyDeviceToHost );
-  CUDA_ERROR_CHECK();
+//  numbytes = sizeof(double) * nu3;
+//  cudaMemcpy( v3, d_v3, numbytes, cudaMemcpyDeviceToHost );
+//  CUDA_ERROR_CHECK();
 
 //  printf("C etd %e x3 %e\n",*etd,x3);
 
@@ -494,6 +510,9 @@ void ddcc_t_ijk_big_cuda_wrapper_(
   {
     *etd = (*etd) + x3;
   } /* end else */
+
+  cudaUnbindTexture(tex_x_double_v3);
+  CUDA_ERROR_CHECK();
 
   cudaFree( d_voe_ij );
   CUDA_ERROR_CHECK();

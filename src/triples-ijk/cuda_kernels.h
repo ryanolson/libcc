@@ -1,30 +1,18 @@
+#include <stdio.h>
+#include "cuda_runtime_api.h"
+
 #define INDX(a,b,c,ld) ( ( (c) * (ld) * (ld) ) \
                        + ( (b) * (ld) ) \
                        + ( (a) ) )
 
 #define SHARED_REDUCTION_SIZE 128
-
-extern "C" {
-
-__global__ void trant3_1_kernel( long int n, double *v );
-
-__global__ void trant3_4_kernel( long int n, double *v );
-
-__global__ void etd_cuda_kernel( const int i, const int j, const int k,
-        const int no, const int nu,
-        const double *v3, const double *voe_ij, const double *voe_ji,
-        const double *voe_ik, const double *voe_ki,
-        const double *voe_jk, const double *voe_kj,
-        double *t1, const double *eh, const double *ep, double *etd_reduce );
-
-__global__ void t1a_cuda_kernel( const int i, const int j, const int k,
-        const int no, const int nu,
-        const double *v3, const double *voe_ij, const double *voe_ji,
-        const double *voe_ik, const double *voe_ki,
-        const double *voe_jk, const double *voe_kj,
-        double *t1, const double *eh, const double *ep, double *etd_reduce );
-
-__global__ void reduce_etd_kernel( const long int, const double *, double * );
+#define NOTEX
 
 
-} /* end extern C */
+texture<int2,1>  tex_x_double_v3;
+
+static __inline__ __device__ double fetch_x_v3(const int& i)
+{
+  register int2  v = tex1Dfetch(tex_x_double_v3, i);
+  return __hiloint2double(v.y, v.x);
+}

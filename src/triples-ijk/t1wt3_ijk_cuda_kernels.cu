@@ -1,12 +1,8 @@
-#include <stdio.h>
-#include "cuda_runtime.h"
-#include "cuda_kernels.h"
-
-#define INDX(a,b,c,ld) ( ( (c) * (ld) * (ld) ) \
+//#define INDX(a,b,c,ld) ( ( (c) * (ld) * (ld) ) \
                        + ( (b) * (ld) ) \
                        + ( (a) ) )
 
-extern "C" {
+//extern "C" {
 
 __device__ void warpReduce( volatile double *sdata )
 {
@@ -56,9 +52,8 @@ __shared__ double etd_shared[SHARED_REDUCTION_SIZE];
   int b = blockIdx.y;
   double dijk = eh[i-1] + eh[j-1] + eh[k-1];
   double x3 = 0.0;
-  const double two = 2.0, four = 4.0, eight = 8.0, om = -1.0;
-  double d1,d2,d3,f, t1ai = 0.0, t1bi = 0.0;
-  double t1aj = 0.0, t1bj = 0.0, t1ak = 0.0, t1bk = 0.0;
+  const double two = 2.0, four = 4.0, eight = 8.0;
+  double d1,d2,d3,f;
 
   for( int idx = 0; idx < nu; idx += blockDim.x )
   {
@@ -76,21 +71,79 @@ __shared__ double etd_shared[SHARED_REDUCTION_SIZE];
       double dabc = ep[a] + ep[b] + ep[c];
       double denom = 1.0 / ( dijk - dabc );
 
+#ifdef NOTEX
+      double abc = v3[ INDX(a, b, c, nu) ];
+      double acb = v3[ INDX(a, c, b, nu) ];
+      double bac = v3[ INDX(b, a, c, nu) ];
+      double bca = v3[ INDX(b, c, a, nu) ];
+      double cba = v3[ INDX(c, b, a, nu) ];
+      double cab = v3[ INDX(c, a, b, nu) ];
+
+      d1 = abc;
+      d2 = acb + cba + bac;
+      d3 = bca + cab;
+      f  = d1*eight - d2*four + d3*two;
+      x3        += f*d1*denom;
+#if 0
       d1 = v3[INDX(a, b, c, nu)];
       d2 = v3[INDX(a, c, b, nu)] + v3[INDX(c, b, a, nu)] 
 	        + v3[INDX(b, a, c, nu)];
       d3 = v3[INDX(b, c, a, nu)] + v3[INDX(c, a, b, nu)];
       f  = d1*eight - d2*four + d3*two;
       x3        += f*d1*denom;
+#endif
+#else
+      double abc = fetch_x_v3( INDX(a, b, c, nu) );
+      double acb = fetch_x_v3( INDX(a, c, b, nu) );
+      double bac = fetch_x_v3( INDX(b, a, c, nu) );
+      double bca = fetch_x_v3( INDX(b, c, a, nu) );
+      double cba = fetch_x_v3( INDX(c, b, a, nu) );
+      double cab = fetch_x_v3( INDX(c, a, b, nu) );
+
+      d1 = abc;
+      d2 = acb + cba + bac;
+      d3 = bca + cab;
+      f  = d1*eight - d2*four + d3*two;
+      x3        += f*d1*denom;
+
+//      d1 = fetch_x_v3( INDX(a, b, c, nu) );
+//      d2 = fetch_x_v3( INDX(a, c, b, nu) ) + fetch_x_v3( INDX(c, b, a, nu) )
+//	        + fetch_x_v3( INDX(b, a, c, nu) );
+//      d3 = fetch_x_v3( INDX(b, c, a, nu) ) + fetch_x_v3( INDX(c, a, b, nu) );
+//      f  = d1*eight - d2*four + d3*two;
+//      x3        += f*d1*denom;
+#endif
 
       if( a == b ) goto loop_end;
 
+#ifdef NOTEX
+      d1 = bac;
+      d2 = bca + cab + abc;
+      d3 = acb + cba;
+      f  = d1*eight - d2*four + d3*two;
+      x3 += f*d1*denom;
+#if 0
       d1 = v3[INDX(b, a, c, nu)];
       d2 = v3[INDX(b, c, a, nu)] + v3[INDX(c, a, b, nu)] 
 	 + v3[INDX(a, b, c, nu)];
       d3 = v3[INDX(a, c, b, nu)] + v3[INDX(c, b, a, nu)];
       f  = d1*eight - d2*four + d3*two;
       x3 += f*d1*denom;
+#endif
+#else
+      d1 = bac;
+      d2 = bca + cab + abc;
+      d3 = acb + cba;
+      f  = d1*eight - d2*four + d3*two;
+      x3 += f*d1*denom;
+
+//      d1 = fetch_x_v3( INDX(b, a, c, nu) );
+//      d2 = fetch_x_v3( INDX(b, c, a, nu) ) + fetch_x_v3( INDX(c, a, b, nu) )
+//	 + fetch_x_v3( INDX(a, b, c, nu) );
+//      d3 = fetch_x_v3( INDX(a, c, b, nu) ) + fetch_x_v3( INDX(c, b, a, nu) );
+//      f  = d1*eight - d2*four + d3*two;
+//      x3 += f*d1*denom;
+#endif
 
     } /* end if */
     
@@ -104,8 +157,6 @@ loop_end:
   __syncthreads();
 
   int offset = INDX(a, b, 0, gridDim.x );
-
-  double temp = 0.0;
 
 #if 0
   if( threadIdx.x == 0 )
@@ -155,9 +206,8 @@ __shared__ double etd_shared[SHARED_REDUCTION_SIZE];
   int a = blockIdx.x;
   int b;
   double dijk = eh[i-1] + eh[j-1] + eh[k-1];
-  double x3 = 0.0;
-  const double two = 2.0, four = 4.0, eight = 8.0, om = -1.0;
-  double d1,d2,d3,f, t1ai = 0.0, t1aj = 0.0, t1ak = 0.0;
+  const double two = 2.0, om = -1.0;
+  double t1ai = 0.0, t1aj = 0.0, t1ak = 0.0;
   double t1bi = 0.0, t1bj = 0.0, t1bk = 0.0;
 
   for( b = 0; b < nu; b++ )
@@ -178,6 +228,32 @@ __shared__ double etd_shared[SHARED_REDUCTION_SIZE];
         double denom = 1.0 / ( dijk - dabc );
         if( a == b ) goto loop_end;
 
+#ifdef NOTEX
+        double abc = v3[ INDX(a, b, c, nu) ];
+        double acb = v3[ INDX(a, c, b, nu) ];
+        double bac = v3[ INDX(b, a, c, nu) ];
+        double bca = v3[ INDX(b, c, a, nu) ];
+        double cba = v3[ INDX(c, b, a, nu) ];
+        double cab = v3[ INDX(c, a, b, nu) ];
+
+        double t3_ab1 = ( abc - bac ) * two
+   	              -   acb + bca;
+
+        double t3_ab2 = ( acb - bca ) * two
+	              -   abc + bac;
+
+        double t3_ab3 = ( bac - abc ) * two
+   	              -   cab + cba;
+
+        double t3_ab5 = ( cab - cba )  * two
+	              -   bac + abc;
+
+        double t3_ab4 = ( bca - acb ) * two
+	              -   cba + cab;
+
+        double t3_ab6 = ( cba - cab ) * two
+	              -   bca + acb;
+#if 0
         double t3_ab1 = ( v3[INDX(a,b,c,nu)] - v3[INDX(b,a,c,nu)] ) * two
    	              -   v3[INDX(a,c,b,nu)] + v3[INDX(b,c,a,nu)];
 
@@ -195,6 +271,35 @@ __shared__ double etd_shared[SHARED_REDUCTION_SIZE];
 
         double t3_ab6 = ( v3[INDX(c,b,a,nu)] - v3[INDX(c,a,b,nu)] ) * two
 	              -   v3[INDX(b,c,a,nu)] + v3[INDX(a,c,b,nu)];
+#endif
+#else
+        double abc = fetch_x_v3( INDX(a, b, c, nu) );
+        double acb = fetch_x_v3( INDX(a, c, b, nu) );
+        double bac = fetch_x_v3( INDX(b, a, c, nu) );
+        double bca = fetch_x_v3( INDX(b, c, a, nu) );
+        double cba = fetch_x_v3( INDX(c, b, a, nu) );
+        double cab = fetch_x_v3( INDX(c, a, b, nu) );
+
+        double t3_ab1 = ( abc - bac ) * two
+   	              -   acb + bca;
+
+        double t3_ab2 = ( acb - bca ) * two
+	              -   abc + bac;
+
+        double t3_ab3 = ( bac - abc ) * two
+   	              -   cab + cba;
+
+        double t3_ab5 = ( cab - cba )  * two
+	              -   bac + abc;
+
+        double t3_ab4 = ( bca - acb ) * two
+	              -   cba + cab;
+
+        double t3_ab6 = ( cba - cab ) * two
+	              -   bca + acb;
+#endif
+
+
 
 //      if( a == 0 && b == 4 ) printf("c %d t3_ab1 %22.17e t3_ab2 %22.17e\n",
 //	   c,t3_ab1,t3_ab2);
@@ -220,8 +325,6 @@ loop_end:
   etd_shared[threadIdx.x] = t1ai;
 
   __syncthreads();
-
-  double tempi = 0.0, tempj = 0.0, tempk = 0.0;
 
   int offi = INDX(a,i-1,0,nu);
 #if 0
@@ -302,6 +405,32 @@ loop_end:
         double denom = 1.0 / ( dijk - dabc );
         if( a == b ) goto loop_end1;
 
+#ifdef NOTEX
+        double abc = v3[ INDX(a, b, c, nu) ];
+        double acb = v3[ INDX(a, c, b, nu) ];
+        double bac = v3[ INDX(b, a, c, nu) ];
+        double bca = v3[ INDX(b, c, a, nu) ];
+        double cba = v3[ INDX(c, b, a, nu) ];
+        double cab = v3[ INDX(c, a, b, nu) ];
+
+        double t3_ab1 = ( abc - bac ) * two
+   	              -   acb + bca;
+
+        double t3_ab2 = ( acb - bca ) * two
+	              -   abc + bac;
+
+        double t3_ab3 = ( bac - abc ) * two
+   	              -   cab + cba;
+
+        double t3_ab5 = ( cab - cba )  * two
+	              -   bac + abc;
+
+        double t3_ab4 = ( bca - acb ) * two
+	              -   cba + cab;
+
+        double t3_ab6 = ( cba - cab ) * two
+	              -   bca + acb;
+#if 0
         double t3_ab1 = ( v3[INDX(a,b,c,nu)] - v3[INDX(b,a,c,nu)] ) * two
    	              -   v3[INDX(a,c,b,nu)] + v3[INDX(b,c,a,nu)];
 
@@ -319,9 +448,33 @@ loop_end:
 
         double t3_ab6 = ( v3[INDX(c,b,a,nu)] - v3[INDX(c,a,b,nu)] ) * two
 	              -   v3[INDX(b,c,a,nu)] + v3[INDX(a,c,b,nu)];
+#endif
+#else
+        double abc = fetch_x_v3( INDX(a, b, c, nu) );
+        double acb = fetch_x_v3( INDX(a, c, b, nu) );
+        double bac = fetch_x_v3( INDX(b, a, c, nu) );
+        double bca = fetch_x_v3( INDX(b, c, a, nu) );
+        double cba = fetch_x_v3( INDX(c, b, a, nu) );
+        double cab = fetch_x_v3( INDX(c, a, b, nu) );
 
-//      if( a == 0 && b == 4 ) printf("c %d t3_ab1 %22.17e t3_ab2 %22.17e\n",
-//	   c,t3_ab1,t3_ab2);
+        double t3_ab1 = ( abc - bac ) * two
+   	              -   acb + bca;
+
+        double t3_ab2 = ( acb - bca ) * two
+	              -   abc + bac;
+
+        double t3_ab3 = ( bac - abc ) * two
+   	              -   cab + cba;
+
+        double t3_ab5 = ( cab - cba )  * two
+	              -   bac + abc;
+
+        double t3_ab4 = ( bca - acb ) * two
+	              -   cba + cab;
+
+        double t3_ab6 = ( cba - cab ) * two
+	              -   bca + acb;
+#endif
 
         t1bi += ( t3_ab1*voe_jk[INDX(a,c,0,nu)] 
 	     +    t3_ab2*voe_kj[INDX(a,c,0,nu)] ) * denom * om;
@@ -347,8 +500,6 @@ loop_end1:
   etd_shared[threadIdx.x] = t1bi;
 
   __syncthreads();
-
-  tempi = 0.0, tempj = 0.0, tempk = 0.0;
 
   offi = INDX(b,i-1,0,nu);
 #if 0
@@ -422,4 +573,4 @@ __global__ void reduce_etd_kernel( const long int size, const double *a,
   return;
 } /* end kernel */
 
-} /* end extern C */
+//} /* end extern C */

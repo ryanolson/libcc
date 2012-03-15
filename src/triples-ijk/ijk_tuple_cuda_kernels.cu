@@ -1,11 +1,9 @@
-#include <stdio.h>
-#include "cuda_runtime.h"
 
-#define INDX(a,b,c,ld) ( ( (c) * (ld) * (ld) ) \
+//#define INDX(a,b,c,ld) ( ( (c) * (ld) * (ld) ) \
                        + ( (b) * (ld) ) \
                        + ( (a) ) )
 
-extern "C" {
+//extern "C" {
 
 
 __global__ void trant3_1_kernel( long int n, double *v )
@@ -110,4 +108,4 @@ __global__ void trant3_4_kernel( long int n, double *v )
 #endif
 } /* end trant3_4_kernel */
 
-} /* end extern C */
+//} /* end extern C */
