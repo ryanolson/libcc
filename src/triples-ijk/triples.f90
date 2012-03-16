@@ -21,13 +21,12 @@ use common_cc
 implicit none
 
   integer :: input
-  integer :: d_t2, d_vm, d_voe, d_vei, d_vej, d_vek, d_v3
-  integer :: lt2, lvm, lvoe, lvei, lvej, lvek, lv3
+  integer :: d_t2, d_vm, d_voe, d_vei, d_vej, d_vek, d_t3, d_v3
+  integer :: lt2, lvm, lvoe, lvei, lvej, lvek, lt3, lv3
 
   double precision, allocatable :: eh(:), ep(:), t1(:), v1(:)
   double precision :: mpi_wtime
   double precision start_wall, stop_wall
-  double precision :: dummy_t3
 
   character*1 addr(1)
 
@@ -59,6 +58,7 @@ implicit none
   call ddi_smp_create(no2u2,d_t2)
   call ddi_smp_create(no3u ,d_vm)
   call ddi_smp_create(no2u2,d_voe)
+  call ddi_smp_create(nu3  ,d_t3)
   call ddi_smp_create(nu3  ,d_v3)
   call ddi_smp_create(nu3  ,d_vei)
   call ddi_smp_create(nu3  ,d_vej)
@@ -67,6 +67,7 @@ implicit none
   call ddi_smp_offset(d_t2, addr, lt2)
   call ddi_smp_offset(d_vm, addr, lvm)
   call ddi_smp_offset(d_voe,addr, lvoe)
+  call ddi_smp_offset(d_t3 ,addr, lt3) 
   call ddi_smp_offset(d_v3 ,addr, lv3)
   call ddi_smp_offset(d_vei,addr, lvei)
   call ddi_smp_offset(d_vej,addr, lvej)
@@ -75,6 +76,7 @@ implicit none
   lt2  = lt2+1
   lvm  = lvm+1
   lvoe = lvoe+1
+  lt3  = lt3+1
   lv3  = lv3+1
   lvei = lvei+1
   lvej = lvej+1
@@ -111,11 +113,12 @@ implicit none
 
   call ddi_sync(3)
 
+! if(ddi_me.eq.0) call cc_convert_ijk_to_abc(addr(lvm),addr(lt3),addr(lv3))
   start_wall = mpi_wtime()
 
   call ddi_sync(4)
 
-  call cc_triples(eh,ep,v1,t1,addr(lt2),addr(lv3),dummy_t3, &
+  call cc_triples(eh,ep,v1,t1,addr(lt2),addr(lv3),addr(lt3), &
                addr(lvm),addr(lvoe),addr(lvei),addr(lvej),addr(lvek))
 
   stop_wall = mpi_wtime()
@@ -130,6 +133,7 @@ implicit none
   call ddi_smp_destroy(d_vej)
   call ddi_smp_destroy(d_vei)
   call ddi_smp_destroy(d_v3)
+  call ddi_smp_destroy(d_t3)
   call ddi_smp_destroy(d_voe)
   call ddi_smp_destroy(d_vm)
   call ddi_smp_destroy(d_t2)
