@@ -5,7 +5,7 @@
                        + ( (b) * (ld) ) \
                        + ( (a) ) )
 
-#define SHARED_REDUCTION_SIZE 128
+#define SHARED_REDUCTION_SIZE 512
 #define NOTEX
 
 

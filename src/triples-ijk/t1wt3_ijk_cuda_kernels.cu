@@ -6,7 +6,7 @@
 
 __device__ void warpReduce( volatile double *sdata )
 {
-#if 1
+#if 0
   if( blockDim.x >= 64 && blockDim.x % 32 == 0 )
   {
     for( unsigned int s = blockDim.x / 2; s > 32; s >>= 1)
@@ -28,9 +28,9 @@ __device__ void warpReduce( volatile double *sdata )
   else
 #endif
   {
-    if( threadIdx.x == 0 )
+    if( threadIdx.x == 0 && threadIdx.y == 0 && threadIdx.z == 0 )
     {
-      for( int idx = 1; idx < blockDim.x; idx++ )
+      for( int idx = 1; idx < blockDim.x * blockDim.y * blockDim.z; idx++ )
       {
         sdata[0] += sdata[idx];
       } /* end for */
@@ -209,12 +209,15 @@ __shared__ double etd_shared[SHARED_REDUCTION_SIZE];
   const double two = 2.0, om = -1.0;
   double t1ai = 0.0, t1aj = 0.0, t1ak = 0.0;
   double t1bi = 0.0, t1bj = 0.0, t1bk = 0.0;
+  int ti1d = threadIdx.z * ( blockDim.x * blockDim.y )
+           + threadIdx.y * ( blockDim.x ) 
+	   + threadIdx.x;
 
   for( b = 0; b < nu; b++ )
   { 
-    for( int idx = 0; idx < nu; idx += blockDim.x )
+    for( int idx = 0; idx < nu; idx += ( blockDim.x * blockDim.y * blockDim.z) )
     {
-      int c = idx + threadIdx.x;
+      int c = idx + ti1d;
 
 /*
  * don't do the loop if my id is outside the bounds of nu
@@ -322,13 +325,13 @@ loop_end:
   } /* end b loop */
 
 
-  etd_shared[threadIdx.x] = t1ai;
+  etd_shared[ti1d] = t1ai;
 
   __syncthreads();
 
   int offi = INDX(a,i-1,0,nu);
 #if 0
-  if( threadIdx.x == 0 ) 
+  if( ti1d == 0 ) 
   {
     for( int idx = 0; idx < blockDim.x; idx++ )
     {
@@ -339,17 +342,17 @@ loop_end:
 #endif
   warpReduce( etd_shared );
   __syncthreads();
-  if( threadIdx.x == 0 ) t1[offi] += etd_shared[0];
+  if( ti1d == 0 ) t1[offi] += etd_shared[0];
 
   __syncthreads();
 
-  etd_shared[threadIdx.x] = t1aj;
+  etd_shared[ti1d] = t1aj;
 
   __syncthreads();
 
   int offj = INDX(a,j-1,0,nu);
 #if 0
-  if( threadIdx.x == 0 ) 
+  if( ti1d == 0 ) 
   {
     for( int idx = 0; idx < blockDim.x; idx++ )
     {
@@ -360,17 +363,17 @@ loop_end:
 #endif
   warpReduce( etd_shared );
   __syncthreads();
-  if( threadIdx.x == 0 ) t1[offj] += etd_shared[0];
+  if( ti1d == 0 ) t1[offj] += etd_shared[0];
 
   __syncthreads();
 
-  etd_shared[threadIdx.x] = t1ak;
+  etd_shared[ti1d] = t1ak;
 
   __syncthreads();
 
   int offk = INDX(a,k-1,0,nu);
 #if 0
-  if( threadIdx.x == 0 ) 
+  if( ti1d == 0 ) 
   {
     for( int idx = 0; idx < blockDim.x; idx++ )
     {
@@ -381,7 +384,7 @@ loop_end:
 #endif
   warpReduce( etd_shared );
   __syncthreads();
-  if( threadIdx.x == 0 ) t1[offk] += etd_shared[0];
+  if( ti1d == 0 ) t1[offk] += etd_shared[0];
 
 #if 1
 
@@ -389,9 +392,9 @@ loop_end:
 
   for( a = 0; a < nu; a++ )
   { 
-    for( int idx = 0; idx < nu; idx += blockDim.x )
+    for( int idx = 0; idx < nu; idx += ( blockDim.x * blockDim.y * blockDim.z ) )
     {
-      int c = idx + threadIdx.x;
+      int c = idx + ti1d;
 
 /*
  * don't do the loop if my id is outside the bounds of nu
@@ -497,13 +500,13 @@ loop_end1:
   __syncthreads();
 
 
-  etd_shared[threadIdx.x] = t1bi;
+  etd_shared[ti1d] = t1bi;
 
   __syncthreads();
 
   offi = INDX(b,i-1,0,nu);
 #if 0
-  if( threadIdx.x == 0 ) 
+  if( ti1d == 0 ) 
   {
     for( int idx = 0; idx < blockDim.x; idx++ )
     {
@@ -514,17 +517,17 @@ loop_end1:
 #endif
   warpReduce( etd_shared );
   __syncthreads();
-  if( threadIdx.x == 0 ) t1[offi] += etd_shared[0];
+  if( ti1d == 0 ) t1[offi] += etd_shared[0];
 
   __syncthreads();
 
-  etd_shared[threadIdx.x] = t1bj;
+  etd_shared[ti1d] = t1bj;
 
   __syncthreads();
 
   offj = INDX(b,j-1,0,nu);
 #if 0
-  if( threadIdx.x == 0 ) 
+  if( ti1d == 0 ) 
   {
     for( int idx = 0; idx < blockDim.x; idx++ )
     {
@@ -535,17 +538,17 @@ loop_end1:
 #endif
   warpReduce( etd_shared );
   __syncthreads();
-  if( threadIdx.x == 0 ) t1[offj] += etd_shared[0];
+  if( ti1d == 0 ) t1[offj] += etd_shared[0];
 
   __syncthreads();
 
-  etd_shared[threadIdx.x] = t1bk;
+  etd_shared[ti1d] = t1bk;
 
   __syncthreads();
 
   offk = INDX(b,k-1,0,nu);
 #if 0
-  if( threadIdx.x == 0 ) 
+  if( ti1d == 0 ) 
   {
     for( int idx = 0; idx < blockDim.x; idx++ )
     {
@@ -556,7 +559,7 @@ loop_end1:
 #endif
   warpReduce( etd_shared );
   __syncthreads();
-  if( threadIdx.x == 0 ) t1[offk] += etd_shared[0];
+  if( ti1d == 0 ) t1[offk] += etd_shared[0];
 #endif
 } /* end t1a_cuda_kernel */
 

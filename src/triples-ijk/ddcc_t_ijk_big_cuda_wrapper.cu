@@ -475,6 +475,10 @@ void ddcc_t_ijk_big_cuda_wrapper_(
   grid.x = nu;
   grid.y = 1;
 
+  block.x = 8;
+  block.y = 8;
+  block.z = 8;
+
   printf("block x y z %d %d %d\n",block.x,block.y,block.z);
   printf("grid x y z %d %d %d\n",grid.x,grid.y,grid.z);
 
