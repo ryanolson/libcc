@@ -376,7 +376,7 @@
 # ------- #
 if($TARGET == cray-xt) then
    set CC = 'cc'
-   set CFLAGS = "-DCRAY_UGNI -DUSE_MPI_BARRIER"
+   set CFLAGS = "-DCRAY_UGNI -DUSE_MPI_BARRIER -DDDI_GPU"
    set CFLAGS = "$CFLAGS -I./include -I./src"
    set CFLAGS = "$CFLAGS -I/opt/cray/gni-headers/default/include" #work-around for gni-header bug
 
@@ -848,7 +848,8 @@ endif
 # ------------------- #
 # Compile DDI objects #
 # ------------------- #
-  set OBJ_LIST=(ddi            ddi_send        ddi_recv        \
+  set OBJ_LIST=(ddi_comm ddi_comm_create \
+                ddi            ddi_send        ddi_recv        \
                 ddi_get        ddi_put         ddi_acc         \
                 ddi_getacc     ddi_distrib     \
                 ddi_subpatch   ddi_index       ddi_recvany     \
@@ -858,7 +859,7 @@ endif
                 ddi_signals    ddi_id          ddi_timer       \
                 ddi_gdlb       ddi_dlb         ddi_dlb_proc    \
                 ddi_init       sysv_ipc       \
-                ddi_comm       ddi_comm_group  ddi_comm_send   \
+                               ddi_comm_group  ddi_comm_send   \
                 ddi_comm_recv  ddi_comm_sync   ddi_comm_gsum   \
                 ddi_comm_bcast ddi_smp         ddi_comm_create \
                 ddi_comm_nproc ddi_comm_nnode  ddi_runtime     \

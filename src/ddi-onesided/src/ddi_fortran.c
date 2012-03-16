@@ -26,6 +26,27 @@
    extern int iargc_();
    extern char *getarg_(int *,char *,int);
 
+   void
+   ddi_get_workingcomm_(int_f77 *comm_id)
+   {
+        *comm_id = gv(ddi_working_comm);
+   }
+
+   void
+   ddi_gpu_createcomm_(int_f77 *comm_id, int_f77 *gpu_comm_id)
+   {
+        int commid = *comm_id;
+        int new_commid = -1;
+        Comm_create_gpu(commid, &new_commid);
+        *gpu_comm_id = new_commid;
+   }
+
+   void
+   ddi_gpu_device_count_(int_f77 *count)
+   {
+        DDI_Comm *comm = Comm_find(DDI_WORKING_COMM);
+        *count = comm->has_gpu;
+   }
 
 /* ---------------------------- *\
    FORTRAN Wrapper for DDI_Init
@@ -540,6 +561,19 @@
       int val = 0;
       DDI_ProcDLB_next(hnd,cpu,&val);
       *counter = (int_f77) val;
+   }
+
+/* ---------------------------------------------- *\
+   FORTRAN Wrapper to return MPI SMP communicator
+\* --------------------------------------------- */
+   void F77_SMP_GetMPIComm(int_f77 *commid) {
+      # ifdef DDI_MPI
+        DDI_Comm *comm = Comm_find(DDI_WORKING_COMM);
+        *commid = comm->smp_comm;
+      # else
+        printf("DDI_SMP_GetMPIComm is only supported with an MPI build\n");
+        Fatal_error(911);
+      # endif
    }
 
 

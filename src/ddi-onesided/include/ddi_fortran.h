@@ -121,6 +121,7 @@
  #     define F77_ProcDLB_next            F77_Extern(ddi_procdlb_next)
  #     define F77_ProcDLB_reset           F77_Extern(ddi_procdlb_reset)
  #     define F77_ProcDLB_destroy         F77_Extern(ddi_procdlb_destroy)
+ #     define F77_SMP_GetMPIComm          F77_Extern(ddi_smp_getmpicomm)
  #     define F77_SMP_sync                F77_Extern(ddi_smp_sync)
  #     define F77_BCast_smp               F77_Extern(ddi_smp_bcast)
  #     define F77_GSumI_smp               F77_Extern(ddi_smp_gsumi)

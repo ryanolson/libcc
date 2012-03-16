@@ -103,6 +103,14 @@
      MPI_Comm node_comm; /* communicator containing the master process
                                on each node                                */
    # endif
+
+   # ifdef DDI_GPU
+     int has_gpu;
+     MPI_Comm gpu_comm;     /* communicator containing all the gpu drivers */
+     MPI_Comm smp_with_gpu_comm; /* original smp_comm before local drivers
+                                    were removed */
+     MPI_Comm compute_with_gpu_comm; /* original compute comm */
+   # endif
   
    } DDI_Comm;
 
@@ -523,6 +531,7 @@ static size_t gv(mem_heap_total) = 0;
    void Comm_divide(int,int,int*);
    void Comm_divide_custom(int,int*,int,int*);
    void Comm_create(int,int*,int,int,int,int*);
+   void Comm_create_gpu(int, int*);
 
    void Vec_sum_d(double*,const double*,size_t);
    void Vec_sum_l(long*,const long*,size_t);

@@ -197,7 +197,7 @@
       new_comm->np = np;
       new_comm->np_local = ismp;
 
-      DEBUG_OUT(LVL5,(stdout,"%s: np=%i, nn=%i, np_smp=%i, me=%i, my=%i, me_smp=%i.\n",
+      DEBUG_OUT(LVL5,(stdout,"%s: new_comm - np=%i, nn=%i, np_smp=%i, me=%i, my=%i, me_smp=%i.\n",
               DDI_Id(),new_comm->np,new_comm->nn,new_comm->np_local,
               new_comm->me,new_comm->my,new_comm->me_local))
 
@@ -213,6 +213,45 @@
 
    }
 
+   void
+   Comm_create_gpu(int comm_id, int *new_comm_id)
+   {
+        int gpu_count = 1; // dynamic runtime from cuda driver
+        int gpu_flag  = 0;
+        const DDI_Comm *cur_comm   = (DDI_Comm *) Comm_find(comm_id);
+        const DDI_Comm *comm_world = &gv(ddi_base_comm);
+        DDI_Comm *new_comm = (DDI_Comm *) Malloc(sizeof(DDI_Comm));
+        DDI_Comm *end_comm = (DDI_Comm *) Comm_find_end();
+
+        assert(cur_comm->np > gpu_count);
+
+        // copy the current comm structure into the new
+        memcpy(new_comm, cur_comm, sizeof(DDI_Comm));
+
+        new_comm->smp_with_gpu_comm = cur_comm->smp_comm;
+        new_comm->compute_with_gpu_comm = cur_comm->compute_comm;
+
+        // split mpi comms
+        if(cur_comm->me_local < gpu_count) gpu_flag = 1;
+        MPI_Comm_split(cur_comm->smp_comm, gpu_flag, cur_comm->me_local, &new_comm->smp_comm);       
+        MPI_Comm_split(cur_comm->compute_comm, gpu_flag, cur_comm->me, &new_comm->compute_comm);       
+
+        // update new_comm with      
+        new_comm->has_gpu = gpu_flag;
+        MPI_Comm_rank(new_comm->smp_comm, &new_comm->me_local);
+        MPI_Comm_size(new_comm->smp_comm, &new_comm->np_local);
+        MPI_Comm_rank(new_comm->compute_comm, &new_comm->me);
+        MPI_Comm_size(new_comm->compute_comm, &new_comm->np);
+
+     /* ------------------------------- *\
+        Add new_comm to the linked list
+     \* ------------------------------- */
+        new_comm->id = *new_comm_id = gv(ddi_comm_id)++;
+        new_comm->next = NULL;
+        end_comm->next = (void *) new_comm; 
+
+        *new_comm_id =  new_comm->id;
+   }
 
    void DDI_Comm_destroy(int commid) {
       const DDI_Comm *comm = (const DDI_Comm *) Comm_find(commid);
