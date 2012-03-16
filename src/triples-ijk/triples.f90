@@ -59,7 +59,7 @@ implicit none
   call ddi_smp_create(no2u2,d_t2)
   call ddi_smp_create(no3u ,d_vm)
   call ddi_smp_create(no2u2,d_voe)
-  call ddi_smp_create(nu3  ,d_t3)
+  call ddi_smp_create(nu3  ,d_v3)
   call ddi_smp_create(nu3  ,d_vei)
   call ddi_smp_create(nu3  ,d_vej)
   call ddi_smp_create(nu3  ,d_vek)
