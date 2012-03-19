@@ -23,6 +23,7 @@ implicit none
   integer :: input
   integer :: d_t2, d_vm, d_voe, d_vei, d_vej, d_vek, d_t3, d_v3
   integer :: lt2, lvm, lvoe, lvei, lvej, lvek, lt3, lv3
+  integer :: world_comm, gpu_comm
 
   double precision, allocatable :: eh(:), ep(:), t1(:), v1(:)
   double precision :: mpi_wtime
@@ -36,6 +37,11 @@ implicit none
   call ddi_nproc(ddi_np,ddi_me)
   call ddi_nnode(ddi_nn,ddi_my)
   call ddi_smp_nproc(smp_np,smp_me)
+
+! create new gpu communicator space
+! this will reserve 1 compute process per gpu as a driver
+  call ddi_get_workingcomm( world_comm )
+  call ddi_gpu_createcomm( world_comm, gpu_comm )
 
   if(ddi_me.eq.0) then
     input = 80
@@ -55,10 +61,12 @@ implicit none
   allocate( v1(nou) )
   allocate( t1(nou) )
 
+! the following shared quanties are shared between
+! both the CPU code and GPU code
   call ddi_smp_create(no2u2,d_t2)
   call ddi_smp_create(no3u ,d_vm)
   call ddi_smp_create(no2u2,d_voe)
-  call ddi_smp_create(nu3  ,d_t3)
+  call ddi_smp_create(nu3  ,d_t3)  ! only needed for iij/ijj tuples
   call ddi_smp_create(nu3  ,d_v3)
   call ddi_smp_create(nu3  ,d_vei)
   call ddi_smp_create(nu3  ,d_vej)
@@ -69,9 +77,17 @@ implicit none
   call ddi_smp_offset(d_voe,addr, lvoe)
   call ddi_smp_offset(d_t3 ,addr, lt3) 
   call ddi_smp_offset(d_v3 ,addr, lv3)
+
+! change working scopes to create arrays needed
+! by both the CPU and GPU drivers
+  call ddi_scope( gpu_comm )
+
   call ddi_smp_offset(d_vei,addr, lvei)
   call ddi_smp_offset(d_vej,addr, lvej)
   call ddi_smp_offset(d_vek,addr, lvek)
+
+! return to the world scope until it is time to get to work
+  call ddi_scope( world_comm)
 
   lt2  = lt2+1
   lvm  = lvm+1
@@ -83,7 +99,10 @@ implicit none
   lvek = lvek+1
 
   call ddi_create(nutr,nou,d_vvvo)
-! call ddi_create(nou,nu2,d_vovv)
+
+! if we want to conserve shared memory on the node we can put
+! t2 and voe into distributed memory - this will require more 
+! remote memory accesses ==> give and take scenario
 
   if(ddi_me.eq.0) then
      call cc_triples_readinp(input,eh,ep,t1,addr(lt2),addr(lvm),addr(lvoe),addr(lv3))
@@ -210,7 +229,65 @@ double precision :: ijk_start, ijk_stop
 
 allocate( tmp(nu2) )
 
-ntuples = (no*(no-1)*(no-2))/6
+
+! load-balancing strategy
+! =======================
+!
+! 
+
+n_ijk_tuples = (no*(no-1)*(no-2))/6
+n_ijj_tuples = (no*(no-1))/2
+n_iij_tuples = n_ijj_tuples
+
+! write(6,/30C=10I/) 'IJK Tuples',n_ijk_tuples
+! write(6,/30C=10I/) 'IIJ Tuples',n_iij_tuples
+
+flops_per_ijk_tuple = some_value
+flops_per_ijj_tuple = some_value
+flops_per_iij_tuple = some_value
+
+! write(6,/30C=10I/) 'IJK Est. Flops',flops_per_ijk_tuple
+! write(6,/30C=10I/) 'IIJ Est. Flops',flops_per_iij_tuple
+
+! work ratios between ijk and (iij+ijj)
+! note: infate the ratio by 1.25 due to extra communication overhead 
+! with respect to flops for iij/ijj
+count_ratio = 1.0 * (n_iij_tuples + n_ijj_tuples) / n_ijk_tuples
+flop_ratio = 1.0 * (flops_per_iij_tuple + flops_per_ijj_tuple) / flops_per_ijk_tuple
+ratio = 1.0 + (count_ratio * flop_ratio *. 1.5)
+
+! ijk_gpu_to_cpu_efficiency is an efficency ratio of 
+! 1 node of CPU cores vs 1 GPU
+! ijk_efficiency is scaled by the ratio of CPU nodes to GPU devices
+! ijk_gpu_to_cpu_efficiency is a user runtime parameter
+ijk_gpu_efficiency = (ijk_gpu_to_cpu_efficiency * gpu_nd) / ( 1.0*ddi_nn ) 
+
+
+! tuples per gpu ratio (tpgr)
+tpgr = 1.0 * n_ijk_tuples / gnu_nd
+
+! any remaining tumples represent a load-IMBALANCE
+! they can be assigned to CPU nodes or GPU nodes depending
+! on the GPU:CPU efficency ratio
+tuples_per_gpu = div(n_ijk_tuples,gpu_nd)
+tuples_remaining = mod(n_ijk_tuples,gpu_nd)
+
+! if the tuples per gpu ratio exceeds the ijk_gpu_to_cpu_efficiency 
+! ratio, then we need to assign at least some portion of the
+! ijk tuples to some subset of the CPU nodes
+if(tpgr.gt.ijk_gpu_efficency) then
+
+ ! if the gpu iterations per cpu iteration (gipci) is equal to 1
+   gipci = tpgr / (ijk_gpu_efficiency+1)
+
+ ! number of cpu iterations for ijk tuples (nci_ijk)
+   if(gipci.gt.ratio) gipci = 1
+
+
+
+end if
+
+
 call div_even(ntuples,ddi_nn,ddi_my,nr,sr)
 sr = sr-1
 
@@ -233,11 +310,14 @@ call smp_sync()
 call ddi_dlbreset()
 call ddi_sync(1234)
 
+! switch to gpu_comm
+call ddi_scope( gpu_comm )
+
 if(ddi_me.eq.0) ijk_start = mpi_wtime()
 
 do iwrk = sr, sr+nr-1
   mytask = iwrk
-  call ddcc_t_task(mytask,no,i,j,k)
+  call ijk_task(mytask,no,i,j,k)
 
   comm_core = 0
 
@@ -290,12 +370,15 @@ do iwrk = sr, sr+nr-1
   end if
 end do
 
-call ddi_sync(1234)
-if(ddi_me.eq.0) then
-   ijk_stop = mpi_wtime()
-   if(ddi_me.eq.0) write(6,9001) (ijk_stop-ijk_start)
- 9001 format('ijk time=',F15.5)
-end if
+! remote sync at this point in hybrid code
+! this was used to measure the ijk tuple time
+!
+! call ddi_sync(1234)
+! if(ddi_me.eq.0) then
+!    ijk_stop = mpi_wtime()
+!    if(ddi_me.eq.0) write(6,9001) (ijk_stop-ijk_start)
+!  9001 format('ijk time=',F15.5)
+! end if
 
 ! counters and load-balancing for iij and ijj tuples
 icntr = 0
@@ -477,4 +560,5 @@ end subroutine cc_convert_ijk_to_abc
 
 ! we have to get the ijj and iij routines into shape, but that should not be hard,
 ! because instead of 6 sets of dgemm transposes, we only have 3 sets.
+
 
