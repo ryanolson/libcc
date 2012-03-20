@@ -124,7 +124,7 @@
    void Comm_sync_node(int tag,const DDI_Comm *comm) {
       DDI_List list;
       DEBUG_OUT(LVL6,(stdout,"%s: entering Comm_sync_node.\n",DDI_Id()))
-    # if defined DDI_MPI && USE_MPI_BARRIER
+    # if defined DDI_MPI && defined USE_MPI_BARRIER
       MPI_Barrier(comm->node_comm);
     # else
       list.np   = comm->nn;
@@ -143,7 +143,7 @@
    void Comm_sync_smp(const DDI_Comm *comm) {
       DDI_List list;
       DEBUG_OUT(LVL6,(stdout,"%s: entering Comm_sync_smp.\n",DDI_Id()))
-    # if defined DDI_MPI && USE_MPI_BARRIER
+    # if defined DDI_MPI && defined USE_MPI_BARRIER
       MPI_Barrier(comm->smp_comm);
     # else
       list.np   = comm->np_local;
