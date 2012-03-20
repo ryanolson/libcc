@@ -443,7 +443,7 @@ void ddcc_t_ijk_big_cuda_wrapper_(
   cudaMemset( d_etd_reduce, 0, numbytes );
   CUDA_ERROR_CHECK();
 
-  printf("nu %d\n", nu);
+//  printf("nu %d\n", nu);
 
 //  printf("block x y z %d %d %d\n",block.x,block.y,block.z);
 //  printf("grid x y z %d %d %d\n",grid.x,grid.y,grid.z);

@@ -404,6 +404,7 @@ do i=1,no
   do j=1,i-1
   ! ijj tuple
     if(mytask.eq.icntr) then
+       if(smp_me.eq.0) write(6,*) ddi_me,' tasked with ',mytask,' iij/ijj tuple'
        if(i.ne.iold) then
          if(smp_me.eq.0) call ddcc_t_getve(nu,i,tmp,ve_i)
          call tranmd_23(ve_i,nu,nu,nu,1)
@@ -421,6 +422,7 @@ do i=1,no
     icntr = icntr + 1
   ! iij tuple
     if(mytask.eq.icntr) then
+       if(smp_me.eq.0) write(6,*) ddi_me,' tasked with ',mytask,' iij/ijj tuple'
        if(i.ne.iold) then
          if(smp_me.eq.0) call ddcc_t_getve(nu,i,tmp,ve_i)
          call tranmd_23(ve_i,nu,nu,nu,1)
