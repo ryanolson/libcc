@@ -33,6 +33,20 @@
    }
 
    void
+   ddi_get_working_compute_comm_(int_f77 *comm_id)
+   {
+        const DDI_Comm *comm = (DDI_Comm *) Comm_find(gv(ddi_working_comm));
+        *comm_id = comm->compute_comm;
+   }
+
+   void
+   ddi_get_working_smp_comm_(int_f77 *comm_id)
+   {
+        const DDI_Comm *comm = (DDI_Comm *) Comm_find(gv(ddi_working_comm));
+        *comm_id = comm->smp_comm;
+   }
+
+   void
    ddi_gpu_createcomm_(int_f77 *comm_id, int_f77 *gpu_comm_id)
    {
         int commid = *comm_id;

@@ -21,8 +21,12 @@ integer :: d_vovv ! created as (nou,nu2) .. only needed for abc tuples
 integer :: ddi_np, ddi_me
 integer :: ddi_nn, ddi_my
 integer :: smp_np, smp_me
+integer :: gpu_nd    ! on the node
+integer :: gpu_count ! across all nodes
 
-integer :: world_comm, gpu_comm
+integer :: global_smp_comm, global_compute_comm
+integer :: hybrid_smp_comm, hybrid_compute_comm
+integer :: working_smp_comm, working_compute_comm
 
 integer :: flops
 
@@ -64,6 +68,21 @@ parameter(zero=0.0D+00,one=1.0D+00,two=2.0D+00,four=4.0D+00,eight=8.0D+00,om=-1.
   return
   end subroutine common_cc_init
 
+
+  subroutine sync(comm)
+  implicit none
+  integer :: ok=0
+  integer :: ierr
+  if(ok .or. comm.eq.global_smp_comm)     ok=1
+  if(ok .or. comm.eq.global_compute_comm) ok=1
+  if(ok .or. comm.eq.hybrid_smp_comm)     ok=1
+  if(ok .or. comm.eq.hybrid_compute_comm) ok=1
+  if(.not.ok) then
+     write(6,*) 'unknown comm'
+     stop
+  end if
+  call mpi_barrier(comm,ierr)
+  end subroutine sync
 end module
 
 
@@ -560,7 +579,8 @@ end module
 
 
 subroutine smp_sync()
+use common_cc
 implicit none
-call ddi_smp_sync()
+call sync(working_smp_comm)
 return
 end subroutine smp_sync

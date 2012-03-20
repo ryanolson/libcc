@@ -23,6 +23,7 @@ implicit none
   integer :: input
   integer :: d_t2, d_vm, d_voe, d_vei, d_vej, d_vek, d_t3, d_v3
   integer :: lt2, lvm, lvoe, lvei, lvej, lvek, lt3, lv3
+  integer :: nu3gpu
 
   double precision, allocatable :: eh(:), ep(:), t1(:), v1(:)
   double precision :: mpi_wtime
@@ -36,11 +37,7 @@ implicit none
   call ddi_nproc(ddi_np,ddi_me)
   call ddi_nnode(ddi_nn,ddi_my)
   call ddi_smp_nproc(smp_np,smp_me)
-
-! create new gpu communicator space
-! this will reserve 1 compute process per gpu as a driver
-  call ddi_get_workingcomm( world_comm )
-  call ddi_gpu_createcomm( world_comm, gpu_comm )
+  call ddi_gpu_ndevices(gpu_nd)
 
   if(ddi_me.eq.0) then
     input = 80
@@ -56,7 +53,12 @@ implicit none
   call ddi_sync(1)
 
   call common_cc_init(no,nu)
- 
+  call ddi_get_working_smp_comm( global_smp_comm )
+  call ddi_get_working_compute_comm( global_compute_comm )
+  working_smp_comm = global_smp_comm
+  working_compute_comm = global_compute_comm
+
+! allocation replicated storage
   allocate( eh(no) )
   allocate( ep(nu) )
   allocate( v1(nou) )
@@ -64,25 +66,21 @@ implicit none
 
 ! the following shared quanties are shared between
 ! both the CPU code and GPU code
-  call ddi_smp_create(no2u2,d_t2)
-  call ddi_smp_create(no3u ,d_vm)
-  call ddi_smp_create(no2u2,d_voe)
-  call ddi_smp_create(nu3  ,d_t3)  ! only needed for iij/ijj tuples
-  call ddi_smp_create(nu3  ,d_v3)
-  call ddi_smp_create(nu3  ,d_vei)
-  call ddi_smp_create(nu3  ,d_vej)
-  call ddi_smp_create(nu3  ,d_vek)
+  nu3gpu = nu3+nu3*gpu_nd
+  call ddi_smp_create(no2u2 ,d_t2)
+  call ddi_smp_create(no3u  ,d_vm)
+  call ddi_smp_create(no2u2 ,d_voe)
+  call ddi_smp_create(nu3   ,d_t3)  ! only needed for iij/ijj tuples
+  call ddi_smp_create(nu3   ,d_v3)
+  call ddi_smp_create(nu3gpu,d_vei)
+  call ddi_smp_create(nu3gpu,d_vej)
+  call ddi_smp_create(nu3gpu,d_vek)
 
   call ddi_smp_offset(d_t2, addr, lt2)
   call ddi_smp_offset(d_vm, addr, lvm)
   call ddi_smp_offset(d_voe,addr, lvoe)
   call ddi_smp_offset(d_t3 ,addr, lt3) 
   call ddi_smp_offset(d_v3 ,addr, lv3)
-
-! change working scopes to create arrays needed
-! by both the CPU and GPU drivers
-  call ddi_scope( gpu_comm )
-
   call ddi_smp_offset(d_vei,addr, lvei)
   call ddi_smp_offset(d_vej,addr, lvej)
   call ddi_smp_offset(d_vek,addr, lvek)
@@ -98,6 +96,14 @@ implicit none
   lvei = lvei+1
   lvej = lvej+1
   lvek = lvek+1
+
+! each rank that drive a gpu will have it's own offset to the 
+! non-cpu arrays; otherwise, gve{ijk} will point to the cpu storage
+  if(smp_me.lt.gpu_nd) then
+     lvei = lvei + nu3*(smp_me+1)
+     lvej = lvej + nu3*(smp_me+1)
+     lvek = lvek + nu3*(smp_me+1)
+  endif
 
   call ddi_create(nutr,nou,d_vvvo)
 
@@ -140,6 +146,7 @@ implicit none
 
   call cc_triples(eh,ep,v1,t1,addr(lt2),addr(lv3),addr(lt3), &
                addr(lvm),addr(lvoe),addr(lvei),addr(lvej),addr(lvek))
+      
 
   stop_wall = mpi_wtime()
 
@@ -224,7 +231,7 @@ double precision :: vm(*),voe(*),ve_i(*),ve_j(*),ve_k(*)
 integer :: nr, sr, iwrk, i, j, k, mytask, divisor, partial, icntr
 integer :: iold, jold, kold, comm_core
 
-integer :: gpu_count
+integer :: gpu_driver
 integer :: n_ijk_tuples, n_iij_tuples, n_ijj_tuples
 
 double precision ddot
@@ -233,6 +240,9 @@ double precision :: ijk_start, ijk_stop
 
 allocate( tmp(nu2) )
 
+! gpu
+gpu_driver = 0
+if(smp_me.lt.gpu_nd) gpu_driver=1
 
 ! load-balancing strategy
 ! =======================
@@ -309,16 +319,21 @@ if(smp_me.eq.0) then
 endif
 call smp_sync()
 call ddi_dlbreset()
-call ddi_sync(1234)
 
-! switch to gpu_comm
-call ddi_scope( gpu_comm )
-call ddi_gpu_device_count( gpu_count )
-call common_cc_init(no,nu)
+! switch scopes
+call ddi_sync(1234)
+global_smp_me = smp_me
+working_smp_comm = hybrid_smp_comm
+working_compute_comm = hybrid_compute_comm
+call mpi_comm_rank(working_smp_comm, smp_me)
+call mpi_comm_size(working_smp_comm, smp_np)
+call mpi_comm_rank(working_compute_comm, ddi_me)
+call mpi_comm_size(working_compute_comm, ddi_np)
+call ddi_sync(1234)
 
 ! if(ddi_me.eq.0) ijk_start = mpi_wtime()
 
-if(gpu_count .eq. 1) then
+if(gpu_driver.eq.1) then
 
 do iwrk = sr, sr+nr-1
   mytask = iwrk
@@ -379,7 +394,7 @@ do iwrk = sr, sr+nr-1
   end if
 end do
 
-end if ! gpu_count == 1
+end if ! gpu_driver == 1
 
 ! remote sync at this point in hybrid code
 ! this was used to measure the ijk tuple time
@@ -391,7 +406,7 @@ end if ! gpu_count == 1
 !  9001 format('ijk time=',F15.5)
 ! end if
 
-if(gpu_count .eq. 0) then
+if(gpu_driver .eq. 0) then
 
 ! counters and load-balancing for iij and ijj tuples
 icntr = 0
@@ -442,10 +457,17 @@ do i=1,no
 end do
 
 if(smp_me.eq.0) write(6,*) 'cpu node ',ddi_my,' finshed iij/ijj'
-end if ! gpu_count == 0
+end if ! gpu_driver == 0
 
-call ddi_scope( world_comm )
-call common_cc_init(no,nu)
+! switch scopes
+call ddi_sync(1234)
+working_smp_comm = global_smp_comm
+working_compute_comm = global_compute_comm
+call mpi_comm_rank(working_smp_comm, smp_me)
+call mpi_comm_size(working_smp_comm, smp_np)
+call mpi_comm_rank(working_compute_comm, ddi_me)
+call mpi_comm_size(working_compute_comm, ddi_np)
+call ddi_sync(1234)
 
 call ddi_gsumf(123,eh,no)
 call ddi_gsumf(124,ep,nu)
