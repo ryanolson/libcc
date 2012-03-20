@@ -23,7 +23,6 @@ implicit none
   integer :: input
   integer :: d_t2, d_vm, d_voe, d_vei, d_vej, d_vek, d_t3, d_v3
   integer :: lt2, lvm, lvoe, lvei, lvej, lvek, lt3, lv3
-  integer :: world_comm, gpu_comm
 
   double precision, allocatable :: eh(:), ep(:), t1(:), v1(:)
   double precision :: mpi_wtime
@@ -48,6 +47,8 @@ implicit none
     open(unit=input, file='triples.restart', status='old', action='read',form='unformatted',access='sequential')
     read(input) no
     read(input) nu
+    write(6,*) 'no=',no
+    write(6,*) 'nu=',nu
   end if
   call ddi_bcast(123,'f',no,1,0)
   call ddi_bcast(124,'f',nu,1,0)
@@ -220,8 +221,11 @@ implicit none
 double precision, allocatable :: tmp(:)
 double precision :: eh(no),ep(nu),v1(nou),t1(*),t2(*),v3(*),t3(*)
 double precision :: vm(*),voe(*),ve_i(*),ve_j(*),ve_k(*)
-integer :: ntuples, nr, sr, iwrk, i, j, k, mytask, divisor, partial, icntr
+integer :: nr, sr, iwrk, i, j, k, mytask, divisor, partial, icntr
 integer :: iold, jold, kold, comm_core
+
+integer :: gpu_count
+integer :: n_ijk_tuples, n_iij_tuples, n_ijj_tuples
 
 double precision ddot
 double precision :: mpi_wtime
@@ -239,12 +243,18 @@ n_ijk_tuples = (no*(no-1)*(no-2))/6
 n_ijj_tuples = (no*(no-1))/2
 n_iij_tuples = n_ijj_tuples
 
+if(ddi_me.eq.0) then
+   write(6,*) 'ijk tuples = ',n_ijk_tuples
+   write(6,*) 'iij tuples = ',n_iij_tuples
+   write(6,*) 'ijj tuples = ',n_ijj_tuples
+endif
+
 ! write(6,/30C=10I/) 'IJK Tuples',n_ijk_tuples
 ! write(6,/30C=10I/) 'IIJ Tuples',n_iij_tuples
 
-flops_per_ijk_tuple = some_value
-flops_per_ijj_tuple = some_value
-flops_per_iij_tuple = some_value
+! flops_per_ijk_tuple = some_value
+! flops_per_ijj_tuple = some_value
+! flops_per_iij_tuple = some_value
 
 ! write(6,/30C=10I/) 'IJK Est. Flops',flops_per_ijk_tuple
 ! write(6,/30C=10I/) 'IIJ Est. Flops',flops_per_iij_tuple
@@ -252,43 +262,34 @@ flops_per_iij_tuple = some_value
 ! work ratios between ijk and (iij+ijj)
 ! note: infate the ratio by 1.25 due to extra communication overhead 
 ! with respect to flops for iij/ijj
-count_ratio = 1.0 * (n_iij_tuples + n_ijj_tuples) / n_ijk_tuples
-flop_ratio = 1.0 * (flops_per_iij_tuple + flops_per_ijj_tuple) / flops_per_ijk_tuple
-ratio = 1.0 + (count_ratio * flop_ratio *. 1.5)
+! count_ratio = 1.0 * (n_iij_tuples + n_ijj_tuples) / n_ijk_tuples
+! flop_ratio = 1.0 * (flops_per_iij_tuple + flops_per_ijj_tuple) / flops_per_ijk_tuple
+! ratio = 1.0 + (count_ratio * flop_ratio *. 1.5)
 
 ! ijk_gpu_to_cpu_efficiency is an efficency ratio of 
 ! 1 node of CPU cores vs 1 GPU
 ! ijk_efficiency is scaled by the ratio of CPU nodes to GPU devices
 ! ijk_gpu_to_cpu_efficiency is a user runtime parameter
-ijk_gpu_efficiency = (ijk_gpu_to_cpu_efficiency * gpu_nd) / ( 1.0*ddi_nn ) 
+! ijk_gpu_efficiency = (ijk_gpu_to_cpu_efficiency * gpu_nd) / ( 1.0*ddi_nn ) 
 
 
 ! tuples per gpu ratio (tpgr)
-tpgr = 1.0 * n_ijk_tuples / gnu_nd
+! tpgr = 1.0 * n_ijk_tuples / gnu_nd
 
 ! any remaining tumples represent a load-IMBALANCE
 ! they can be assigned to CPU nodes or GPU nodes depending
 ! on the GPU:CPU efficency ratio
-tuples_per_gpu = div(n_ijk_tuples,gpu_nd)
-tuples_remaining = mod(n_ijk_tuples,gpu_nd)
+! tuples_per_gpu = div(n_ijk_tuples,gpu_nd)
+! tuples_remaining = mod(n_ijk_tuples,gpu_nd)
 
 ! if the tuples per gpu ratio exceeds the ijk_gpu_to_cpu_efficiency 
 ! ratio, then we need to assign at least some portion of the
 ! ijk tuples to some subset of the CPU nodes
-if(tpgr.gt.ijk_gpu_efficency) then
 
- ! if the gpu iterations per cpu iteration (gipci) is equal to 1
-   gipci = tpgr / (ijk_gpu_efficiency+1)
+! if the gpu iterations per cpu iteration (gipci) is equal to 1
+! gipci = tpgr / (ijk_gpu_efficiency+1)
 
- ! number of cpu iterations for ijk tuples (nci_ijk)
-   if(gipci.gt.ratio) gipci = 1
-
-
-
-end if
-
-
-call div_even(ntuples,ddi_nn,ddi_my,nr,sr)
+call div_even(n_ijk_tuples,ddi_nn,ddi_my,nr,sr)
 sr = sr-1
 
 divisor = 10
@@ -312,12 +313,16 @@ call ddi_sync(1234)
 
 ! switch to gpu_comm
 call ddi_scope( gpu_comm )
+call ddi_gpu_device_count( gpu_count )
+call common_cc_init(no,nu)
 
-if(ddi_me.eq.0) ijk_start = mpi_wtime()
+! if(ddi_me.eq.0) ijk_start = mpi_wtime()
+
+if(gpu_count .eq. 1) then
 
 do iwrk = sr, sr+nr-1
   mytask = iwrk
-  call ijk_task(mytask,no,i,j,k)
+  call ddcc_t_task(mytask,no,i,j,k)
 
   comm_core = 0
 
@@ -354,7 +359,11 @@ do iwrk = sr, sr+nr-1
     kold = k
   end if
 
-  call ddcc_t_ijk_big(no,nu,i,j,k,v1,t2,vm,v3,t3,voe,t1,tmp,eh,ep,ve_i,ve_j,ve_k)
+  if(gpu_count.eq.0) then
+     call ddcc_t_ijk_big(no,nu,i,j,k,v1,t2,vm,v3,t3,voe,t1,tmp,eh,ep,ve_i,ve_j,ve_k)
+  else
+     call ddcc_t_ijk_gpu(no,nu,i,j,k,v1,t2,vm,v3,t3,voe,t1,tmp,eh,ep,ve_i,ve_j,ve_k)
+  end if
   call smp_sync()
 
   if(ddi_me.eq.0) then
@@ -370,6 +379,8 @@ do iwrk = sr, sr+nr-1
   end if
 end do
 
+end if ! gpu_count == 1
+
 ! remote sync at this point in hybrid code
 ! this was used to measure the ijk tuple time
 !
@@ -379,6 +390,8 @@ end do
 !    if(ddi_me.eq.0) write(6,9001) (ijk_stop-ijk_start)
 !  9001 format('ijk time=',F15.5)
 ! end if
+
+if(gpu_count .eq. 0) then
 
 ! counters and load-balancing for iij and ijj tuples
 icntr = 0
@@ -425,6 +438,12 @@ do i=1,no
     icntr = icntr + 1
   end do
 end do
+
+if(smp_me.eq.0) write(6,*) 'cpu node ',ddi_my,' finshed iij/ijj'
+end if ! gpu_count == 0
+
+call ddi_scope( world_comm )
+call common_cc_init(no,nu)
 
 call ddi_gsumf(123,eh,no)
 call ddi_gsumf(124,ep,nu)

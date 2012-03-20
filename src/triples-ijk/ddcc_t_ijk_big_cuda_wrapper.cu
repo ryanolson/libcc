@@ -445,8 +445,8 @@ void ddcc_t_ijk_big_cuda_wrapper_(
 
   printf("nu %d\n", nu);
 
-  printf("block x y z %d %d %d\n",block.x,block.y,block.z);
-  printf("grid x y z %d %d %d\n",grid.x,grid.y,grid.z);
+//  printf("block x y z %d %d %d\n",block.x,block.y,block.z);
+//  printf("grid x y z %d %d %d\n",grid.x,grid.y,grid.z);
 
   etd_cuda_kernel<<< grid, block >>>( i, j, k, no, nu, d_v3,
        d_voe_ij, d_voe_ji, d_voe_ik, d_voe_ki, d_voe_jk, d_voe_kj, 
@@ -459,8 +459,8 @@ void ddcc_t_ijk_big_cuda_wrapper_(
   grid.x = nu;
   grid.y = 1;
 
-  printf("block x y z %d %d %d\n",block.x,block.y,block.z);
-  printf("grid x y z %d %d %d\n",grid.x,grid.y,grid.z);
+//  printf("block x y z %d %d %d\n",block.x,block.y,block.z);
+//  printf("grid x y z %d %d %d\n",grid.x,grid.y,grid.z);
 
   t1a_cuda_kernel<<< grid, block >>>( i, j, k, no, nu, d_v3,
        d_voe_ij, d_voe_ji, d_voe_ik, d_voe_ki, d_voe_jk, d_voe_kj, 

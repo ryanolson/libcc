@@ -22,6 +22,8 @@ integer :: ddi_np, ddi_me
 integer :: ddi_nn, ddi_my
 integer :: smp_np, smp_me
 
+integer :: world_comm, gpu_comm
+
 integer :: flops
 
 double precision :: ets, etd

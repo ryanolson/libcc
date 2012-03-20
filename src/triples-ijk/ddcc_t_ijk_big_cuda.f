@@ -1,4 +1,4 @@
-      SUBROUTINE DDCC_T_IJK_BIG(NO,NU,I,J,K,T1,T2,VM,V3,T3,VOE,O1,TMP,
+      SUBROUTINE DDCC_T_IJK_GPU(NO,NU,I,J,K,T1,T2,VM,V3,T3,VOE,O1,TMP,
      *                          EH,EP,ve_i,ve_j,ve_k)
       use common_cc, only: smp_np, smp_me, nu2, etd
       IMPLICIT NONE
