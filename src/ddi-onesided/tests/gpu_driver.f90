@@ -6,6 +6,7 @@ integer :: ddi_np, ddi_me
 integer :: ddi_nn, ddi_my
 integer :: smp_np, smp_me, gpu_count
 integer :: mpi_me
+integer :: i,mytask
 
 call ddi_init
 call ddi_memory(0,1000,0)
@@ -28,14 +29,24 @@ call ddi_smp_nproc(smp_np,smp_me)
 call ddi_gpu_device_count(gpu_count)
 write(6,1001) mpi_me,ddi_np,ddi_me,ddi_nn,ddi_my,smp_np,smp_me,gpu_count
 
-
-
 if(smp_me.eq.0) then
    write(6,*) 'testing smp sync',mpi_me
 endif
 call ddi_smp_sync()
 if(smp_me.eq.0) then
    write(6,*) 'smp sync completed',mpi_me
+endif
+
+if(smp_me.eq.0) then
+   write(6,*) 'testing smp bcast',mpi_me
+endif
+do i=1,20
+   if(smp_me.eq.0) call ddi_dlbnext(mytask)
+   call ddi_smp_bcast(1234,'I',mytask,1,0)
+   if(smp_me.eq.0) write(6,*) mpi_me,'mytask',mytask
+end do
+if(smp_me.eq.0) then
+   write(6,*) 'smp bcast completed',mpi_me
 endif
 
 call ddi_scope( world_comm )
