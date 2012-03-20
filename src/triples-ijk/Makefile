@@ -13,7 +13,7 @@ NVCC = nvcc
 NVFLAGS = -arch sm_20 -Xptxas=-v
 CUDA_LIBS = -lcublas -lcudart
 
-FCFLAGS = $(FCFLAGS_CCE)
+FCFLAGS = $(FCFLAGS_CCE) -DGPU
 
 MOD = common_cc.o
 OBJ = ddcc_aux.o t1wt3.o t3squa.o triples.o ddcc_t_ijj_iij_big.o
@@ -51,6 +51,9 @@ $(PROGRAM).x-pat : triples.x
 
 %.o : %.f90 common_cc.f90 Makefile
 	$(FC) $(FCFLAGS) -c $*.f90
+
+%.o : %.F90 common_cc.f90 Makefile
+	$(FC) $(FCFLAGS) -c $*.F90
 
 remove_objects:
 	@echo Removing Object Files ...

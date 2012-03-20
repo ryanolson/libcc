@@ -37,7 +37,18 @@ implicit none
   call ddi_nproc(ddi_np,ddi_me)
   call ddi_nnode(ddi_nn,ddi_my)
   call ddi_smp_nproc(smp_np,smp_me)
-  call ddi_gpu_ndevices(gpu_nd)
+
+! call ddi_gpu_ndevices(gpu_nd)
+! this call should wrap the functionality of the following
+! ifdef block
+#if defined GPU
+  gpu_nd = 1
+  call ddi_get_workingcomm( global_comm )
+  call ddi_gpu_createcomm( global_comm, hybrid_comm )
+#else
+   gpu_nd = 0
+#endif
+  
 
   if(ddi_me.eq.0) then
     input = 80
@@ -57,6 +68,11 @@ implicit none
   call ddi_get_working_compute_comm( global_compute_comm )
   working_smp_comm = global_smp_comm
   working_compute_comm = global_compute_comm
+
+  call ddi_scope( hybrid_comm )
+  call ddi_get_working_smp_comm( hybrid_smp_comm )
+  call ddi_get_working_compute_comm( hybrid_compute_comm )
+  call ddi_scope( global_comm )
 
 ! allocation replicated storage
   allocate( eh(no) )
@@ -85,9 +101,7 @@ implicit none
   call ddi_smp_offset(d_vej,addr, lvej)
   call ddi_smp_offset(d_vek,addr, lvek)
 
-! return to the world scope until it is time to get to work
-  call ddi_scope( world_comm)
-
+! set offsets
   lt2  = lt2+1
   lvm  = lvm+1
   lvoe = lvoe+1
@@ -233,6 +247,7 @@ integer :: iold, jold, kold, comm_core
 
 integer :: gpu_driver
 integer :: n_ijk_tuples, n_iij_tuples, n_ijj_tuples
+integer :: ierr
 
 double precision ddot
 double precision :: mpi_wtime
@@ -242,7 +257,9 @@ allocate( tmp(nu2) )
 
 ! gpu
 gpu_driver = 0
+#if defined GPU
 if(smp_me.lt.gpu_nd) gpu_driver=1
+#endif
 
 ! load-balancing strategy
 ! =======================
@@ -322,13 +339,12 @@ call ddi_dlbreset()
 
 ! switch scopes
 call ddi_sync(1234)
-global_smp_me = smp_me
 working_smp_comm = hybrid_smp_comm
 working_compute_comm = hybrid_compute_comm
-call mpi_comm_rank(working_smp_comm, smp_me)
-call mpi_comm_size(working_smp_comm, smp_np)
-call mpi_comm_rank(working_compute_comm, ddi_me)
-call mpi_comm_size(working_compute_comm, ddi_np)
+call mpi_comm_rank(working_smp_comm, smp_me, ierr)
+call mpi_comm_size(working_smp_comm, smp_np, ierr)
+call mpi_comm_rank(working_compute_comm, ddi_me, ierr)
+call mpi_comm_size(working_compute_comm, ddi_np, ierr)
 call ddi_sync(1234)
 
 ! if(ddi_me.eq.0) ijk_start = mpi_wtime()
@@ -374,7 +390,7 @@ do iwrk = sr, sr+nr-1
     kold = k
   end if
 
-  if(gpu_count.eq.0) then
+  if(gpu_driver.eq.0) then
      call ddcc_t_ijk_big(no,nu,i,j,k,v1,t2,vm,v3,t3,voe,t1,tmp,eh,ep,ve_i,ve_j,ve_k)
   else
      call ddcc_t_ijk_gpu(no,nu,i,j,k,v1,t2,vm,v3,t3,voe,t1,tmp,eh,ep,ve_i,ve_j,ve_k)
@@ -412,7 +428,7 @@ if(gpu_driver .eq. 0) then
 icntr = 0
 
 if(smp_me.eq.0) call ddi_dlbnext(mytask)
-call ddi_smp_bcast(1234,'I',mytask,1,0)
+call ddi_comm_bcast(working_smp_comm,'I',mytask,1,0)
 
 ! iij and ijj tuples
 do i=1,no
@@ -432,7 +448,7 @@ do i=1,no
        end if
        call ddcc_t_ijj_big(no,nu,i,j,v1,t2,vm,v3,t3,voe,t1,eh,ep,tmp,ve_i,ve_j)
        if(smp_me.eq.0) call ddi_dlbnext(mytask)
-       call ddi_smp_bcast(1235,'I',mytask,1,0)
+       call ddi_comm_bcast(working_smp_comm,'I',mytask,1,0)
     end if
     icntr = icntr + 1
   ! iij tuple
@@ -450,7 +466,7 @@ do i=1,no
        end if
        call ddcc_t_iij_big(no,nu,i,j,v1,t2,vm,v3,t3,voe,t1,eh,ep,tmp,ve_i,ve_j)
        if(smp_me.eq.0) call ddi_dlbnext(mytask)
-       call ddi_smp_bcast(1236,'I',mytask,1,0)
+       call ddi_comm_bcast(working_smp_comm,'I',mytask,1,0)
     end if
     icntr = icntr + 1
   end do
@@ -463,10 +479,10 @@ end if ! gpu_driver == 0
 call ddi_sync(1234)
 working_smp_comm = global_smp_comm
 working_compute_comm = global_compute_comm
-call mpi_comm_rank(working_smp_comm, smp_me)
-call mpi_comm_size(working_smp_comm, smp_np)
-call mpi_comm_rank(working_compute_comm, ddi_me)
-call mpi_comm_size(working_compute_comm, ddi_np)
+call mpi_comm_rank(working_smp_comm, smp_me, ierr)
+call mpi_comm_size(working_smp_comm, smp_np, ierr)
+call mpi_comm_rank(working_compute_comm, ddi_me, ierr)
+call mpi_comm_size(working_compute_comm, ddi_np, ierr)
 call ddi_sync(1234)
 
 call ddi_gsumf(123,eh,no)

@@ -22,11 +22,10 @@ integer :: ddi_np, ddi_me
 integer :: ddi_nn, ddi_my
 integer :: smp_np, smp_me
 integer :: gpu_nd    ! on the node
-integer :: gpu_count ! across all nodes
 
-integer :: global_smp_comm, global_compute_comm
-integer :: hybrid_smp_comm, hybrid_compute_comm
-integer :: working_smp_comm, working_compute_comm
+integer :: global_comm, global_smp_comm, global_compute_comm
+integer :: hybrid_comm, hybrid_smp_comm, hybrid_compute_comm
+integer :: working_comm, working_smp_comm, working_compute_comm
 
 integer :: flops
 
@@ -71,13 +70,15 @@ parameter(zero=0.0D+00,one=1.0D+00,two=2.0D+00,four=4.0D+00,eight=8.0D+00,om=-1.
 
   subroutine sync(comm)
   implicit none
-  integer :: ok=0
+  integer :: comm
+  integer :: ok
   integer :: ierr
-  if(ok .or. comm.eq.global_smp_comm)     ok=1
-  if(ok .or. comm.eq.global_compute_comm) ok=1
-  if(ok .or. comm.eq.hybrid_smp_comm)     ok=1
-  if(ok .or. comm.eq.hybrid_compute_comm) ok=1
-  if(.not.ok) then
+  ok = 0
+  if(ok.eq.1 .or. comm.eq.global_smp_comm)     ok=1
+  if(ok.eq.1 .or. comm.eq.global_compute_comm) ok=1
+  if(ok.eq.1 .or. comm.eq.hybrid_smp_comm)     ok=1
+  if(ok.eq.1 .or. comm.eq.hybrid_compute_comm) ok=1
+  if(ok.ne.1) then
      write(6,*) 'unknown comm'
      stop
   end if

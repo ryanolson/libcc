@@ -402,6 +402,20 @@
       DDI_BCast(buffer,size,(int)*root);
    }
 
+   void ddi_comm_bcast_(int_f77 *mpicomm, char *type,void *buffer,int_f77 *len,int_f77 *root) {
+      char t = *type;
+      size_t size;
+
+      if(t == 'i' || t == 'I')      size = (*len)*sizeof(int_f77);
+      else if(t == 'f' || t == 'F') size = (*len)*sizeof(double);
+      else {
+         fprintf(stdout,"%s: Unknown type passed in DDI_BCast\n",DDI_Id());
+         Fatal_error(911);
+      }
+      
+      MPI_Bcast(buffer,size,MPI_BYTE,(int)*root,(int)*mpicomm);
+   }
+
 
 /* ----------------------------- *\
    FORTRAN Wrapper for DDI_GSumI
