@@ -17,6 +17,7 @@ C =============================================================================
 C
       SUBROUTINE DDCC_T_IJJ_BIG(NO,NU,I,J,T1,T2,VM,
      *                      V3,T3,VOE,O1,EH,EP,TEMP,ve_i,ve_j)
+      use common_cc, only: smp_np, smp_me
       IMPLICIT NONE
 C
       INTEGER I,J,NO,NU
@@ -27,7 +28,7 @@ C
      &                 VE_I(*),VE_J(*)
 C
       INTEGER NU2,NOU,T2OFF,T3OFF
-      INTEGER ITMP,JTMP,SMP_NP,SMP_ME,NR,SR
+      INTEGER ITMP,JTMP,NR,SR
       DOUBLE PRECISION DEH
 C
       DOUBLE PRECISION ZERO,ONE,OM
@@ -40,7 +41,6 @@ C
      &                      vm(1,1,i,j),vm(1,1,j,i),vm(1,1,j,j),
      &                      ve_i,ve_j,v3)
 C
-      CALL DDI_SMP_NPROC(SMP_NP,SMP_ME)
 C-IJJ-      CALL DIV_EVEN(NU2,SMP_NP,SMP_ME,NR,SR)
 C-IJJ-C
 C-IJJ-      T2OFF = (I-1)*NU2*NO + SR
@@ -115,6 +115,7 @@ C
 C*MODULE DDICC   *DECK DDCC_T_IIJ
       SUBROUTINE DDCC_T_IIJ_BIG(NO,NU,I,J,T1,T2,VM,
      *                      V3,T3,VOE,O1,EH,EP,TEMP,ve_i,ve_j)
+      use common_cc, only: smp_np, smp_me
       IMPLICIT NONE
 C
 C
@@ -125,7 +126,7 @@ C
      *                 EP(NU),T2(NU*NU,NO,NO),
      &                 ve_i(*),ve_j(*)
 C
-      INTEGER NU2,NOU,SMP_ME,SMP_NP,SR,NR,T2OFF,T3OFF
+      INTEGER NU2,NOU,SR,NR,T2OFF,T3OFF
       INTEGER ITMP,JTMP
       DOUBLE PRECISION DEH
 C
@@ -140,7 +141,6 @@ C
      &                      ve_i,ve_j,v3)
 
 
-      CALL DDI_SMP_NPROC(SMP_NP,SMP_ME)
 C-IIJ-      CALL DIV_EVEN(NU2,SMP_NP,SMP_ME,NR,SR)
 C-IIJ-C
 C-IIJ-      CALL DDI_SMP_SYNC()

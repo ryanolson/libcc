@@ -112,13 +112,12 @@ C
 
 
       SUBROUTINE ADT3DEN_SMP(NU,DEH,T3,EP)
+      use common_cc, only: smp_np, smp_me
       IMPLICIT NONE
-      INTEGER A,B,C,NU,SMP_ME,SMP_NP
+      INTEGER A,B,C,NU
       DOUBLE PRECISION T3(NU,NU,NU),EP(NU),DEH,DEN
 C
-      CALL DDI_SMP_NPROC(SMP_NP,SMP_ME)
       CALL smp_sync()
-C
       DO 11 A=1,NU
         IF(MOD(A,SMP_NP).NE.SMP_ME) GOTO 11
       DO 10 B=1,NU
@@ -150,12 +149,11 @@ C
       END
 
       SUBROUTINE T1WT3IJK_SMP(I,J,K,NO,NU,T1,VOE,TI,T3)
+      use common_cc, only: smp_np, smp_me
       IMPLICIT NONE
-      INTEGER SMP_NP,SMP_ME,NR,SR,T3OFF,VOEOFF,I,J,K,NO,NU,NU2
+      INTEGER NR,SR,T3OFF,VOEOFF,I,J,K,NO,NU,NU2
       DOUBLE PRECISION T1(NU,NO),VOE(*),T3(1),TI(1),ONE
       DATA ONE/1.0D+00/
-C
-      CALL DDI_SMP_NPROC(SMP_NP,SMP_ME)
 C
       NU2 = NU*NU
       CALL SMT3FOUR_SMP(NU,T3,TI)
@@ -169,14 +167,14 @@ C
       END
 
       SUBROUTINE SMT3FOUR_SMP(NU,T3,V3)
+      use common_cc, only: smp_np, smp_me
       IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      INTEGER A,B,C,SMP_ME,SMP_NP
+      INTEGER A,B,C
       DIMENSION T3(NU,NU,NU),V3(NU,NU,NU)
       DATA TWO/2.0D+00/
       DATA ZERO/0.0D+00/
       DATA OM/-1.0D+00/
 C
-      CALL DDI_SMP_NPROC(SMP_NP,SMP_ME)
       CALL smp_sync()
 C
       DO 2 C=1,NU

@@ -41,15 +41,16 @@ implicit none
 ! call ddi_gpu_ndevices(gpu_nd)
 ! this call should wrap the functionality of the following
 ! ifdef block
+  call ddi_get_workingcomm( global_comm )
 #if defined GPU
   gpu_nd = 1
-  call ddi_get_workingcomm( global_comm )
   call ddi_gpu_createcomm( global_comm, hybrid_comm )
 #else
    gpu_nd = 0
+   hybrid_comm = global_comm
 #endif
   
-
+! read in the restart file
   if(ddi_me.eq.0) then
     input = 80
     open(unit=input, file='triples.restart', status='old', action='read',form='unformatted',access='sequential')
@@ -113,11 +114,11 @@ implicit none
 
 ! each rank that drive a gpu will have it's own offset to the 
 ! non-cpu arrays; otherwise, gve{ijk} will point to the cpu storage
-  if(smp_me.lt.gpu_nd) then
-     lvei = lvei + nu3*(smp_me+1)
-     lvej = lvej + nu3*(smp_me+1)
-     lvek = lvek + nu3*(smp_me+1)
-  endif
+if(smp_me.lt.gpu_nd) then
+   lvei = lvei + nu3*(smp_me+1)
+   lvej = lvej + nu3*(smp_me+1)
+   lvek = lvek + nu3*(smp_me+1)
+endif
 
   call ddi_create(nutr,nou,d_vvvo)
 
@@ -257,9 +258,7 @@ allocate( tmp(nu2) )
 
 ! gpu
 gpu_driver = 0
-#if defined GPU
 if(smp_me.lt.gpu_nd) gpu_driver=1
-#endif
 
 ! load-balancing strategy
 ! =======================
@@ -349,7 +348,7 @@ call ddi_sync(1234)
 
 ! if(ddi_me.eq.0) ijk_start = mpi_wtime()
 
-if(gpu_driver.eq.1) then
+if(gpu_driver.eq.0) then
 
 do iwrk = sr, sr+nr-1
   mytask = iwrk
