@@ -42,7 +42,6 @@ void ddcc_t_ijk_big_cuda_wrapper_(
     double *ve_i,
     double *ve_j,
     double *ve_k,
-    double *v3,
     double *voe_ij,
     double *voe_ji,
     double *voe_ik,
@@ -91,8 +90,10 @@ void ddcc_t_ijk_big_cuda_wrapper_(
   numbytes = sizeof(double) * nu3;
   cudaStat = cudaMalloc( (void **) &d_v3, numbytes );
   CUDA_ERROR_CHECK();
-  cudaMemcpy( d_v3, v3, numbytes, cudaMemcpyHostToDevice );
-  CUDA_ERROR_CHECK();
+
+// this copy is unnecessary because d_v3 is the product with a beta=0.0
+// cudaMemcpy( d_v3, v3, numbytes, cudaMemcpyHostToDevice );
+// CUDA_ERROR_CHECK();
 
   stat = cublasCreate( &handle );
 
@@ -480,9 +481,12 @@ void ddcc_t_ijk_big_cuda_wrapper_(
   cudaMemcpy( &x3, d_x3, numbytes, cudaMemcpyDeviceToHost );
   CUDA_ERROR_CHECK();
 
-  numbytes = sizeof(double) * nu3;
-  cudaMemcpy( v3, d_v3, numbytes, cudaMemcpyDeviceToHost );
-  CUDA_ERROR_CHECK();
+/*
+ * no need to copy v3 back to host
+ */
+// numbytes = sizeof(double) * nu3;
+// cudaMemcpy( v3, d_v3, numbytes, cudaMemcpyDeviceToHost );
+// CUDA_ERROR_CHECK();
 
 //  printf("C etd %e x3 %e\n",*etd,x3);
 

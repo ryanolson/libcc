@@ -91,7 +91,7 @@ implicit none
   call ddi_smp_create(nu3   ,d_v3)
   call ddi_smp_create(nu3gpu,d_vei)
   call ddi_smp_create(nu3gpu,d_vej)
-  call ddi_smp_create(nu3gpu,d_vek)
+  call ddi_smp_create(nu3   ,d_vek)
 
   call ddi_smp_offset(d_t2, addr, lt2)
   call ddi_smp_offset(d_vm, addr, lvm)
@@ -117,7 +117,6 @@ implicit none
 if(smp_me.lt.gpu_nd) then
    lvei = lvei + nu3*(smp_me+1)
    lvej = lvej + nu3*(smp_me+1)
-   lvek = lvek + nu3*(smp_me+1)
 endif
 
   call ddi_create(nutr,nou,d_vvvo)
@@ -390,9 +389,9 @@ do iwrk = sr, sr+nr-1
   end if
 
   if(gpu_driver.eq.0) then
-     call ddcc_t_ijk_big(no,nu,i,j,k,v1,t2,vm,v3,t3,voe,t1,tmp,eh,ep,ve_i,ve_j,ve_k)
+     call ddcc_t_ijk_big(no,nu,i,j,k,v1,t2,vm,v3,voe,eh,ep,ve_i,ve_j,ve_k)
   else
-     call ddcc_t_ijk_gpu(no,nu,i,j,k,v1,t2,vm,v3,t3,voe,t1,tmp,eh,ep,ve_i,ve_j,ve_k)
+     call ddcc_t_ijk_gpu(no,nu,i,j,k,v1,t2,vm,voe,eh,ep,ve_i,ve_j,ve_k)
   end if
   call smp_sync()
 
@@ -411,7 +410,7 @@ end do
 
 end if ! gpu_driver == 1
 
-call ddi_sync(1234)
+! call ddi_sync(1234)
 
 ! remote sync at this point in hybrid code
 ! this was used to measure the ijk tuple time
