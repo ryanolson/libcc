@@ -348,7 +348,7 @@ call ddi_sync(1234)
 
 ! if(ddi_me.eq.0) ijk_start = mpi_wtime()
 
-if(gpu_driver.eq.0) then
+if(gpu_driver.eq.1) then
 
 do iwrk = sr, sr+nr-1
   mytask = iwrk
@@ -410,6 +410,8 @@ do iwrk = sr, sr+nr-1
 end do
 
 end if ! gpu_driver == 1
+
+call ddi_sync(1234)
 
 ! remote sync at this point in hybrid code
 ! this was used to measure the ijk tuple time
