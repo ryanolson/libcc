@@ -46,8 +46,8 @@ implicit none
   gpu_nd = 1
   call ddi_gpu_createcomm( global_comm, hybrid_comm )
 #else
-   gpu_nd = 0
-   hybrid_comm = global_comm
+  gpu_nd = 0
+  hybrid_comm = global_comm
 #endif
   
 ! read in the restart file
@@ -84,6 +84,10 @@ implicit none
 ! the following shared quanties are shared between
 ! both the CPU code and GPU code
   nu3gpu = nu3+nu3*gpu_nd
+  if(ddi_me.eq.0) then
+     write(6,*) 'nu3   =',nu3
+     write(6,*) 'nu3gpu=',nu3gpu
+  endif
   call ddi_smp_create(no2u2 ,d_t2)
   call ddi_smp_create(no3u  ,d_vm)
   call ddi_smp_create(no2u2 ,d_voe)
@@ -114,9 +118,11 @@ implicit none
 
 ! each rank that drive a gpu will have it's own offset to the 
 ! non-cpu arrays; otherwise, gve{ijk} will point to the cpu storage
-if(smp_me.lt.gpu_nd) then
+if(smp_me.lt.gpu_nd .and. ddi_my.eq.0) then
+   write(6,*) 'me=',ddi_me,' lvei=',lvei
    lvei = lvei + nu3*(smp_me+1)
    lvej = lvej + nu3*(smp_me+1)
+   write(6,*) 'me=',ddi_me,' gvei=',lvei
 endif
 
   call ddi_create(nutr,nou,d_vvvo)
@@ -239,7 +245,7 @@ subroutine cc_triples(eh,ep,v1,t1,t2,v3,t3,vm,voe,ve_i,ve_j,ve_k)
 use common_cc
 implicit none
 
-double precision, allocatable :: tmp(:)
+double precision, allocatable :: tmp(:), vei(:), vej(:)
 double precision :: eh(no),ep(nu),v1(nou),t1(*),t2(*),v3(*),t3(*)
 double precision :: vm(*),voe(*),ve_i(*),ve_j(*),ve_k(*)
 integer :: nr, sr, iwrk, i, j, k, mytask, divisor, partial, icntr
@@ -328,12 +334,13 @@ iold = -1
 jold = -1
 kold = -1
 
+call smp_sync()
+call ddi_dlbreset()
+
 v1(1:nou) = 0.0D+00
 if(smp_me.eq.0) then
    v3(1:nu3) = 0.0D+00
 endif
-call smp_sync()
-call ddi_dlbreset()
 
 ! switch scopes
 call ddi_sync(1234)
@@ -349,6 +356,8 @@ call ddi_sync(1234)
 
 if(gpu_driver.eq.1) then
 
+allocate( vei(nu3), vej(nu3) )
+
 do iwrk = sr, sr+nr-1
   mytask = iwrk
   call ddcc_t_task(mytask,no,i,j,k)
@@ -356,13 +365,13 @@ do iwrk = sr, sr+nr-1
   comm_core = 0
 
   if(i.ne.iold) then
-    if(smp_me.eq.comm_core) call ddcc_t_getve(nu,i,tmp,ve_i)
+    if(smp_me.eq.comm_core) call ddcc_t_getve(nu,i,tmp,vei)
     comm_core = comm_core+1
     if(comm_core.eq.smp_np) comm_core=0
   end if
 
   if(j.ne.jold) then
-    if(smp_me.eq.comm_core) call ddcc_t_getve(nu,j,tmp,ve_j)
+    if(smp_me.eq.comm_core) call ddcc_t_getve(nu,j,tmp,vej)
     comm_core = comm_core+1
     if(comm_core.eq.smp_np) comm_core=0
   end if
@@ -374,12 +383,12 @@ do iwrk = sr, sr+nr-1
   end if
 
   if(i.ne.iold) then
-    call trant3_1(nu,ve_i)
+    call trant3_1(nu,vei)
     iold = i
   end if
 
   if(j.ne.jold) then
-    call trant3_1(nu,ve_j)
+    call trant3_1(nu,vej)
     jold = j
   end if
 
@@ -391,9 +400,13 @@ do iwrk = sr, sr+nr-1
   if(gpu_driver.eq.0) then
      call ddcc_t_ijk_big(no,nu,i,j,k,v1,t2,vm,v3,voe,eh,ep,ve_i,ve_j,ve_k)
   else
-     call ddcc_t_ijk_gpu(no,nu,i,j,k,v1,t2,vm,voe,eh,ep,ve_i,ve_j,ve_k)
+     call ddcc_t_ijk_gpu(no,nu,i,j,k,v1,t2,vm,voe,eh,ep,vei,vej,ve_k)
   end if
   call smp_sync()
+
+  if(ddi_my.eq.0) then
+     write(6,*) ddi_me, etd
+  end if
 
   if(ddi_me.eq.0) then
 !    write(6,*) 'mytask',mytask
@@ -435,7 +448,7 @@ do i=1,no
   do j=1,i-1
   ! ijj tuple
     if(mytask.eq.icntr) then
-       if(smp_me.eq.0) write(6,*) ddi_me,' tasked with ',mytask,' iij/ijj tuple'
+       ! if(smp_me.eq.0) write(6,*) ddi_me,' tasked with ',mytask,' iij/ijj tuple'
        if(i.ne.iold) then
          if(smp_me.eq.0) call ddcc_t_getve(nu,i,tmp,ve_i)
          call tranmd_23(ve_i,nu,nu,nu,1)
@@ -453,7 +466,7 @@ do i=1,no
     icntr = icntr + 1
   ! iij tuple
     if(mytask.eq.icntr) then
-       if(smp_me.eq.0) write(6,*) ddi_me,' tasked with ',mytask,' iij/ijj tuple'
+       ! if(smp_me.eq.0) write(6,*) ddi_me,' tasked with ',mytask,' iij/ijj tuple'
        if(i.ne.iold) then
          if(smp_me.eq.0) call ddcc_t_getve(nu,i,tmp,ve_i)
          call tranmd_23(ve_i,nu,nu,nu,1)
@@ -472,7 +485,7 @@ do i=1,no
   end do
 end do
 
-if(smp_me.eq.0) write(6,*) 'cpu node ',ddi_my,' finshed iij/ijj'
+! if(smp_me.eq.0) write(6,*) 'cpu node ',ddi_my,' finshed iij/ijj'
 end if ! gpu_driver == 0
 
 ! switch scopes
