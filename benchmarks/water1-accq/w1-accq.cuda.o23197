@@ -1,0 +1,60 @@
+----------------------------------------
+Begin Torque Prologue Wed Mar 14 13:16:05 CDT 2012
+Job Id:			23197.sdb
+Username:		jbentz
+Group:			vendor_nvidia
+Job name:		w1-accq.cuda
+Requested resources:	walltime=02:00:00
+Queue:			core16q
+Account:		
+Allocated Nodes:
+[81:16]
+End Torque Prologue 
+----------------------------------------
+Warning: no access to tty (Bad file descriptor).
+Thus no job control in this shell.
+module: Command not found.
+module: Command not found.
+Verification:                  ets+etd should be -0.0086838899
+libonesided using gni version: 4980900
+libonesided: blocking waits
+[ds 0]: set_affinity mask=0x2
+0 [cp] get_affinity mask = 0x1
+ DDI: Creating Array [0] - 14028x668=9370704.
+ check ve_ia(1)= 5.72517050719936207E-4
+ check ve_ia(1)= -1.37151679549914223E-12
+ restarting triples
+nu 167
+block x y z 31 1 1
+grid x y z 167 167 1
+block x y z 31 1 1
+grid x y z 167 1 1
+nu 167
+block x y z 31 1 1
+grid x y z 167 167 1
+block x y z 31 1 1
+grid x y z 167 1 1
+ % complete =  4
+nu 167
+block x y z 31 1 1
+grid x y z 167 167 1
+block x y z 31 1 1
+grid x y z 167 1 1
+ % complete =  8
+nu 167
+block x y z 31 1 1
+grid x y z 167 167 1
+block x y z 31 1 1
+grid x y z 167 1 1
+ % complete =  12
+walltime=        2.03560
+ ets/etd/ets+etd=   0.0003045872  -0.0097340327  -0.0094294455
+walltime=       10.94816
+ DDI: 75230120 bytes (71.7 MB / 8 MWords) used by master data server.
+
+ ----------------------------------------
+ CPU timing information for all processes
+ ========================================
+ 0: 21.909369 + 7.948496 = 29.857865
+ ----------------------------------------
+Application 121021 resources: utime ~23s, stime ~10s

@@ -1,0 +1,27 @@
+Warning: no access to tty (Bad file descriptor).
+Thus no job control in this shell.
+module: Command not found.
+module: Command not found.
+Verification:                  ets+etd should be -0.0052499877
+libonesided using gni version: 4980900
+libonesided: blocking waits
+[ds 0]: set_affinity mask=0x2
+0 [cp] get_affinity mask = 0x1
+ DDI: Creating Array [0] - 3828x348=1332144.
+ check ve_ia(1)= -6.88189936666055557E-4
+ check ve_ia(1)= 0.
+ restarting triples
+ % complete =  4
+ % complete =  8
+ % complete =  12
+walltime=        0.40077
+ ets/etd/ets+etd=   0.0003245574  -0.0090084473  -0.0086838899
+walltime=        1.25078
+ DDI: 10921640 bytes (10.4 MB / 1 MWords) used by master data server.
+
+ ----------------------------------------
+ CPU timing information for all processes
+ ========================================
+ 0: 13.404837 + 7.440465 = 20.845302
+ ----------------------------------------
+Application 113513 resources: utime ~15s, stime ~9s

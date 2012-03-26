@@ -1,0 +1,1418 @@
+/var/spool/torque/mom_priv/jobs/19996.sdb.SC[23]: setenv: not found [No such file or directory]
+CNL Release: 4.0.UP02
+module load craype-hugepages2M
+ModuleCmd_Load.c(200):ERROR:105: Unable to locate a modulefile for 'xt-lustre-ss'
+ **** Setting the LUSTRE Striping for SCR to --size 1048576 --count  1.
+ **** Setting the LUSTRE Striping for SCR_MASTER to --size 1048576 --count -1.
+lfs setstripe /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb --size 1048576 --count 1
+lfs setstripe /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER --size 1048576 --count -1
+/mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb
+stripe_count:   1 stripe_size:    1048576 stripe_offset:  -1
+/mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER
+stripe_count:   -1 stripe_size:    1048576 stripe_offset:  -1
+/mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER
+stripe_count:   -1 stripe_size:    1048576 stripe_offset:  -1
+rm: No match.
+----- GAMESS execution script -----
+This job is running on host jyc1
+under operating system Linux at Fri Mar 2 16:00:42 CST 2012
+Available scratch disk space (Kbyte units) at beginning of the job is
+Filesystem           1K-blocks      Used Available Use% Mounted on
+10.10.100.40@o2ib:/snxs3
+                     123059147776 5299852200 111507437576   5% /mnt/snx3
+cp water1-ccsdt-accd.inp /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F05
+unset echo
+cp /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/gamess-20101001_R1/gamess/common/ericfmt.dat /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/_ericfmt.dat
+setenv ERICFMT /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/_ericfmt.dat
+unset echo
+setenv EXTBAS /dev/null
+setenv NUCBAS /dev/null
+setenv IRCDATA /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.irc
+setenv INPUT /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F05
+setenv INPMINI /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F03
+grep ^ \$ /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F05
+if ( false == true ) then
+if ( false == true ) then
+setenv MAKEFP /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.efp
+setenv GAMMA /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.gamma
+setenv TRAJECT /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.trj
+setenv RESTART /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.rst
+setenv PUNCH /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.dat
+setenv AOINTS /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F08
+setenv MOINTS /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F09
+setenv DICTNRY /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F10
+setenv DRTFILE /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F11
+setenv CIVECTR /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F12
+setenv CASINTS /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F13
+setenv CIINTS /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F14
+setenv WORK15 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F15
+setenv WORK16 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F16
+setenv CSFSAVE /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F17
+setenv FOCKDER /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F18
+setenv WORK19 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F19
+setenv DASORT /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F20
+setenv DFTINTS /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F21
+setenv DFTGRID /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F22
+setenv JKFILE /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F23
+setenv ORDINT /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F24
+setenv EFPIND /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F25
+setenv PCMDATA /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F26
+setenv PCMINTS /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F27
+setenv SVPWRK1 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F26
+setenv SVPWRK2 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F27
+setenv COSCAV /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F26
+setenv COSDATA ~ryano/scr/water1-ccsdt-accd.cosmo
+setenv COSPOT ~ryano/scr/water1-ccsdt-accd.pot
+setenv MLTPL /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F28
+setenv MLTPLT /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F29
+setenv DAFL30 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F30
+setenv SOINTX /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F31
+setenv SOINTY /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F32
+setenv SOINTZ /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F33
+setenv SORESC /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F34
+setenv GCILIST /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F37
+setenv HESSIAN /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F38
+setenv QMMMTEI /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F39
+setenv SOCCDAT /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F40
+setenv AABB41 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F41
+setenv BBAA42 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F42
+setenv BBBB43 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F43
+setenv MCQD50 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F50
+setenv MCQD51 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F51
+setenv MCQD52 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F52
+setenv MCQD53 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F53
+setenv MCQD54 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F54
+setenv MCQD55 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F55
+setenv MCQD56 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F56
+setenv MCQD57 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F57
+setenv MCQD58 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F58
+setenv MCQD59 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F59
+setenv MCQD60 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F60
+setenv MCQD61 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F61
+setenv MCQD62 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F62
+setenv MCQD63 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F63
+setenv MCQD64 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F64
+setenv NMRINT1 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F61
+setenv NMRINT2 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F62
+setenv NMRINT3 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F63
+setenv NMRINT4 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F64
+setenv NMRINT5 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F65
+setenv NMRINT6 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F66
+setenv DCPHFH2 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F67
+setenv DCPHF21 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F68
+setenv ELNUINT /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F67
+setenv NUNUINT /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F68
+setenv GVVPT /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F69
+setenv NUMOIN /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F69
+setenv NUMOCAS /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F70
+setenv NUELMO /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F71
+setenv NUELCAS /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F72
+setenv RIVMAT /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F51
+setenv RIT2A /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F52
+setenv RIT3A /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F53
+setenv RIT2B /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F54
+setenv RIT3B /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F55
+setenv GMCREF /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F70
+setenv GMCO2R /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F71
+setenv GMCROC /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F72
+setenv GMCOOC /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F73
+setenv GMCCC0 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F74
+setenv GMCHMA /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F75
+setenv GMCEI1 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F76
+setenv GMCEI2 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F77
+setenv GMCEOB /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F78
+setenv GMCEDT /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F79
+setenv GMCERF /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F80
+setenv GMCHCR /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F81
+setenv GMCGJK /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F82
+setenv GMCGAI /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F83
+setenv GMCGEO /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F84
+setenv GMCTE1 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F85
+setenv GMCTE2 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F86
+setenv GMCHEF /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F87
+setenv GMCMOL /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F88
+setenv GMCMOS /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F89
+setenv GMCWGT /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F90
+setenv GMCRM2 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F91
+setenv GMCRM1 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F92
+setenv GMCR00 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F93
+setenv GMCRP1 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F94
+setenv GMCRP2 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F95
+setenv GMCVEF /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F96
+setenv GMCDIN /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F97
+setenv GMC2SZ /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F98
+setenv GMCCCS /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F99
+unset echo
+setenv CCREST /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F70
+setenv CCDIIS /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F71
+setenv CCINTS /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F72
+setenv CCT1AMP /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F73
+setenv CCT2AMP /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F74
+setenv CCT3AMP /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F75
+setenv CCVM /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F76
+setenv CCVE /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F77
+setenv CCQUADS /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F78
+setenv QUADSVO /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F79
+setenv EOMSTAR /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F80
+setenv EOMVEC1 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F81
+setenv EOMVEC2 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F82
+setenv EOMHC1 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F83
+setenv EOMHC2 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F84
+setenv EOMHHHH /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F85
+setenv EOMPPPP /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F86
+setenv EOMRAMP /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F87
+setenv EOMRTMP /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F88
+setenv EOMDG12 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F89
+setenv MMPP /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F90
+setenv MMHPP /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F91
+setenv MMCIVEC /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F92
+setenv MMCIVC1 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F93
+setenv MMCIITR /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F94
+setenv EOMVL1 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F95
+setenv EOMVL2 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F96
+setenv EOMLVEC /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F97
+setenv EOMHL1 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F98
+setenv EOMHL2 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F99
+setenv CCVVVV /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/MASTER/water1-ccsdt-accd.F80
+setenv AMPROCC /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F70
+setenv ITOPNCC /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F71
+setenv FOCKMTX /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F72
+setenv LAMB23 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F73
+setenv VHHAA /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F74
+setenv VHHBB /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F75
+setenv VHHAB /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F76
+setenv VMAA /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F77
+setenv VMBB /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F78
+setenv VMAB /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F79
+setenv VMBA /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F80
+setenv VHPRAA /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F81
+setenv VHPRBB /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F82
+setenv VHPRAB /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F83
+setenv VHPLAA /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F84
+setenv VHPLBB /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F85
+setenv VHPLAB /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F86
+setenv VHPLBA /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F87
+setenv VEAA /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F88
+setenv VEBB /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F89
+setenv VEAB /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F90
+setenv VEBA /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F91
+setenv VPPPP /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F92
+setenv INTERM1 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F93
+setenv INTERM2 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F94
+setenv INTERM3 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F95
+setenv ITSPACE /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F96
+setenv INSTART /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F97
+setenv ITSPC3 /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F98
+unset echo
+grep: /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/scratch/ryano/scratch/19996.sdb/water1-ccsdt-accd.F05: No such file or directory
+setenv MPICH_ENV_DISPLAY 1
+unset echo
+setenv DDI_DS_PER_NODE 1
+GAMESS[16167]: start
+aprun -n 8 -m400hs /mnt/snx3/u/vendor/cray/ryano/gamess+gpu/gamess-20101001_R1/gamess/bin/gamess.asis.x water1-ccsdt-accd
+PE 0: MPICH environment settings:
+PE 0:   MPICH_ENV_DISPLAY          = 1
+PE 0:   MPICH_VERSION_DISPLAY      = 0
+PE 0:   MPICH_ABORT_ON_ERROR       = 1
+PE 0:   MPICH_CPUMASK_DISPLAY      = 0
+PE 0:   MPICH_RANK_REORDER_METHOD  = 1
+PE 0:   MPICH_RANK_REORDER_DISPLAY = 0
+PE 0:   MPICH_MEMCPY_MEM_CHECK     = 0
+PE 0:   MPICH_NO_BUFFER_ALIAS_CHECK= 0
+PE 0:   MPICH_COLL_SYNC            = 0
+PE 0:   MPICH_MSG_QUEUE_DBG        = 0
+PE 0: MPICH/SMP environment settings:
+PE 0:   MPICH_SMP_SINGLE_COPY_OFF  = 0
+PE 0:   MPICH_SMP_SINGLE_COPY_SIZE = 8192
+PE 0: MPICH/COLLECTIVE environment settings:
+PE 0:   MPICH_COLL_OPT_OFF         = 0
+PE 0:   MPICH_USE_DMAPP_COLL       = 0
+PE 0:   MPICH_DMAPP_COLL_RADIX     = 64
+PE 0:   MPICH_BCAST_ONLY_TREE      = 1
+PE 0:   MPICH_ALLTOALL_SHORT_MSG   = 2048
+PE 0:   MPICH_ALLTOALLV_THROTTLE   = 1
+PE 0:   MPICH_ALLGATHER_VSHORT_MSG = 1024
+PE 0:   MPICH_ALLGATHERV_VSHORT_MSG= 1024
+PE 0:   MPICH_SCATTERV_SYNCHRONOUS = 0
+PE 0:   MPICH_ALLREDUCE_NO_SMP     = 0
+PE 0:   MPICH_REDUCE_NO_SMP        = 0
+PE 0: MPICH/MPIIO environment settings:
+PE 0:   MPICH_MPIIO_HINTS_DISPLAY  = 0
+PE 0:   MPICH_MPIIO_CB_ALIGN       = 2
+PE 0:   MPICH_MPIIO_HINTS          = NULL
+PE 0: MPICH Thread Safety settings:
+PE 0:   MPICH_MAX_THREAD_SAFETY    = serialized
+PE 0:   rank 0 required = single, was provided = single
+libonesided using gni version: 4980900
+libonesided: blocking waits
+[ds 0]: set_affinity mask=0x100
+0 [cp] get_affinity mask = 0x1
+4 [cp] get_affinity mask = 0x10
+5 [cp] get_affinity mask = 0x20
+1 [cp] get_affinity mask = 0x2
+7 [cp] get_affinity mask = 0x80
+6 [cp] get_affinity mask = 0x40
+3 [cp] get_affinity mask = 0x8
+2 [cp] get_affinity mask = 0x4
+          ******************************************************
+          *         GAMESS VERSION =  1 OCT 2010 (R1)          *
+          *             FROM IOWA STATE UNIVERSITY             *
+          * M.W.SCHMIDT, K.K.BALDRIDGE, J.A.BOATZ, S.T.ELBERT, *
+          *   M.S.GORDON, J.H.JENSEN, S.KOSEKI, N.MATSUNAGA,   *
+          *          K.A.NGUYEN, S.J.SU, T.L.WINDUS,           *
+          *       TOGETHER WITH M.DUPUIS, J.A.MONTGOMERY       *
+          *         J.COMPUT.CHEM.  14, 1347-1363(1993)        *
+          **************** 64 BIT LINUX VERSION ****************
+
+  SINCE 1993, STUDENTS AND POSTDOCS WORKING AT IOWA STATE UNIVERSITY
+  AND ALSO IN THEIR VARIOUS JOBS AFTER LEAVING ISU HAVE MADE IMPORTANT
+  CONTRIBUTIONS TO THE CODE:
+     IVANA ADAMOVIC, CHRISTINE AIKENS, YURI ALEXEEV, POOJA ARORA,
+     ANDREY ASADCHEV, ROB BELL, PRADIPTA BANDYOPADHYAY, JONATHAN BENTZ,
+     BRETT BODE, GALINA CHABAN, WEI CHEN, CHEOL HO CHOI, PAUL DAY, TIM DUDLEY,
+     DMITRI FEDOROV, GRAHAM FLETCHER, MARK FREITAG, KURT GLAESEMANN, DAN KEMP,
+     GRANT MERRILL, NORIYUKI MINEZAWA, JONATHAN MULLIN, TAKESHI NAGATA,
+     SEAN NEDD, HEATHER NETZLOFF, BOSILJKA NJEGIC, RYAN OLSON, MIKE PAK,
+     JIM SHOEMAKER, LYUDMILA SLIPCHENKO, SAROM SOK, JIE SONG,
+     TETSUYA TAKETSUGU, SIMON WEBB, SOOHAENG YOO, FEDERICO ZAHARIEV
+
+  ADDITIONAL CODE HAS BEEN PROVIDED BY COLLABORATORS IN OTHER GROUPS:
+     IOWA STATE UNIVERSITY:
+          JOE IVANIC, LAIMUTIS BYTAUTAS, KLAUS RUEDENBERG
+     UNIVERSITY OF TOKYO: KIMIHIKO HIRAO, TAKAHITO NAKAJIMA,
+          TAKAO TSUNEDA, MUNEAKI KAMIYA, SUSUMU YANAGISAWA,
+          KIYOSHI YAGI, MAHITO CHIBA, SEIKEN TOKURA, NAOAKI KAWAKAMI
+     UNIVERSITY OF AARHUS: FRANK JENSEN
+     UNIVERSITY OF IOWA: VISVALDAS KAIRYS, HUI LI
+     NATIONAL INST. OF STANDARDS AND TECHNOLOGY: WALT STEVENS, DAVID GARMER
+     UNIVERSITY OF PISA: BENEDETTA MENNUCCI, JACOPO TOMASI
+     UNIVERSITY OF MEMPHIS: HENRY KURTZ, PRAKASHAN KORAMBATH
+     UNIVERSITY OF ALBERTA: TOBY ZENG, MARIUSZ KLOBUKOWSKI
+     UNIVERSITY OF NEW ENGLAND: MARK SPACKMAN
+     MIE UNIVERSITY: HIROAKI UMEDA
+     MICHIGAN STATE UNIVERSITY:
+          KAROL KOWALSKI, MARTA WLOCH, JEFFREY GOUR, JESSE LUTZ, PIOTR PIECUCH
+     UNIVERSITY OF SILESIA: MONIKA MUSIAL, STANISLAW KUCHARSKI
+     FACULTES UNIVERSITAIRES NOTRE-DAME DE LA PAIX:
+          OLIVIER QUINET, BENOIT CHAMPAGNE
+     UNIVERSITY OF CALIFORNIA - SANTA BARBARA: BERNARD KIRTMAN
+     INSTITUTE FOR MOLECULAR SCIENCE:
+          KAZUYA ISHIMURA, MICHIO KATOUDA, AND SHIGERU NAGASE
+     UNIVERSITY OF NOTRE DAME: DAN CHIPMAN
+     KYUSHU UNIVERSITY:
+          HARUYUKI NAKANO,
+          FENG LONG GU, JACEK KORCHOWIEC, MARCIN MAKOWSKI, AND YURIKO AOKI,
+          HIROTOSHI MORI AND EISAKU MIYOSHI
+     PENNSYLVANIA STATE UNIVERSITY:
+          TZVETELIN IORDANOV, CHET SWALINA, JONATHAN SKONE,
+          SHARON HAMMES-SCHIFFER
+     WASEDA UNIVERSITY:
+          MASATO KOBAYASHI, TOMOKO AKAMA, HIROMI NAKAI
+     UNIVERSITY OF NEBRASKA:
+          PEIFENG SU, DEJUN SI, YALI WANG, HUI LI
+     UNIVERSITY OF ZURICH:
+          ROBERTO PEVERATI, KIM BALDRIDGE
+     N. COPERNICUS UNIVERSITY AND JACKSON STATE UNIVERSITY:
+          MARIA BARYSZ
+
+
+ PARALLEL VERSION RUNNING ON     8 PROCESSORS IN     1 NODES.
+
+ EXECUTION OF GAMESS BEGUN Fri Mar  2 16:00:46 2012
+
+            ECHO OF THE FIRST FEW INPUT CARDS -
+ INPUT CARD> $contrl scftyp=rhf runtyp=energy cctyp=ccsd(t) ispher=1 $end                   
+ INPUT CARD> $system mwords=45 memddi=1000 $end                                             
+ INPUT CARD> $basis  gbasis=accd $end                                                       
+ INPUT CARD> $scf    dirscf=.t. fdiff=.f. $end                                              
+ INPUT CARD> $guess  guess=huckel $end                                                      
+ INPUT CARD> $data                                                                          
+ INPUT CARD> prism                                                                          
+ INPUT CARD>c1                                                                              
+ INPUT CARD> O           8.0   0.0000000000   0.0000000000   0.4081019064                   
+ INPUT CARD> H           1.0  -0.7631250777   0.0000000000   0.9959490468                   
+ INPUT CARD> H           1.0   0.7631250777   0.0000000000   0.9959490468                   
+ INPUT CARD> $end                                                                           
+   45000000 WORDS OF MEMORY AVAILABLE
+
+     BASIS OPTIONS
+     -------------
+     GBASIS=ACCD         IGAUSS=       0      POLAR=NONE    
+     NDFUNC=       0     NFFUNC=       0     DIFFSP=       F
+     NPFUNC=       0      DIFFS=       F     BASNAM=        
+
+
+     RUN TITLE
+     ---------
+  prism                                                                          
+
+ THE POINT GROUP OF THE MOLECULE IS C1      
+ THE ORDER OF THE PRINCIPAL AXIS IS     0
+
+ ATOM      ATOMIC                      COORDINATES (BOHR)
+           CHARGE         X                   Y                   Z
+ O           8.0     0.0000000000        0.0000000000        0.7712007782
+ H           1.0    -1.4420972912        0.0000000000        1.8820707962
+ H           1.0     1.4420972912        0.0000000000        1.8820707962
+
+          INTERNUCLEAR DISTANCES (ANGS.)
+          ------------------------------
+
+                1 O          2 H          3 H     
+
+   1 O       0.0000000    0.9632882 *  0.9632882 *
+   2 H       0.9632882 *  0.0000000    1.5262502 *
+   3 H       0.9632882 *  1.5262502 *  0.0000000  
+
+  * ... LESS THAN  3.000
+
+
+     ATOMIC BASIS SET
+     ----------------
+ THE CONTRACTED PRIMITIVE FUNCTIONS HAVE BEEN UNNORMALIZED
+ THE CONTRACTED BASIS FUNCTIONS ARE NOW NORMALIZED TO UNITY
+
+  SHELL TYPE  PRIMITIVE        EXPONENT          CONTRACTION COEFFICIENT(S)
+
+ O         
+
+      1   S       1         11720.0000000    0.000709645947
+      1   S       2          1759.0000000    0.005467272292
+      1   S       3           400.8000000    0.027823118610
+      1   S       4           113.7000000    0.104747739711
+      1   S       5            37.0300000    0.282920846357
+      1   S       6            13.2700000    0.448495238698
+      1   S       7             5.0250000    0.270816885213
+      1   S       8             1.0130000    0.015450291607
+
+      2   S       9         11720.0000000   -0.000314443412
+      2   S      10          1759.0000000   -0.002482137681
+      2   S      11           400.8000000   -0.012316355382
+      2   S      12           113.7000000   -0.050538917344
+      2   S      13            37.0300000   -0.139384903316
+      2   S      14            13.2700000   -0.325077494818
+      2   S      15             5.0250000   -0.229848307588
+      2   S      16             1.0130000    1.095379346788
+
+      3   S      17             0.3023000    1.000000000000
+
+      4   P      18            17.7000000    0.062679166282
+      4   P      19             3.8540000    0.333536565879
+      4   P      20             1.0460000    0.741239641640
+
+      5   P      21             0.2753000    1.000000000000
+
+      6   D      22             1.1850000    1.000000000000
+
+      7   S      23             0.0789600    1.000000000000
+
+      8   P      24             0.0685600    1.000000000000
+
+      9   D      25             0.3320000    1.000000000000
+
+ H         
+
+     10   S      26            13.0100000    0.033498726390
+     10   S      27             1.9620000    0.234800801174
+     10   S      28             0.4446000    0.813682957883
+
+     11   S      29             0.1220000    1.000000000000
+
+     12   P      30             0.7270000    1.000000000000
+
+     13   S      31             0.0297400    1.000000000000
+
+     14   P      32             0.1410000    1.000000000000
+
+ H         
+
+     15   S      33            13.0100000    0.033498726390
+     15   S      34             1.9620000    0.234800801174
+     15   S      35             0.4446000    0.813682957883
+
+     16   S      36             0.1220000    1.000000000000
+
+     17   P      37             0.7270000    1.000000000000
+
+     18   S      38             0.0297400    1.000000000000
+
+     19   P      39             0.1410000    1.000000000000
+
+ TOTAL NUMBER OF BASIS SET SHELLS             =   19
+ NUMBER OF CARTESIAN GAUSSIAN BASIS FUNCTIONS =   43
+ NOTE: THIS RUN WILL RESTRICT THE MO VARIATION SPACE TO SPHERICAL HARMONICS.
+ THE NUMBER OF ORBITALS KEPT IN THE VARIATIONAL SPACE WILL BE PRINTED LATER.
+ NUMBER OF ELECTRONS                          =   10
+ CHARGE OF MOLECULE                           =    0
+ SPIN MULTIPLICITY                            =    1
+ NUMBER OF OCCUPIED ORBITALS (ALPHA)          =    5
+ NUMBER OF OCCUPIED ORBITALS (BETA )          =    5
+ TOTAL NUMBER OF ATOMS                        =    3
+ THE NUCLEAR REPULSION ENERGY IS        9.1362322009
+
+     $CONTRL OPTIONS
+     ---------------
+ SCFTYP=RHF          RUNTYP=ENERGY       EXETYP=RUN     
+ MPLEVL=       0     CITYP =NONE         CCTYP =CCSD(T)      VBTYP =NONE    
+ DFTTYP=NONE         TDDFT =NONE    
+ MULT  =       1     ICHARG=       0     NZVAR =       0     COORD =UNIQUE  
+ PP    =NONE         RELWFN=NONE         LOCAL =NONE         NUMGRD=       F
+ ISPHER=       1     NOSYM =       0     MAXIT =      30     UNITS =ANGS    
+ PLTORB=       F     MOLPLT=       F     AIMPAC=       F     FRIEND=        
+ NPRINT=       7     IREST =       0     GEOM  =INPUT   
+ NORMF =       0     NORMP =       0     ITOL  =      20     ICUT  =       9
+ INTTYP=BEST         GRDTYP=BEST         QMTTOL= 1.0E-06
+
+     $SYSTEM OPTIONS
+     ---------------
+  REPLICATED MEMORY=    45000000 WORDS (ON EVERY NODE).
+ DISTRIBUTED MEMDDI=        1000 MILLION WORDS IN AGGREGATE,
+ MEMDDI DISTRIBUTED OVER   8 PROCESSORS IS   125000000 WORDS/PROCESSOR.
+ TOTAL MEMORY REQUESTED ON EACH PROCESSOR=   170000000 WORDS.
+ TIMLIM=      525600.00 MINUTES, OR     365.0 DAYS.
+ PARALL= T  BALTYP=  DLB     KDIAG=    0  COREFL= F
+ MXSEQ2=     300 MXSEQ3=     150
+
+          ----------------
+          PROPERTIES INPUT
+          ----------------
+
+     MOMENTS            FIELD           POTENTIAL          DENSITY
+ IEMOM =       1   IEFLD =       0   IEPOT =       0   IEDEN =       0
+ WHERE =COMASS     WHERE =NUCLEI     WHERE =NUCLEI     WHERE =NUCLEI  
+ OUTPUT=BOTH       OUTPUT=BOTH       OUTPUT=BOTH       OUTPUT=BOTH    
+ IEMINT=       0   IEFINT=       0                     IEDINT=       0
+                                                       MORB  =       0
+          EXTRAPOLATION IN EFFECT
+          SOSCF IN EFFECT
+ ORBITAL PRINTING OPTION: NPREO=     1    43     2     1
+
+     -------------------------------
+     INTEGRAL TRANSFORMATION OPTIONS
+     -------------------------------
+     NWORD  =            0
+     CUTOFF = 1.0E-09     MPTRAN =       0
+     DIRTRF =       T     AOINTS =DUP     
+
+          ----------------------
+          INTEGRAL INPUT OPTIONS
+          ----------------------
+ NOPK  =       1 NORDER=       0 SCHWRZ=       T
+
+     ------------------------------------------
+     THE POINT GROUP IS C1 , NAXIS= 0, ORDER= 1
+     ------------------------------------------
+
+ -- VARIATIONAL SPACE WILL BE RESTRICTED TO PURE SPHERICAL HARMONICS ONLY --
+ AFTER EXCLUDING CONTAMINANT COMBINATIONS FROM THE CARTESIAN GAUSSIAN BASIS
+ SET, THE NUMBER OF SPHERICAL HARMONICS KEPT IN THE VARIATION SPACE IS   41
+
+     DIMENSIONS OF THE SYMMETRY SUBSPACES ARE
+ A   =   41
+
+ ..... DONE SETTING UP THE RUN .....
+ CPU     0: STEP CPU TIME=     2.42 TOTAL CPU TIME=        2.4 (    0.0 MIN)
+ TOTAL WALL CLOCK TIME=        2.4 SECONDS, CPU UTILIZATION IS 100.00%
+
+          ********************
+          1 ELECTRON INTEGRALS
+          ********************
+ ...... END OF ONE-ELECTRON INTEGRALS ......
+ CPU     0: STEP CPU TIME=     0.01 TOTAL CPU TIME=        2.4 (    0.0 MIN)
+ TOTAL WALL CLOCK TIME=        2.4 SECONDS, CPU UTILIZATION IS 100.00%
+
+          -------------
+          GUESS OPTIONS
+          -------------
+          GUESS =HUCKEL            NORB  =       0          NORDER=       0
+          MIX   =       F          PRTMO =       F          PUNMO =       F
+          TOLZ  = 1.0E-08          TOLE  = 1.0E-05
+          SYMDEN=       F          PURIFY=       F
+
+ INITIAL GUESS ORBITALS GENERATED BY HUCKEL   ROUTINE.
+ HUCKEL GUESS REQUIRES     15925 WORDS.
+
+ STATISTICS FOR GENERATION OF SYMMETRY ORBITAL -Q- MATRIX
+ NUMBER OF CARTESIAN ATOMIC ORBITALS=         43
+ NUMBER OF SPHERICAL CONTAMINANTS DROPPED=     2
+ NUMBER OF LINEARLY DEPENDENT MOS DROPPED=     0
+ TOTAL NUMBER OF MOS IN VARIATION SPACE=      41
+
+ SYMMETRIES FOR INITIAL GUESS ORBITALS FOLLOW.   BOTH SET(S).
+     5 ORBITALS ARE OCCUPIED (    1 CORE ORBITALS).
+     2=A        3=A        4=A        5=A        6=A        7=A        8=A   
+     9=A       10=A       11=A       12=A       13=A       14=A       15=A   
+ ...... END OF INITIAL ORBITAL SELECTION ......
+ CPU     0: STEP CPU TIME=     0.00 TOTAL CPU TIME=        2.4 (    0.0 MIN)
+ TOTAL WALL CLOCK TIME=        2.4 SECONDS, CPU UTILIZATION IS 100.00%
+
+                    ----------------------
+                    AO INTEGRAL TECHNOLOGY
+                    ----------------------
+     S,P,L SHELL ROTATED AXIS INTEGRALS, REPROGRAMMED BY
+        KAZUYA ISHIMURA (IMS) AND JOSE SIERRA (SYNSTAR).
+     S,P,D,L SHELL ROTATED AXIS INTEGRALS PROGRAMMED BY
+        KAZUYA ISHIMURA (INSTITUTE FOR MOLECULAR SCIENCE).
+     S,P,D,F,G SHELL TO TOTAL QUARTET ANGULAR MOMENTUM SUM 5,
+        ERIC PROGRAM BY GRAHAM FLETCHER (ELORET AND NASA ADVANCED
+        SUPERCOMPUTING DIVISION, AMES RESEARCH CENTER).
+     S,P,D,F,G,L SHELL GENERAL RYS QUADRATURE PROGRAMMED BY
+        MICHEL DUPUIS (PACIFIC NORTHWEST NATIONAL LABORATORY).
+
+          --------------------
+          2 ELECTRON INTEGRALS
+          --------------------
+
+ DIRECT SCF METHOD SKIPS INTEGRAL STORAGE ON DISK.
+ DIRECT TRANSFORMATION SKIPS AO INTEGRAL STORAGE ON DISK.
+  ...... END OF TWO-ELECTRON INTEGRALS .....
+ CPU     0: STEP CPU TIME=     0.13 TOTAL CPU TIME=        2.6 (    0.0 MIN)
+ TOTAL WALL CLOCK TIME=        2.6 SECONDS, CPU UTILIZATION IS 100.00%
+
+          --------------------------
+                 RHF SCF CALCULATION
+          --------------------------
+
+     NUCLEAR ENERGY =         9.1362322009
+     MAXIT =   30     NPUNCH=    2
+     EXTRAP=T  DAMP=F  SHIFT=F  RSTRCT=F  DIIS=F  DEM=F  SOSCF=T
+     DENSITY MATRIX CONV=  2.00E-06
+     SOSCF WILL OPTIMIZE     180 ORBITAL ROTATIONS, SOGTOL=   0.250
+     MEMORY REQUIRED FOR RHF ITERS=     60041 WORDS.
+
+ DIRECT SCF CALCULATION, SCHWRZ=T   FDIFF=F,  DIRTHR=  0.00E+00 NITDIR=10
+ SCHWARZ INEQUALITY OVERHEAD:       946 INTEGRALS, T=        0.00
+
+                                                                                   NONZERO     BLOCKS
+ ITER EX DEM     TOTAL ENERGY        E CHANGE  DENSITY CHANGE     ORB. GRAD      INTEGRALS    SKIPPED
+   1  0  0      -75.7657093439   -75.7657093439   0.222486853   0.000000000         214113          0
+          ---------------START SECOND ORDER SCF---------------
+   2  1  0      -76.0245848756    -0.2588755317   0.050870497   0.034616882         214113          0
+   3  2  0      -76.0392825996    -0.0146977240   0.026548945   0.013073526         214113          0
+   4  3  0      -76.0409215563    -0.0016389567   0.008131572   0.004833808         214113          0
+   5  4  0      -76.0410087026    -0.0000871463   0.002078457   0.001289379         214113          0
+   6  5  0      -76.0410251114    -0.0000164088   0.000861892   0.000285039         214113          0
+   7  6  0      -76.0410260363    -0.0000009248   0.000088135   0.000039665         214113          0
+   8  7  0      -76.0410260513    -0.0000000150   0.000020455   0.000007038         214113          0
+   9  8  0      -76.0410260520    -0.0000000007   0.000007894   0.000001664         214113          0
+  10  9  0      -76.0410260520    -0.0000000000   0.000001115   0.000000365         214113          0
+  11 10  0      -76.0410260520    -0.0000000000   0.000000296   0.000000088         214113          0
+
+ RHF HAS CONVERGED, NOW COMPUTING EXACT TOTAL FOCK MATRIX
+ FOR USE DURING THE COUPLED CLUSTER CALCULATION THAT FOLLOWS.
+
+          -----------------
+          DENSITY CONVERGED
+          -----------------
+     TIME TO FORM FOCK OPERATORS=       0.2 SECONDS (       0.0 SEC/ITER)
+     FOCK TIME ON FIRST ITERATION=       0.0, LAST ITERATION=       0.0
+     TIME TO SOLVE SCF EQUATIONS=       0.0 SECONDS (       0.0 SEC/ITER)
+
+ FINAL RHF ENERGY IS      -76.0410260520 AFTER  11 ITERATIONS
+
+          ------------
+          EIGENVECTORS
+          ------------
+
+                      1          2          3          4          5
+                  -20.5782    -1.3533    -0.7165    -0.5839    -0.5089
+                     A          A          A          A          A   
+    1  O  1  S    1.001451  -0.005818  -0.000000  -0.001359  -0.000000
+    2  O  1  S    0.002173   0.448933  -0.000000  -0.151009  -0.000000
+    3  O  1  S   -0.007246   0.379615  -0.000000  -0.315486  -0.000000
+    4  O  1  X   -0.000000  -0.000000   0.498742  -0.000000  -0.000000
+    5  O  1  Y   -0.000000  -0.000000  -0.000000  -0.000000   0.628626
+    6  O  1  Z    0.001628   0.077106  -0.000000   0.548736  -0.000000
+    7  O  1  X   -0.000000  -0.000000   0.194674  -0.000000  -0.000000
+    8  O  1  Y   -0.000000  -0.000000  -0.000000  -0.000000   0.450443
+    9  O  1  Z   -0.001524  -0.017101  -0.000000   0.325831  -0.000000
+   10  O  1 XX    0.000087   0.004528  -0.000000  -0.003419  -0.000000
+   11  O  1 YY   -0.000086  -0.007185  -0.000000  -0.011042  -0.000000
+   12  O  1 ZZ   -0.000000   0.002657  -0.000000   0.014461  -0.000000
+   13  O  1 XY   -0.000000  -0.000000  -0.000000  -0.000000  -0.000000
+   14  O  1 XZ   -0.000000  -0.000000   0.028414  -0.000000  -0.000000
+   15  O  1 YZ   -0.000000  -0.000000  -0.000000  -0.000000   0.013758
+   16  O  1  S   -0.004508   0.058687  -0.000000  -0.075941  -0.000000
+   17  O  1  X   -0.000000  -0.000000   0.019606  -0.000000  -0.000000
+   18  O  1  Y   -0.000000  -0.000000  -0.000000  -0.000000   0.069016
+   19  O  1  Z   -0.000668   0.011416  -0.000000   0.039427  -0.000000
+   20  O  1 XX   -0.000250  -0.014117  -0.000000  -0.018111  -0.000000
+   21  O  1 YY    0.000232   0.019451  -0.000000   0.001692  -0.000000
+   22  O  1 ZZ    0.000018  -0.005334  -0.000000   0.016419  -0.000000
+   23  O  1 XY   -0.000000  -0.000000  -0.000000  -0.000000  -0.000000
+   24  O  1 XZ   -0.000000  -0.000000  -0.030752  -0.000000  -0.000000
+   25  O  1 YZ   -0.000000  -0.000000  -0.000000  -0.000000   0.019223
+   26  H  2  S    0.000341   0.203254  -0.348574   0.211341  -0.000000
+   27  H  2  S    0.003587  -0.026066  -0.080755   0.058705  -0.000000
+   28  H  2  X   -0.000347   0.036781  -0.026246   0.030686  -0.000000
+   29  H  2  Y   -0.000000  -0.000000  -0.000000  -0.000000   0.025982
+   30  H  2  Z    0.000279  -0.022266   0.034490  -0.000971  -0.000000
+   31  H  2  S    0.000319  -0.002022   0.004784   0.003578  -0.000000
+   32  H  2  X    0.001189  -0.005086  -0.004267   0.001892  -0.000000
+   33  H  2  Y   -0.000000  -0.000000  -0.000000  -0.000000   0.015938
+   34  H  2  Z   -0.001007   0.007877   0.000968   0.013225  -0.000000
+   35  H  3  S    0.000341   0.203254   0.348574   0.211341  -0.000000
+   36  H  3  S    0.003587  -0.026066   0.080755   0.058705  -0.000000
+   37  H  3  X    0.000347  -0.036781  -0.026246  -0.030686  -0.000000
+   38  H  3  Y   -0.000000  -0.000000  -0.000000  -0.000000   0.025982
+   39  H  3  Z    0.000279  -0.022266  -0.034490  -0.000971  -0.000000
+   40  H  3  S    0.000319  -0.002022  -0.004784   0.003578  -0.000000
+   41  H  3  X   -0.001189   0.005086  -0.004267  -0.001892  -0.000000
+   42  H  3  Y   -0.000000  -0.000000  -0.000000  -0.000000   0.015938
+   43  H  3  Z   -0.001007   0.007877  -0.000968   0.013225  -0.000000
+
+                      6          7          8          9         10
+                    0.0354     0.0579     0.1742     0.1969     0.2222
+                     A          A          A          A          A   
+    1  O  1  S   -0.003876  -0.000000  -0.030034   0.000000  -0.022695
+    2  O  1  S    0.053272  -0.000000  -0.082650   0.000000  -0.183430
+    3  O  1  S    0.220226  -0.000000   0.362565   0.000000  -0.011631
+    4  O  1  X   -0.000000  -0.066741  -0.000000   0.000000   0.000000
+    5  O  1  Y   -0.000000  -0.000000  -0.000000  -0.174739   0.000000
+    6  O  1  Z    0.060139  -0.000000  -0.178663   0.000000  -0.053965
+    7  O  1  X   -0.000000  -0.138650  -0.000000   0.000000   0.000000
+    8  O  1  Y   -0.000000  -0.000000  -0.000000  -0.247834   0.000000
+    9  O  1  Z    0.132211  -0.000000  -0.009034   0.000000   0.167068
+   10  O  1 XX   -0.001212  -0.000000   0.003155   0.000000  -0.000550
+   11  O  1 YY   -0.001336  -0.000000   0.008327   0.000000  -0.006832
+   12  O  1 ZZ    0.002548  -0.000000  -0.011481   0.000000   0.007382
+   13  O  1 XY   -0.000000  -0.000000  -0.000000   0.000000   0.000000
+   14  O  1 XZ   -0.000000  -0.001090  -0.000000   0.000000   0.000000
+   15  O  1 YZ   -0.000000  -0.000000  -0.000000  -0.017025   0.000000
+   16  O  1  S    1.554858  -0.000000   4.100216   0.000000   2.796608
+   17  O  1  X   -0.000000  -0.828824  -0.000000   0.000000   0.000000
+   18  O  1  Y   -0.000000  -0.000000  -0.000000   1.441047   0.000000
+   19  O  1  Z    0.214283  -0.000000   1.915476   0.000000  -0.513494
+   20  O  1 XX    0.009898  -0.000000   0.022415   0.000000   0.047908
+   21  O  1 YY   -0.008311  -0.000000  -0.061719   0.000000  -0.005897
+   22  O  1 ZZ   -0.001587  -0.000000   0.039304   0.000000  -0.042011
+   23  O  1 XY   -0.000000  -0.000000  -0.000000   0.000000   0.000000
+   24  O  1 XZ   -0.000000  -0.018721  -0.000000   0.000000   0.000000
+   25  O  1 YZ   -0.000000  -0.000000  -0.000000   0.057829   0.000000
+   26  H  2  S   -0.019659   0.000798  -0.012321   0.000000   0.044705
+   27  H  2  S   -0.476550  -0.543632  -1.768630   0.000000  -0.422754
+   28  H  2  X    0.004632   0.000596  -0.033720   0.000000  -0.019372
+   29  H  2  Y   -0.000000  -0.000000  -0.000000   0.009463   0.000000
+   30  H  2  Z   -0.002271  -0.004187   0.023587   0.000000   0.010651
+   31  H  2  S   -0.835652  -2.944088  -0.625345   0.000000  -0.672940
+   32  H  2  X   -0.083094  -0.101394  -0.334714   0.000000  -0.427763
+   33  H  2  Y   -0.000000  -0.000000  -0.000000  -0.281929   0.000000
+   34  H  2  Z    0.076839   0.128030   0.152321   0.000000   0.475010
+   35  H  3  S   -0.019659  -0.000798  -0.012321   0.000000   0.044705
+   36  H  3  S   -0.476550   0.543632  -1.768630   0.000000  -0.422754
+   37  H  3  X   -0.004632   0.000596   0.033720   0.000000   0.019372
+   38  H  3  Y   -0.000000  -0.000000  -0.000000   0.009463   0.000000
+   39  H  3  Z   -0.002271   0.004187   0.023587   0.000000   0.010651
+   40  H  3  S   -0.835652   2.944088  -0.625345   0.000000  -0.672940
+   41  H  3  X    0.083094  -0.101394   0.334714   0.000000   0.427763
+   42  H  3  Y   -0.000000  -0.000000  -0.000000  -0.281929   0.000000
+   43  H  3  Z    0.076839  -0.128030   0.152321   0.000000   0.475010
+
+                     11         12         13         14         15
+                    0.2315     0.2892     0.3302     0.3852     0.4037
+                     A          A          A          A          A   
+    1  O  1  S    0.000000   0.000000  -0.013082  -0.000000  -0.000711
+    2  O  1  S    0.000000   0.000000  -0.008572  -0.000000  -0.014949
+    3  O  1  S    0.000000   0.000000   0.227194  -0.000000  -0.016373
+    4  O  1  X   -0.169739  -0.223278  -0.000000  -0.000000   0.000000
+    5  O  1  Y    0.000000   0.000000  -0.000000  -0.000000   0.000000
+    6  O  1  Z    0.000000   0.000000   0.091062  -0.000000   0.188332
+    7  O  1  X    0.256848  -0.270762  -0.000000  -0.000000   0.000000
+    8  O  1  Y    0.000000   0.000000  -0.000000  -0.000000   0.000000
+    9  O  1  Z    0.000000   0.000000   0.240450  -0.000000   0.772795
+   10  O  1 XX    0.000000   0.000000  -0.033910  -0.000000   0.018801
+   11  O  1 YY    0.000000   0.000000   0.009245  -0.000000   0.001157
+   12  O  1 ZZ    0.000000   0.000000   0.024664  -0.000000  -0.019958
+   13  O  1 XY    0.000000   0.000000  -0.000000   0.039254   0.000000
+   14  O  1 XZ   -0.008649   0.016151  -0.000000  -0.000000   0.000000
+   15  O  1 YZ    0.000000   0.000000  -0.000000  -0.000000   0.000000
+   16  O  1  S    0.000000   0.000000   4.374981  -0.000000   4.374045
+   17  O  1  X    3.102436  -0.920554  -0.000000  -0.000000   0.000000
+   18  O  1  Y    0.000000   0.000000  -0.000000  -0.000000   0.000000
+   19  O  1  Z    0.000000   0.000000   0.591952  -0.000000   1.820230
+   20  O  1 XX    0.000000   0.000000   0.133375  -0.000000  -0.070139
+   21  O  1 YY    0.000000   0.000000  -0.047672  -0.000000  -0.033321
+   22  O  1 ZZ    0.000000   0.000000  -0.085703  -0.000000   0.103460
+   23  O  1 XY    0.000000   0.000000  -0.000000  -0.129755   0.000000
+   24  O  1 XZ    0.098742  -0.070826  -0.000000  -0.000000   0.000000
+   25  O  1 YZ    0.000000   0.000000  -0.000000  -0.000000   0.000000
+   26  H  2  S    0.077534  -0.128561  -0.114004  -0.000000  -0.059722
+   27  H  2  S    2.636562  -0.983800  -2.358145  -0.000000  -2.330110
+   28  H  2  X    0.039115  -0.013731  -0.009923  -0.000000  -0.047991
+   29  H  2  Y    0.000000   0.000000  -0.000000  -0.002427   0.000000
+   30  H  2  Z   -0.022072  -0.000555   0.029541  -0.000000   0.004368
+   31  H  2  S    2.682292   0.288866  -0.258983  -0.000000  -0.284198
+   32  H  2  X    0.589668   0.429688   0.360609  -0.000000  -0.353478
+   33  H  2  Y    0.000000   0.000000  -0.000000  -1.133671   0.000000
+   34  H  2  Z   -0.556888  -0.475297   0.467664  -0.000000  -0.703545
+   35  H  3  S   -0.077534   0.128561  -0.114004  -0.000000  -0.059722
+   36  H  3  S   -2.636562   0.983800  -2.358145  -0.000000  -2.330110
+   37  H  3  X    0.039115  -0.013731   0.009923  -0.000000   0.047991
+   38  H  3  Y    0.000000   0.000000  -0.000000   0.002427   0.000000
+   39  H  3  Z    0.022072   0.000555   0.029541  -0.000000   0.004368
+   40  H  3  S   -2.682292  -0.288866  -0.258983  -0.000000  -0.284198
+   41  H  3  X    0.589668   0.429688  -0.360609  -0.000000   0.353478
+   42  H  3  Y    0.000000   0.000000  -0.000000   1.133671   0.000000
+   43  H  3  Z    0.556888   0.475297   0.467664  -0.000000  -0.703545
+
+                     16         17         18         19         20
+                    0.4333     0.5380     0.6472     0.6579     0.8097
+                     A          A          A          A          A   
+    1  O  1  S    0.000000  -0.000000  -0.103180  -0.000000   0.000000
+    2  O  1  S    0.000000  -0.000000   0.033200  -0.000000   0.000000
+    3  O  1  S    0.000000  -0.000000   2.787607  -0.000000   0.000000
+    4  O  1  X    0.000000  -0.079974   0.000000  -0.273801   0.262647
+    5  O  1  Y   -0.150339  -0.000000   0.000000  -0.000000   0.000000
+    6  O  1  Z    0.000000  -0.000000   0.199681  -0.000000   0.000000
+    7  O  1  X    0.000000  -0.129516   0.000000  -1.793640  -0.405798
+    8  O  1  Y   -0.650421  -0.000000   0.000000  -0.000000   0.000000
+    9  O  1  Z    0.000000  -0.000000   0.603867  -0.000000   0.000000
+   10  O  1 XX    0.000000  -0.000000   0.002308  -0.000000   0.000000
+   11  O  1 YY    0.000000  -0.000000  -0.011427  -0.000000   0.000000
+   12  O  1 ZZ    0.000000  -0.000000   0.009119  -0.000000   0.000000
+   13  O  1 XY    0.000000  -0.000000   0.000000  -0.000000   0.000000
+   14  O  1 XZ    0.000000  -0.017856   0.000000  -0.024669  -0.056822
+   15  O  1 YZ    0.023356  -0.000000   0.000000  -0.000000   0.000000
+   16  O  1  S    0.000000  -0.000000   5.837666  -0.000000   0.000000
+   17  O  1  X    0.000000  -1.942477   0.000000  -2.489516  -1.234664
+   18  O  1  Y   -1.166059  -0.000000   0.000000  -0.000000   0.000000
+   19  O  1  Z    0.000000  -0.000000   0.687388  -0.000000   0.000000
+   20  O  1 XX    0.000000  -0.000000  -0.043383  -0.000000   0.000000
+   21  O  1 YY    0.000000  -0.000000   0.044421  -0.000000   0.000000
+   22  O  1 ZZ    0.000000  -0.000000  -0.001037  -0.000000   0.000000
+   23  O  1 XY    0.000000  -0.000000   0.000000  -0.000000   0.000000
+   24  O  1 XZ    0.000000   0.043023   0.000000  -0.103290  -0.711328
+   25  O  1 YZ   -0.071324  -0.000000   0.000000  -0.000000   0.000000
+   26  H  2  S    0.000000   0.032606  -0.152970  -0.118706   0.421156
+   27  H  2  S    0.000000   1.377871  -3.446293  -8.280204  -2.967863
+   28  H  2  X    0.000000  -0.022501   0.007388  -0.025124  -0.130550
+   29  H  2  Y    0.000824  -0.000000   0.000000  -0.000000   0.000000
+   30  H  2  Z    0.000000  -0.023671   0.001073   0.042150   0.158703
+   31  H  2  S    0.000000  -0.753496  -0.557528  -1.410836  -0.214874
+   32  H  2  X    0.000000   2.288590  -1.336818  -3.152956  -0.513648
+   33  H  2  Y    1.197953  -0.000000   0.000000  -0.000000   0.000000
+   34  H  2  Z    0.000000   1.040927   1.154327   1.675971  -0.036880
+   35  H  3  S    0.000000  -0.032606  -0.152970   0.118706  -0.421156
+   36  H  3  S    0.000000  -1.377871  -3.446293   8.280204   2.967863
+   37  H  3  X    0.000000  -0.022501  -0.007388  -0.025124  -0.130550
+   38  H  3  Y    0.000824  -0.000000   0.000000  -0.000000   0.000000
+   39  H  3  Z    0.000000   0.023671   0.001073  -0.042150  -0.158703
+   40  H  3  S    0.000000   0.753496  -0.557528   1.410836   0.214874
+   41  H  3  X    0.000000   2.288590   1.336818  -3.152956  -0.513648
+   42  H  3  Y    1.197953  -0.000000   0.000000  -0.000000   0.000000
+   43  H  3  Z    0.000000  -1.040927   1.154327  -1.675971   0.036880
+
+                     21         22         23         24         25
+                    0.9270     1.1013     1.1151     1.1484     1.3071
+                     A          A          A          A          A   
+    1  O  1  S   -0.087402   0.000000   0.007933   0.000000  -0.106108
+    2  O  1  S   -0.197864   0.000000  -0.016416   0.000000  -0.214694
+    3  O  1  S    1.084050   0.000000  -0.569833   0.000000   1.567637
+    4  O  1  X    0.000000   0.000000   0.000000   0.000000  -0.000000
+    5  O  1  Y    0.000000   0.190172   0.000000   0.000000  -0.000000
+    6  O  1  Z   -0.081615   0.000000   0.135213   0.000000  -0.526257
+    7  O  1  X    0.000000   0.000000   0.000000   0.000000  -0.000000
+    8  O  1  Y    0.000000   0.031867   0.000000   0.000000  -0.000000
+    9  O  1  Z    0.269939   0.000000  -0.095199   0.000000   1.128249
+   10  O  1 XX    0.033916   0.000000  -0.009739   0.000000   0.079467
+   11  O  1 YY   -0.033653   0.000000   0.027520   0.000000  -0.084875
+   12  O  1 ZZ   -0.000264   0.000000  -0.017781   0.000000   0.005408
+   13  O  1 XY    0.000000   0.000000   0.000000  -0.018137  -0.000000
+   14  O  1 XZ    0.000000   0.000000   0.000000   0.000000  -0.000000
+   15  O  1 YZ    0.000000  -0.021268   0.000000   0.000000  -0.000000
+   16  O  1  S    4.777023   0.000000  -0.863243   0.000000   3.202195
+   17  O  1  X    0.000000   0.000000   0.000000   0.000000  -0.000000
+   18  O  1  Y    0.000000   0.725111   0.000000   0.000000  -0.000000
+   19  O  1  Z    1.216331   0.000000   0.495896   0.000000   0.724056
+   20  O  1 XX    0.591673   0.000000  -0.613669   0.000000  -0.863952
+   21  O  1 YY   -0.688707   0.000000  -0.525267   0.000000   0.522465
+   22  O  1 ZZ    0.097034   0.000000   1.138936   0.000000   0.341487
+   23  O  1 XY    0.000000   0.000000   0.000000   1.234573  -0.000000
+   24  O  1 XZ    0.000000   0.000000   0.000000   0.000000  -0.000000
+   25  O  1 YZ    0.000000   1.123486   0.000000   0.000000  -0.000000
+   26  H  2  S    0.499988   0.000000  -0.105233   0.000000   0.501483
+   27  H  2  S   -3.282419   0.000000   0.631586   0.000000  -2.418162
+   28  H  2  X   -0.181967   0.000000   0.092304   0.000000  -0.326766
+   29  H  2  Y    0.000000   0.016679   0.000000  -0.037462  -0.000000
+   30  H  2  Z    0.091046   0.000000  -0.000256   0.000000   0.187312
+   31  H  2  S   -0.204916   0.000000   0.055621   0.000000  -0.148430
+   32  H  2  X   -0.182573   0.000000  -0.066431   0.000000  -0.661000
+   33  H  2  Y    0.000000  -0.582247   0.000000   0.731290  -0.000000
+   34  H  2  Z    0.317876   0.000000  -0.663813   0.000000   0.088741
+   35  H  3  S    0.499988   0.000000  -0.105233   0.000000   0.501483
+   36  H  3  S   -3.282419   0.000000   0.631586   0.000000  -2.418162
+   37  H  3  X    0.181967   0.000000  -0.092304   0.000000   0.326766
+   38  H  3  Y    0.000000   0.016679   0.000000   0.037462  -0.000000
+   39  H  3  Z    0.091046   0.000000  -0.000256   0.000000   0.187312
+   40  H  3  S   -0.204916   0.000000   0.055621   0.000000  -0.148430
+   41  H  3  X    0.182573   0.000000   0.066431   0.000000   0.661000
+   42  H  3  Y    0.000000  -0.582247   0.000000  -0.731290  -0.000000
+   43  H  3  Z    0.317876   0.000000  -0.663813   0.000000   0.088741
+
+                     26         27         28         29         30
+                    1.4657     1.4817     1.5816     1.9982     2.0089
+                     A          A          A          A          A   
+    1  O  1  S   -0.000000  -0.000000   0.177025  -0.000000  -0.000000
+    2  O  1  S   -0.000000  -0.000000   0.509221  -0.000000  -0.000000
+    3  O  1  S   -0.000000  -0.000000  -0.269804  -0.000000  -0.000000
+    4  O  1  X    0.593303  -0.000000   0.000000  -0.254677  -0.000000
+    5  O  1  Y   -0.000000  -0.982376   0.000000  -0.000000  -0.000000
+    6  O  1  Z   -0.000000  -0.000000  -0.710721  -0.000000  -0.000000
+    7  O  1  X   -1.958038  -0.000000   0.000000   0.723619  -0.000000
+    8  O  1  Y   -0.000000   1.606139   0.000000  -0.000000  -0.000000
+    9  O  1  Z   -0.000000  -0.000000   1.666953  -0.000000  -0.000000
+   10  O  1 XX   -0.000000  -0.000000  -0.038875  -0.000000  -0.000000
+   11  O  1 YY   -0.000000  -0.000000   0.035650  -0.000000  -0.000000
+   12  O  1 ZZ   -0.000000  -0.000000   0.003225  -0.000000  -0.000000
+   13  O  1 XY   -0.000000  -0.000000   0.000000  -0.000000  -0.074829
+   14  O  1 XZ   -0.111678  -0.000000   0.000000  -0.060647  -0.000000
+   15  O  1 YZ   -0.000000   0.001973   0.000000  -0.000000  -0.000000
+   16  O  1  S   -0.000000  -0.000000   1.624798  -0.000000  -0.000000
+   17  O  1  X   -1.033730  -0.000000   0.000000   0.985802  -0.000000
+   18  O  1  Y   -0.000000   0.115194   0.000000  -0.000000  -0.000000
+   19  O  1  Z   -0.000000  -0.000000   0.197822  -0.000000  -0.000000
+   20  O  1 XX   -0.000000  -0.000000   0.575726  -0.000000  -0.000000
+   21  O  1 YY   -0.000000  -0.000000  -0.717655  -0.000000  -0.000000
+   22  O  1 ZZ   -0.000000  -0.000000   0.141929  -0.000000  -0.000000
+   23  O  1 XY   -0.000000  -0.000000   0.000000  -0.000000   0.863770
+   24  O  1 XZ    0.766297  -0.000000   0.000000   0.631816  -0.000000
+   25  O  1 YZ   -0.000000   0.392832   0.000000  -0.000000  -0.000000
+   26  H  2  S    0.346531  -0.000000  -0.858085   0.432443  -0.000000
+   27  H  2  S   -4.349839  -0.000000  -0.464626   0.734788  -0.000000
+   28  H  2  X   -0.283974  -0.000000   0.070783   0.530007  -0.000000
+   29  H  2  Y   -0.000000  -0.009942   0.000000  -0.000000   0.945876
+   30  H  2  Z    0.298127  -0.000000   0.059301   0.640267  -0.000000
+   31  H  2  S   -0.240096  -0.000000  -0.160959   0.439392  -0.000000
+   32  H  2  X   -1.212324  -0.000000  -0.023008  -0.380698  -0.000000
+   33  H  2  Y   -0.000000  -0.557564   0.000000  -0.000000  -0.088776
+   34  H  2  Z    1.045351  -0.000000  -0.234899  -0.613848  -0.000000
+   35  H  3  S   -0.346531  -0.000000  -0.858085  -0.432443  -0.000000
+   36  H  3  S    4.349839  -0.000000  -0.464626  -0.734788  -0.000000
+   37  H  3  X   -0.283974  -0.000000  -0.070783   0.530007  -0.000000
+   38  H  3  Y   -0.000000  -0.009942   0.000000  -0.000000  -0.945876
+   39  H  3  Z   -0.298127  -0.000000   0.059301  -0.640267  -0.000000
+   40  H  3  S    0.240096  -0.000000  -0.160959  -0.439392  -0.000000
+   41  H  3  X   -1.212324  -0.000000   0.023008  -0.380698  -0.000000
+   42  H  3  Y   -0.000000  -0.557564   0.000000  -0.000000   0.088776
+   43  H  3  Z   -1.045351  -0.000000  -0.234899   0.613848  -0.000000
+
+                     31         32         33         34         35
+                    2.1042     2.3685     2.4705     2.6147     2.7136
+                     A          A          A          A          A   
+    1  O  1  S   -0.000000  -0.266113   0.000000  -0.740889   0.000000
+    2  O  1  S   -0.000000  -0.559469   0.000000  -1.663700   0.000000
+    3  O  1  S   -0.000000   1.535281   0.000000   2.188606   0.000000
+    4  O  1  X   -0.000000   0.000000   0.968842  -0.000000  -0.115916
+    5  O  1  Y   -0.015749   0.000000   0.000000  -0.000000   0.000000
+    6  O  1  Z   -0.000000   0.059653   0.000000  -0.546711   0.000000
+    7  O  1  X   -0.000000   0.000000  -2.150709  -0.000000  -3.681625
+    8  O  1  Y   -0.759459   0.000000   0.000000  -0.000000   0.000000
+    9  O  1  Z   -0.000000  -0.609492   0.000000   0.468752   0.000000
+   10  O  1 XX   -0.000000  -0.090320   0.000000   0.066461   0.000000
+   11  O  1 YY   -0.000000   0.009251   0.000000  -0.029536   0.000000
+   12  O  1 ZZ   -0.000000   0.081069   0.000000  -0.036925   0.000000
+   13  O  1 XY   -0.000000   0.000000   0.000000  -0.000000   0.000000
+   14  O  1 XZ   -0.000000   0.000000   0.042234  -0.000000   0.371896
+   15  O  1 YZ    0.062859   0.000000   0.000000  -0.000000   0.000000
+   16  O  1  S   -0.000000   1.121430   0.000000   1.529366   0.000000
+   17  O  1  X   -0.000000   0.000000  -0.537576  -0.000000  -1.117294
+   18  O  1  Y    0.171587   0.000000   0.000000  -0.000000   0.000000
+   19  O  1  Z   -0.000000   0.145268   0.000000   0.099117   0.000000
+   20  O  1 XX   -0.000000   1.266508   0.000000  -0.151488   0.000000
+   21  O  1 YY   -0.000000   0.009230   0.000000   0.040794   0.000000
+   22  O  1 ZZ   -0.000000  -1.275739   0.000000   0.110695   0.000000
+   23  O  1 XY   -0.000000   0.000000   0.000000  -0.000000   0.000000
+   24  O  1 XZ   -0.000000   0.000000  -0.729246  -0.000000  -1.930822
+   25  O  1 YZ   -0.683323   0.000000   0.000000  -0.000000   0.000000
+   26  H  2  S   -0.000000  -0.058243  -0.746218   0.092917  -2.173608
+   27  H  2  S   -0.000000  -0.925510  -2.811523  -1.105329  -4.137099
+   28  H  2  X   -0.000000   0.620095   0.647359   0.462430  -0.424019
+   29  H  2  Y    0.988819   0.000000   0.000000  -0.000000   0.000000
+   30  H  2  Z   -0.000000   0.982597  -0.214355  -0.521296   0.643653
+   31  H  2  S   -0.000000  -0.068094  -0.386796  -0.157650  -0.371924
+   32  H  2  X   -0.000000  -0.203194  -1.233822  -0.591992  -1.213903
+   33  H  2  Y   -0.090757   0.000000   0.000000  -0.000000   0.000000
+   34  H  2  Z   -0.000000   0.359473   0.631841   0.497530   0.570051
+   35  H  3  S   -0.000000  -0.058243   0.746218   0.092917   2.173608
+   36  H  3  S   -0.000000  -0.925510   2.811523  -1.105329   4.137099
+   37  H  3  X   -0.000000  -0.620095   0.647359  -0.462430  -0.424019
+   38  H  3  Y    0.988819   0.000000   0.000000  -0.000000   0.000000
+   39  H  3  Z   -0.000000   0.982597   0.214355  -0.521296  -0.643653
+   40  H  3  S   -0.000000  -0.068094   0.386796  -0.157650   0.371924
+   41  H  3  X   -0.000000   0.203194  -1.233822   0.591992  -1.213903
+   42  H  3  Y   -0.090757   0.000000   0.000000  -0.000000   0.000000
+   43  H  3  Z   -0.000000   0.359473  -0.631841   0.497530  -0.570051
+
+                     36         37         38         39         40
+                    2.9626     3.6725     3.6887     3.7018     4.0213
+                     A          A          A          A          A   
+    1  O  1  S   -0.747673  -0.000000  -0.092991  -0.000000  -0.315393
+    2  O  1  S   -1.395105  -0.000000  -0.179252  -0.000000  -0.518691
+    3  O  1  S    5.682006  -0.000000   0.635500  -0.000000   3.399896
+    4  O  1  X    0.000000  -0.000000  -0.000000  -0.000000   0.000000
+    5  O  1  Y    0.000000   0.046050  -0.000000  -0.000000   0.000000
+    6  O  1  Z    0.258577  -0.000000   0.034930  -0.000000   0.308649
+    7  O  1  X    0.000000  -0.000000  -0.000000  -0.000000   0.000000
+    8  O  1  Y    0.000000  -0.158827  -0.000000  -0.000000   0.000000
+    9  O  1  Z    2.336058  -0.000000   0.106769  -0.000000   1.382333
+   10  O  1 XX   -0.261736  -0.000000  -0.675035  -0.000000   1.031553
+   11  O  1 YY    0.362874  -0.000000  -0.520401  -0.000000  -1.081710
+   12  O  1 ZZ   -0.101138  -0.000000   1.195436  -0.000000   0.050157
+   13  O  1 XY    0.000000  -0.000000  -0.000000   1.205306   0.000000
+   14  O  1 XZ    0.000000  -0.000000  -0.000000  -0.000000   0.000000
+   15  O  1 YZ    0.000000   1.192990  -0.000000  -0.000000   0.000000
+   16  O  1  S    4.250377  -0.000000   0.235192  -0.000000   1.498288
+   17  O  1  X    0.000000  -0.000000  -0.000000  -0.000000   0.000000
+   18  O  1  Y    0.000000  -0.303432  -0.000000  -0.000000   0.000000
+   19  O  1  Z    0.788702  -0.000000  -0.236698  -0.000000   0.234840
+   20  O  1 XX    0.524422  -0.000000   0.394285  -0.000000  -0.224259
+   21  O  1 YY   -0.980682  -0.000000   0.223911  -0.000000   0.075918
+   22  O  1 ZZ    0.456260  -0.000000  -0.618195  -0.000000   0.148341
+   23  O  1 XY    0.000000  -0.000000  -0.000000  -0.690688   0.000000
+   24  O  1 XZ    0.000000  -0.000000  -0.000000  -0.000000   0.000000
+   25  O  1 YZ    0.000000  -0.665564  -0.000000  -0.000000   0.000000
+   26  H  2  S   -1.701481  -0.000000  -0.142101  -0.000000  -1.241773
+   27  H  2  S   -3.096511  -0.000000  -0.203275  -0.000000  -1.227619
+   28  H  2  X   -0.913956  -0.000000  -0.139388  -0.000000  -0.686060
+   29  H  2  Y    0.000000  -0.105692  -0.000000   0.127886   0.000000
+   30  H  2  Z    0.273466  -0.000000  -0.097039  -0.000000   0.464875
+   31  H  2  S   -0.236692  -0.000000  -0.018064  -0.000000  -0.078205
+   32  H  2  X   -0.633698  -0.000000   0.034300  -0.000000  -0.402800
+   33  H  2  Y    0.000000   0.294679  -0.000000  -0.318209   0.000000
+   34  H  2  Z    0.495084  -0.000000   0.307044  -0.000000   0.174883
+   35  H  3  S   -1.701481  -0.000000  -0.142101  -0.000000  -1.241773
+   36  H  3  S   -3.096511  -0.000000  -0.203275  -0.000000  -1.227619
+   37  H  3  X    0.913956  -0.000000   0.139388  -0.000000   0.686060
+   38  H  3  Y    0.000000  -0.105692  -0.000000  -0.127886   0.000000
+   39  H  3  Z    0.273466  -0.000000  -0.097039  -0.000000   0.464875
+   40  H  3  S   -0.236692  -0.000000  -0.018064  -0.000000  -0.078205
+   41  H  3  X    0.633698  -0.000000  -0.034300  -0.000000   0.402800
+   42  H  3  Y    0.000000   0.294679  -0.000000   0.318209   0.000000
+   43  H  3  Z    0.495084  -0.000000   0.307044  -0.000000   0.174883
+
+                     41
+                    4.2954
+                     A   
+    1  O  1  S   -0.000000
+    2  O  1  S   -0.000000
+    3  O  1  S   -0.000000
+    4  O  1  X    0.315611
+    5  O  1  Y   -0.000000
+    6  O  1  Z   -0.000000
+    7  O  1  X    2.379978
+    8  O  1  Y   -0.000000
+    9  O  1  Z   -0.000000
+   10  O  1 XX   -0.000000
+   11  O  1 YY   -0.000000
+   12  O  1 ZZ   -0.000000
+   13  O  1 XY   -0.000000
+   14  O  1 XZ    1.325963
+   15  O  1 YZ   -0.000000
+   16  O  1  S   -0.000000
+   17  O  1  X    0.532456
+   18  O  1  Y   -0.000000
+   19  O  1  Z   -0.000000
+   20  O  1 XX   -0.000000
+   21  O  1 YY   -0.000000
+   22  O  1 ZZ   -0.000000
+   23  O  1 XY   -0.000000
+   24  O  1 XZ    0.295075
+   25  O  1 YZ   -0.000000
+   26  H  2  S    1.499314
+   27  H  2  S    2.344365
+   28  H  2  X    0.664452
+   29  H  2  Y   -0.000000
+   30  H  2  Z   -0.551650
+   31  H  2  S    0.140613
+   32  H  2  X    0.657316
+   33  H  2  Y   -0.000000
+   34  H  2  Z   -0.559067
+   35  H  3  S   -1.499314
+   36  H  3  S   -2.344365
+   37  H  3  X    0.664452
+   38  H  3  Y   -0.000000
+   39  H  3  Z    0.551650
+   40  H  3  S   -0.140613
+   41  H  3  X    0.657316
+   42  H  3  Y   -0.000000
+   43  H  3  Z    0.559067
+ ...... END OF RHF CALCULATION ......
+ CPU     0: STEP CPU TIME=     0.20 TOTAL CPU TIME=        2.8 (    0.0 MIN)
+ TOTAL WALL CLOCK TIME=        2.8 SECONDS, CPU UTILIZATION IS 100.00%
+
+     ----------------------------------------------------------------
+     PROPERTY VALUES FOR THE RHF   SELF-CONSISTENT FIELD WAVEFUNCTION
+     ----------------------------------------------------------------
+
+          ---------------------------------------
+          MULLIKEN AND LOWDIN POPULATION ANALYSES
+          ---------------------------------------
+
+               ----- POPULATIONS IN EACH AO -----
+                             MULLIKEN      LOWDIN
+              1  O  1  S      2.00288     1.86758
+              2  O  1  S      0.84186     0.59571
+              3  O  1  S      0.81456     0.35847
+              4  O  1  X      0.79192     0.70990
+              5  O  1  Y      1.10549     1.04502
+              6  O  1  Z      0.92175     0.85590
+              7  O  1  X      0.33468     0.49926
+              8  O  1  Y      0.76173     0.62161
+              9  O  1  Z      0.54163     0.57020
+             10  O  1 XX      0.00122     0.16747
+             11  O  1 YY      0.00118     0.15238
+             12  O  1 ZZ      0.00000     0.15630
+             13  O  1 XY      0.00910     0.00000
+             14  O  1 XZ      0.00097     0.01094
+             15  O  1 YZ      0.00000     0.00056
+             16  O  1  S      0.08416     0.06196
+             17  O  1  X      0.01728     0.05093
+             18  O  1  Y      0.06095     0.06380
+             19  O  1  Z      0.03694     0.06265
+             20  O  1 XX      0.00183     0.05494
+             21  O  1 YY     -0.00489     0.03423
+             22  O  1 ZZ      0.00000     0.04396
+             23  O  1 XY     -0.01551     0.00000
+             24  O  1 XZ      0.00196     0.03246
+             25  O  1 YZ      0.00000     0.00002
+             26  H  2  S      0.72044     0.47313
+             27  H  2  S      0.02651     0.10173
+             28  H  2  X      0.03810     0.05656
+             29  H  2  Y      0.01849     0.05133
+             30  H  2  Z      0.02525     0.05263
+             31  H  2  S     -0.00176     0.01061
+             32  H  2  X     -0.00707     0.07679
+             33  H  2  Y      0.01596     0.08316
+             34  H  2  Z      0.00823     0.08592
+             35  H  3  S      0.72044     0.47313
+             36  H  3  S      0.02651     0.10173
+             37  H  3  X      0.03810     0.05656
+             38  H  3  Y      0.01849     0.05133
+             39  H  3  Z      0.02525     0.05263
+             40  H  3  S     -0.00176     0.01061
+             41  H  3  X     -0.00707     0.07679
+             42  H  3  Y      0.01596     0.08316
+             43  H  3  Z      0.00823     0.08592
+
+          ----- MULLIKEN ATOMIC OVERLAP POPULATIONS -----
+          (OFF-DIAGONAL ELEMENTS NEED TO BE MULTIPLIED BY 2)
+
+             1           2           3
+
+    1    7.6412812
+    2    0.3352023   0.5432249
+    3    0.3352023  -0.0342700   0.5432249
+
+          TOTAL MULLIKEN AND LOWDIN ATOMIC POPULATIONS
+       ATOM         MULL.POP.    CHARGE          LOW.POP.     CHARGE
+    1 O             8.311686   -0.311686         8.016268   -0.016268
+    2 H             0.844157    0.155843         0.991866    0.008134
+    3 H             0.844157    0.155843         0.991866    0.008134
+
+          MULLIKEN SPHERICAL HARMONIC POPULATIONS
+       ATOM           S       P       D      F      G      H      I    TOTAL
+    1 O             3.74    4.57   -0.00   0.00   0.00   0.00   0.00    8.31
+    2 H             0.75    0.10    0.00   0.00   0.00   0.00   0.00    0.84
+    3 H             0.75    0.10    0.00   0.00   0.00   0.00   0.00    0.84
+
+          -------------------------------
+          BOND ORDER AND VALENCE ANALYSIS     BOND ORDER THRESHOLD=0.050
+          -------------------------------
+
+                   BOND                       BOND                       BOND
+  ATOM PAIR DIST  ORDER      ATOM PAIR DIST  ORDER      ATOM PAIR DIST  ORDER
+    1   2  0.963  1.009        1   3  0.963  1.009
+
+                       TOTAL       BONDED        FREE
+      ATOM            VALENCE     VALENCE     VALENCE
+    1 O                 2.017       2.017       0.000
+    2 H                 1.011       1.011       0.000
+    3 H                 1.011       1.011      -0.000
+
+          ---------------------
+          ELECTROSTATIC MOMENTS
+          ---------------------
+
+ POINT   1           X           Y           Z (BOHR)    CHARGE
+                -0.000000    0.000000    0.895524        0.00 (A.U.)
+         DX          DY          DZ         /D/  (DEBYE)
+    -0.000000    0.000000    1.999010    1.999010
+ ...... END OF PROPERTY EVALUATION ......
+ CPU     0: STEP CPU TIME=     0.00 TOTAL CPU TIME=        2.8 (    0.0 MIN)
+ TOTAL WALL CLOCK TIME=        2.8 SECONDS, CPU UTILIZATION IS 100.00%
+
+     ---------------------------
+     COUPLED CLUSTER CALCULATION
+     ---------------------------
+ CCTYP                        =CCSD(T) 
+ TOTAL NUMBER OF MOS          =    41
+ NUMBER OF OCCUPIED MOS       =     5
+ NUMBER OF FROZEN CORE MOS    =     1
+ NUMBER OF FROZEN VIRTUAL MOS =     0
+ MAXIMUM CC ITERATIONS        =    30
+ MAXIMUM DIIS ITERATIONS      =     5
+ CONVERGENCE CRITERION FOR CC =     7
+ AMPLITUDE ACCURACY THRESHOLD = 0.0E+00
+
+     --------------------------------------------
+     PARTIAL TWO ELECTRON INTEGRAL TRANSFORMATION
+     --------------------------------------------
+
+ NUMBER OF CORE MOLECULAR ORBITALS     =    1
+ NUMBER OF OCCUPIED MOLECULAR ORBITALS =    5
+ TOTAL NUMBER OF MOLECULAR ORBITALS    =   41
+ TOTAL NUMBER OF ATOMIC ORBITALS       =   43
+ THRESHOLD FOR KEEPING TRANSFORMED 2E- INTEGRALS = 1.000E-09
+
+ -------------------------------     ------------------------------
+ DISTRIBUTED DATA TRANSFORMATION     PROGRAM WRITTEN BY G. FLETCHER
+ -------------------------------     ------------------------------
+
+ THE DISTRIBUTED MEMORY REQUIRED FOR THIS STEP IS MEMDDI=     1 MWORDS
+ CREATING DISTRIBUTED STORAGE FOR [VIR VIR|VIR OCC] INTEGRALS
+ DDI: Creating Array [0] - 946x144=136224.
+ CREATING DISTRIBUTED STORAGE FOR [VIR OCC|VIR OCC] INTEGRALS
+ DDI: Creating Array [1] - 1849x10=18490.
+ CREATING DISTRIBUTED STORAGE FOR [VIR OCC|OCC OCC] INTEGRALS
+ DDI: Creating Array [2] - 36x40=1440.
+ CREATING DISTRIBUTED STORAGE FOR [OCC OCC|OCC OCC] INTEGRALS
+ DDI: Creating Array [3] - 10x10=100.
+ CREATING DISTRIBUTED STORAGE FOR [VIR VIR|OCC OCC] INTEGRALS
+ DDI: Creating Array [4] - 946x10=9460.
+ FOR    8 PROCESSORS, THE REPLICATED MEMORY NEEDED IS     60705 WORDS.
+ SCHWARZ INEQUALITY OVERHEAD:       946 INTEGRALS, T=        0.00
+
+      DIRECT 4-INDEX TRANSFORMATION 
+      SCHWARZ INEQUALITY TEST SKIPPED          0 INTEGRAL BLOCKS
+ ... END OF INTEGRAL TRANSFORMATION ...
+ CPU     0: STEP CPU TIME=     0.05 TOTAL CPU TIME=        2.8 (    0.0 MIN)
+ TOTAL WALL CLOCK TIME=        2.8 SECONDS, CPU UTILIZATION IS 100.00%
+
+   -----------------------
+   COUPLED-CLUSTER PROGRAM
+   -----------------------
+
+   -------------------------------------------------------
+   P.PIECUCH, S.A.KUCHARSKI, M.WLOCH, K.KOWALSKI, M.MUSIAL
+   -------------------------------------------------------
+
+ *****************************************************************
+ THE FOLLOWING PAPERS SHOULD BE CITED WHEN USING COUPLED-CLUSTER
+ OPTIONS:
+
+ CCTYP = LCCD, CCD, CCSD, CCSD(T)
+ P. PIECUCH, S.A. KUCHARSKI, K. KOWALSKI, AND M. MUSIAL,
+ COMP. PHYS. COMMUN. 149, 71-96 (2002).
+
+ CCTYP = R-CC, CR-CC, CCSD(TQ), CR-CC(Q)
+ P. PIECUCH, S.A. KUCHARSKI, K. KOWALSKI, AND M. MUSIAL,
+ COMP. PHYS. COMMUN. 149, 71-96 (2002);
+ K. KOWALSKI AND P. PIECUCH, J. CHEM. PHYS. 113, 18-35 (2000);
+ K. KOWALSKI AND P. PIECUCH, J. CHEM. PHYS. 113, 5644-5652 (2000).
+
+ CCTYP = EOM-CCSD, CR-EOM
+ P. PIECUCH, S.A. KUCHARSKI, K. KOWALSKI, AND M. MUSIAL,
+ COMP. PHYS. COMMUN. 149, 71-96 (2002);
+ K. KOWALSKI AND P. PIECUCH, J. CHEM. PHYS. 120, 1715-1738 (2004);
+ M. WLOCH, J.R. GOUR, K. KOWALSKI, AND P. PIECUCH,
+ J. CHEM. PHYS. 122, 214107-1 - 214107-15 (2005).
+
+ CCTYP = CR-CCL
+ P. PIECUCH, S.A. KUCHARSKI, K. KOWALSKI, AND M. MUSIAL,
+ COMP. PHYS. COMMUN. 149, 71-96 (2002);
+ P. PIECUCH AND M. WLOCH, J. CHEM. PHYS. 123,
+ 224105-1 - 224105-10 (2005).
+
+ CCTYP = CR-EOML
+ P. PIECUCH, S.A. KUCHARSKI, K. KOWALSKI, AND M. MUSIAL,
+ COMP. PHYS. COMMUN. 149, 71-96 (2002);
+ P. PIECUCH, J. R. GOUR, AND M. WLOCH,
+ INT. J. QUANTUM CHEM. 109, 3268-3304 (2009);
+ K. KOWALSKI AND P. PIECUCH,
+ J. CHEM. PHYS. 120, 1715-1738 (2004).
+
+ IN ADDITION, THE USE OF CCPRP=.TRUE. IN $CCINP AND/OR THE USE
+ OF CCPRPE=.TRUE. IN $EOMINP SHOULD REFERENCE
+
+ M. WLOCH, J.R. GOUR, K. KOWALSKI, AND P. PIECUCH,
+ J. CHEM. PHYS. 122, 214107-1 - 214107-15 (2005).
+ *****************************************************************
+
+ PARALLELIZATION OF CLOSED SHELL CCSD(T) IS
+ J.L.BENTZ, R.M.OLSON, M.S.GORDON, M.W.SCHMIDT, R.A.KENDALL
+   COMPUT.PHYS.COMMUN.  176, 589-600(2007)
+ R.M.OLSON, J.L.BENTZ, R.A.KENDALL, M.W.SCHMIDT, M.S.GORDON
+   J.COMPUT.THEORET.CHEM. 3, 1312-1328(2007)
+
+ THE FOLLOWING CALCULATIONS WILL BE PERFORMED:
+                                                     CCSD   
+                                                     CCSD[T]
+                                                     CCSD(T)
+
+ THE FOLLOWING ENERGY WILL BE CONSIDERED THE HIGHEST LEVEL:    CCSD(T)
+ THE AVAILABLE REPLICATED MEMORY IS    45000000 WORDS.
+ CONVERGENCE THRESHOLD:   1.0E-07
+ MAXIMUM NUMBER OF ITERATIONS:   30
+
+ RUNNING THE DISTRIBUTED DATA, PARALLEL CCSD/CCSD(T) PROGRAM...
+
+ PARALLEL CODE WRITTEN BY RYAN M. OLSON AND JONATHAN L. BENTZ,
+ BASED ON SERIAL CODE OF P.PIECUCH, S.A.KUCHARSKI, K.KOWALSKI, M.MUSIAL
+
+ 1A.  REPLICATED MEMORY REQUIRED FOR PROCESS-BASED CCSD IS       215149 WORDS.
+ 1B.  REPLICATED MEMORY REQUIRED FOR    NODE-BASED CCSD IS       158115 WORDS.
+ THIS RUN WILL USE       158115 WORDS OF REPLICATED MEMORY.
+ 2.       SHARED MEMORY REQUIRED FOR THE CCSD ITERS IS            65056 WORDS.
+          SHARED MEMORY FOR THE (T) CORRECTION WILL BE           135328 WORDS.
+ 3.  DISTRIBUTED MEMORY FOR THIS JOB IS MEMDDI=       1 MWORDS.
+
+ EXPLANATION (WHAT TO PUT IN $SYSTEM INPUT):
+ 1. THE PROCESS-BASED PARALLEL CCSD WILL BE CHOSEN IF MWORDS=       1,
+    OTHERWISE, ENTER MWORDS=       1 TO RUN THE NODE-BASED PARALLEL CCSD.
+    IT IS ALLOCATED BY EVERY COMPUTE PROCESS, SO THE SECOND, SMALLER VALUE
+    IS UNDOUBTEDLY THE WISER CHOICE.
+ 2. THIS MEMORY CLASS PRESENTLY HAS NO INPUT KEYWORD.
+    IT IS ALLOCATED ONCE PER NODE, OUT OF THE OPERATING SYSTEM'S SYSV MEMORY.
+ 3. THIS VALUE INCLUDES THE INTEGRAL TRANSFORMATION'S DISTRIBUTED MEMORY,
+    SO MEMDDI=      1 SHOULD BE ENOUGH FOR THE ENTIRE JOB.
+    IT IS ALLOCATED ONLY ONCE, FOR THE WHOLE RUN, SPREAD ACROSS ALL NODES.
+
+ THIS JOB IS USING   1 NODES, WITH  8 PROCESSES/NODE,
+ USING INPUT MEMORY VALUES MWORDS=      45 AND MEMDDI=    1000
+ MOST EFFICIENT VALUES ARE MWORDS=       1 AND MEMDDI=       1
+ THE INPUT VALUES MEANS EACH SMP NODE WILL ALLOCATE      70 MBYTES OF MEMORY.
+
+ DDI: Creating Array [5] - 144x144=20736.
+ DDI: Creating Array [6] - 144x144=20736.
+ DDI: Creating Array [7] - 144x144=20736.
+ DDI: Creating Array [8] - 144x144=20736.
+ DDI: Creating Array [9] - 144x144=20736.
+ DDI: Creating Array [10] - 1296x16=20736.
+ DDI: Creating Array [11] - 1296x16=20736.
+ INITIALIZING INTEGRALS FOR CCSD
+ RUNNING PROCESS-BASED CCSD ITERATIONS
+ DDI: Creating Array [12] - 1849x10=18490.
+ ITER:  1   CCSD    CORR. ENERGY:  -0.2220306287   CONV.:  2.5614E-03
+
+ ITER  CPU TIME: TOTAL=     0.1  FORMULAE IN AO,MO BASIS=     0.1     0.0
+ ITER WALL TIME: TOTAL=     0.1  FORMULAE IN AO,MO BASIS=     0.1     0.0
+ IT IS BENEFICIAL TO ADD MORE PROCESSORS IF THE SCALABLE AO CONTRIBUTION'S TIME
+ IS CONSIDERABLY LARGER THAN THE LESS SCALABLE MO CONTRIBUTION'S TIME.
+
+ ITER:  2   CCSD    CORR. ENERGY:  -0.2252227442   CONV.: -9.9321E-04
+ ITER:  3   CCSD    CORR. ENERGY:  -0.2258910803   CONV.:  2.5930E-04
+ ITER:  4   CCSD    CORR. ENERGY:  -0.2260806704   CONV.: -1.4561E-02
+ ITER:  5   CCSD    CORR. ENERGY:  -0.2260848232   CONV.: -1.4521E-02
+ ITER:  6   CCSD    CORR. ENERGY:  -0.2261921449   CONV.: -1.3586E-02
+ ITER:  7   CCSD    CORR. ENERGY:  -0.2268225768   CONV.: -7.6117E-03
+ ITER:  8   CCSD    CORR. ENERGY:  -0.2274946652   CONV.: -1.0196E-03
+ ITER:  9   CCSD    CORR. ENERGY:  -0.2275942993   CONV.:  1.6727E-05
+ ITER: 10   CCSD    CORR. ENERGY:  -0.2275951773   CONV.: -6.2509E-06
+ ITER: 11   CCSD    CORR. ENERGY:  -0.2275957032   CONV.: -2.8806E-06
+ ITER: 12   CCSD    CORR. ENERGY:  -0.2275958331   CONV.: -1.1200E-06
+ ITER: 13   CCSD    CORR. ENERGY:  -0.2275958724   CONV.: -5.2604E-07
+ ITER: 14   CCSD    CORR. ENERGY:  -0.2275958777   CONV.:  1.3826E-07
+ ITER: 15   CCSD    CORR. ENERGY:  -0.2275958739   CONV.:  6.8203E-08
+ ITER: 16   CCSD    CORR. ENERGY:  -0.2275958701   CONV.:  6.8203E-08
+
+     THE    CCSD     ITERATIONS HAVE CONVERGED
+
+    MBPT(2) CORRELATION ENERGY:  -0.2198553833
+    CCSD    CORRELATION ENERGY:  -0.2275958701
+
+ T1 DIAGNOSTIC        =     0.01235407
+ NORM OF THE T1 VECTOR=     0.03494259
+ NORM OF THE T2 VECTOR=     0.23042873
+
+ THE FIVE LARGEST T1 AMPLITUDES ARE:
+ T1 AMPLITUDE IS -0.021647 FOR I=   5 -> A=   9
+ T1 AMPLITUDE IS -0.015560 FOR I=   5 -> A=  16
+ T1 AMPLITUDE IS  0.012219 FOR I=   4 -> A=   8
+ T1 AMPLITUDE IS  0.011693 FOR I=   4 -> A=  15
+ T1 AMPLITUDE IS -0.007667 FOR I=   3 -> A=  33
+
+ THE FIVE LARGEST SPIN-UNIQUE T2 AMPLITUDES ARE:
+ T2 AMPLITUDE IS -0.034733 FOR I,J=   5   5 -> A,B=  27  27
+ T2 AMPLITUDE IS -0.025710 FOR I,J=   3   3 -> A,B=  20  20
+ T2 AMPLITUDE IS -0.020807 FOR I,J=   4   4 -> A,B=  20  20
+ T2 AMPLITUDE IS -0.020585 FOR I,J=   4   4 -> A,B=  28  28
+ T2 AMPLITUDE IS -0.019862 FOR I,J=   3   3 -> A,B=  12  12
+ PRINTED T2(I-ALPHA,J-BETA -> A-ALPHA,B-BETA) VALUES
+ EQUAL   T2(J-ALPHA,I-BETA -> B-ALPHA,A-BETA) AMPLITUDES.
+
+ ....... DONE WITH CC AMPLITUDE ITERATIONS .......
+ CPU     0: STEP CPU TIME=     1.71 TOTAL CPU TIME=        4.5 (    0.1 MIN)
+ TOTAL WALL CLOCK TIME=        4.5 SECONDS, CPU UTILIZATION IS 100.00%
+
+ RUNNING THE DISTRIBUTED DATA, PARALLEL TRIPLES CORRECTION...
+
+   REPLICATED MEMORY REQUIRED FOR TRIPLES IS         1584 WORDS.
+       SHARED MEMORY REQUIRED FOR TRIPLES IS       135328 WORDS.
+  DISTRIBUTED MEMORY IS ALREADY ALLOCATED ABOVE.
+
+
+                      SUMMARY OF RESULTS
+
+      REFERENCE ENERGY:      -76.0410260520
+        MBPT(2) ENERGY:      -76.2608814353   CORR.E=  -0.2198553833
+        CCSD    ENERGY:      -76.2686219221   CORR.E=  -0.2275958701
+        CCSD[T] ENERGY:      -76.2742777883   CORR.E=  -0.2332517363
+        CCSD(T) ENERGY:      -76.2738719099   CORR.E=  -0.2328458578
+
+ THE FOLLOWING METHOD AND ENERGY WILL BE CONSIDERED THE HIGHEST LEVEL RESULT:
+ COUPLED-CLUSTER ENERGY E(   CCSD(T)) =      -76.2738719099
+
+ ..... DONE WITH CC NON-ITERATIVE TRIPLES CORRECTIONS .....
+ CPU     0: STEP CPU TIME=     0.05 TOTAL CPU TIME=        4.6 (    0.1 MIN)
+ TOTAL WALL CLOCK TIME=        4.6 SECONDS, CPU UTILIZATION IS 100.00%
+ 580000  WORDS OF DYNAMIC MEMORY USED
+ EXECUTION OF GAMESS TERMINATED NORMALLY Fri Mar  2 16:00:50 2012
+ DDI: 621768 bytes (0.6 MB / 0 MWords) used by master data server.
+
+ ----------------------------------------
+ CPU timing information for all processes
+ ========================================
+ 0: 2.860178 + 1.524095 = 4.384273
+ 1: 3.180198 + 1.520095 = 4.700293
+ 2: 3.196199 + 1.504094 = 4.700293
+ 3: 3.220201 + 1.480092 = 4.700293
+ 4: 3.280205 + 1.420088 = 4.700293
+ 5: 3.248203 + 1.452090 = 4.700293
+ 6: 3.156197 + 1.544096 = 4.700293
+ 7: 3.256203 + 1.440090 = 4.696293
+ ----------------------------------------
+ STOP  
+ STOP  
+ STOP  
+ STOP  
+ STOP  
+ STOP  
+ STOP  
+ STOP  
+Application 108068 resources: utime ~38s, stime ~14s
+unset echo
+GAMESS[16207]: stop
+----- accounting info -----
+Files used by the master process on jyc1 were:
+total 3768
+-rw------- 1 ryano vendor_cray  585748 2012-03-02 16:00 _ericfmt.dat
+-rw------- 1 ryano vendor_cray   29557 1901-12-14 14:45 water1-ccsdt-accd.dat
+-rw------- 1 ryano vendor_cray     199 2012-03-02 16:00 water1-ccsdt-accd.F03
+-rw------- 1 ryano vendor_cray     395 2012-03-02 16:00 water1-ccsdt-accd.F05
+-rw------- 1 ryano vendor_cray 1014320 2012-03-02 16:00 water1-ccsdt-accd.F10
+-rw------- 1 ryano vendor_cray  388608 2012-03-02 16:00 water1-ccsdt-accd.F70
+-rw------- 1 ryano vendor_cray 1670400 1901-12-14 14:45 water1-ccsdt-accd.F71
+-rw------- 1 ryano vendor_cray    4608 2012-03-02 16:00 water1-ccsdt-accd.F73
+-rw------- 1 ryano vendor_cray  331776 1901-12-14 14:45 water1-ccsdt-accd.F74
+Files used by every process where:
+total 1108
+drwx------ 2 ryano vendor_cray    4096 2012-03-02 16:00 MASTER/
+-rw------- 1 ryano vendor_cray 1120144 2012-03-02 16:00 triples.restart
+-rw------- 1 ryano vendor_cray    6896 2012-03-02 16:00 water1-ccsdt-accd.F09
+ 
+ 
+ 
+Removing the scratch files
+ 
+Fri Mar  2 16:00:58 CST 2012
+3.668u 0.324s 0:16.72 23.8%	0+0k 0+0io 0pf+0w
