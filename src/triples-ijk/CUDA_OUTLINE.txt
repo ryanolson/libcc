@@ -14,6 +14,12 @@ Resident for an IJK Tuple
 * VOE_IJ, VOE_JI, VOE_IK, VOE_KI, VOE_JK, VOE_KJ (NU2)
 * T2_I, T2_J, T2_K (NU2O)
 * VE_I, VE_J, VE_K (NU3 - xfered as NUTR*NU)
+* V3 (NU3)
+*
+Optionally Resident if Device Memory allows
+===========================================
+* T2 (NU2O2)
+* VOE (NU2O2)
 
 Data Storage
 ============
@@ -23,7 +29,6 @@ Data Storage
 
 The storage component will be abstrated so that a non-blocking
 GET option can be done on VE, VOE and/or T2.
-
 
 End Goal Pseudo Code
 ====================

@@ -404,9 +404,9 @@ do iwrk = sr, sr+nr-1
   end if
   call smp_sync()
 
-  if(ddi_my.eq.0) then
-     write(6,*) ddi_me, etd
-  end if
+! if(ddi_my.eq.0) then
+!    write(6,*) ddi_me, etd
+! end if
 
   if(ddi_me.eq.0) then
 !    write(6,*) 'mytask',mytask
