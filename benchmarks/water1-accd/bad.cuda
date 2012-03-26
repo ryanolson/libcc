@@ -1,0 +1,628 @@
+----------------------------------------
+Begin Torque Prologue Mon Mar 12 13:05:04 CDT 2012
+Job Id:			22700.sdb
+Username:		jbentz
+Group:			vendor_nvidia
+Job name:		w1-accd.cuda
+Requested resources:	walltime=02:00:00
+Queue:			core16q
+Account:		
+Allocated Nodes:
+[80:16]
+End Torque Prologue 
+----------------------------------------
+Warning: no access to tty (Bad file descriptor).
+Thus no job control in this shell.
+module: Command not found.
+module: Command not found.
+Verification:                  ets+etd should be -0.0052499877
+libonesided using gni version: 4980900
+libonesided: blocking waits
+[ds 0]: set_affinity mask=0x2
+0 [cp] get_affinity mask = 0x1
+ DDI: Creating Array [0] - 666x144=95904.
+ check ve_ia(1)= 1.02819822076784771E-3
+ check ve_ia(1)= 0.
+ restarting triples
+nu 36
+block x y z 192 1 1
+grid x y z 36 36 1
+ ioff,joff, t1  2*1,  -1.52873989186879873E-5
+ ioff,joff, t1  2,  1,  -4.96400045712761694E-16
+ ioff,joff, t1  3,  1,  -1.50949126737552494E-4
+ ioff,joff, t1  4,  1,  0.
+ ioff,joff, t1  5,  1,  -1.37258112630604868E-4
+ ioff,joff, t1  6,  1,  6.25759077123829586E-17
+ ioff,joff, t1  7,  1,  -3.45285563786229912E-16
+ ioff,joff, t1  8,  1,  9.65088738032320736E-5
+ ioff,joff, t1  9,  1,  0.
+ ioff,joff, t1  10,  1,  -2.07652897023700934E-4
+ ioff,joff, t1  11,  1,  0.
+ ioff,joff, t1  12,  1,  -1.08590141268873231E-15
+ ioff,joff, t1  13,  1,  2.17374749362673181E-5
+ ioff,joff, t1  14,  1,  4.9577265880817167E-15
+ ioff,joff, t1  15,  1,  -1.55689742536006825E-15
+ ioff,joff, t1  16,  1,  8.56168943044219679E-5
+ ioff,joff, t1  17,  1,  0.
+ ioff,joff, t1  18,  1,  -4.77715373310673162E-5
+ ioff,joff, t1  19,  1,  0.
+ ioff,joff, t1  20,  1,  -1.19831944823050376E-4
+ ioff,joff, t1  21,  1,  3.73545333256105091E-15
+ ioff,joff, t1  22,  1,  0.
+ ioff,joff, t1  23,  1,  8.40166887368468275E-5
+ ioff,joff, t1  24,  1,  -6.53224988410468825E-16
+ ioff,joff, t1  25,  1,  0.
+ ioff,joff, t1  26,  1,  0.
+ ioff,joff, t1  27,  1,  4.01127943779976381E-5
+ ioff,joff, t1  28,  1,  -2.68459338472483653E-15
+ ioff,joff, t1  29,  1,  -1.49233438330339581E-4
+ ioff,joff, t1  30,  1,  -4.21751324955409201E-15
+ ioff,joff, t1  31,  1,  5.79598313746208463E-6
+ ioff,joff, t1  32,  1,  0.
+ ioff,joff, t1  33,  1,  -2.40417052904041152E-5
+ ioff,joff, t1  34,  1,  0.
+ ioff,joff, t1  35,  1,  9.25229439549477187E-6
+ ioff,joff, t1  36,  1,  -2.69456005309121273E-15
+ ioff,joff, t1  1,  2,  -5.50170140419303433E-16
+ ioff,joff, t1  2*2,  1.1762323289993627E-4
+ ioff,joff, t1  3,  2,  -4.7908409135499713E-16
+ ioff,joff, t1  4,  2,  0.
+ ioff,joff, t1  5,  2,  1.30137377045538252E-16
+ ioff,joff, t1  6,  2,  -1.91377100935863625E-4
+ ioff,joff, t1  7,  2,  -2.33626418637525405E-4
+ ioff,joff, t1  8,  2,  -1.04057793269004142E-16
+ ioff,joff, t1  9,  2,  0.
+ ioff,joff, t1  10,  2,  1.91121242187679846E-16
+ ioff,joff, t1  11,  2,  0.
+ ioff,joff, t1  12,  2,  7.18843297686172576E-5
+ ioff,joff, t1  13,  2,  -3.40752839009344084E-16
+ ioff,joff, t1  14,  2,  1.62715233759776553E-4
+ ioff,joff, t1  15,  2,  7.38939527340684148E-5
+ ioff,joff, t1  16,  2,  -1.32373139174438471E-16
+ ioff,joff, t1  17,  2,  0.
+ ioff,joff, t1  18,  2,  1.24950751493680516E-16
+ ioff,joff, t1  19,  2,  0.
+ ioff,joff, t1  20,  2,  4.50774452297787156E-16
+ ioff,joff, t1  21,  2,  1.77820449408261054E-5
+ ioff,joff, t1  22,  2,  0.
+ ioff,joff, t1  23,  2,  -1.096328668431319E-16
+ ioff,joff, t1  24,  2,  6.94057838323296384E-6
+ ioff,joff, t1  25,  2,  0.
+ ioff,joff, t1  26,  2,  0.
+ ioff,joff, t1  27,  2,  -2.5372845484539304E-16
+ ioff,joff, t1  28,  2,  -1.63938936923765813E-4
+ ioff,joff, t1  29,  2,  1.6691398647441989E-16
+ ioff,joff, t1  30,  2,  2.3876780584895593E-5
+ ioff,joff, t1  31,  2,  -1.07757734025839152E-15
+ ioff,joff, t1  32,  2,  0.
+ ioff,joff, t1  33,  2,  7.32017789725603155E-17
+ ioff,joff, t1  34,  2,  0.
+ ioff,joff, t1  35,  2,  -5.9101083372911694E-16
+ ioff,joff, t1  36,  2,  1.09680602146747266E-4
+ ioff,joff, t1  1,  3,  -3.91217209729768564E-5
+ ioff,joff, t1  2,  3,  -3.78784057772073798E-17
+ ioff,joff, t1  2*3,  1.18738728558901211E-4
+ ioff,joff, t1  4,  3,  0.
+ ioff,joff, t1  5,  3,  5.18963466497100007E-5
+ ioff,joff, t1  6,  3,  -9.46937582003270634E-17
+ ioff,joff, t1  7,  3,  1.96553943680363169E-17
+ ioff,joff, t1  8,  3,  -4.99697263213315588E-5
+ ioff,joff, t1  9,  3,  0.
+ ioff,joff, t1  10,  3,  1.5159791966619867E-4
+ ioff,joff, t1  11,  3,  0.
+ ioff,joff, t1  12,  3,  7.30441033114983788E-17
+ ioff,joff, t1  13,  3,  -2.92816150049545417E-5
+ ioff,joff, t1  14,  3,  -1.50361583598544255E-16
+ ioff,joff, t1  15,  3,  -6.1670092295038284E-18
+ ioff,joff, t1  16,  3,  2.70028346792779786E-5
+ ioff,joff, t1  17,  3,  0.
+ ioff,joff, t1  18,  3,  1.04556527018835019E-4
+ ioff,joff, t1  19,  3,  0.
+ ioff,joff, t1  20,  3,  -1.90665185627351311E-5
+ ioff,joff, t1  21,  3,  -2.31209329966518117E-16
+ ioff,joff, t1  22,  3,  0.
+ ioff,joff, t1  23,  3,  -1.89235531369497109E-5
+ ioff,joff, t1  24,  3,  -5.41419989834300378E-17
+ ioff,joff, t1  25,  3,  0.
+ ioff,joff, t1  26,  3,  0.
+ ioff,joff, t1  27,  3,  -1.39688716370189093E-6
+ ioff,joff, t1  28,  3,  8.4031154951053494E-17
+ ioff,joff, t1  29,  3,  -1.78996804659459891E-4
+ ioff,joff, t1  30,  3,  2.13297090111736469E-16
+ ioff,joff, t1  31,  3,  -5.55583581359208884E-5
+ ioff,joff, t1  32,  3,  0.
+ ioff,joff, t1  33,  3,  -9.06944089950452247E-5
+ ioff,joff, t1  34,  3,  0.
+ ioff,joff, t1  35,  3,  -7.96981570910377775E-5
+ ioff,joff, t1  36,  3,  2.33577120484368205E-16
+ ioff,joff, t1  1,  4,  0.
+ ioff,joff, t1  2,  4,  0.
+ ioff,joff, t1  3,  4,  0.
+ ioff,joff, t1  2*4,  0.
+ ioff,joff, t1  5,  4,  0.
+ ioff,joff, t1  6,  4,  0.
+ ioff,joff, t1  7,  4,  0.
+ ioff,joff, t1  8,  4,  0.
+ ioff,joff, t1  9,  4,  0.
+ ioff,joff, t1  10,  4,  0.
+ ioff,joff, t1  11,  4,  0.
+ ioff,joff, t1  12,  4,  0.
+ ioff,joff, t1  13,  4,  0.
+ ioff,joff, t1  14,  4,  0.
+ ioff,joff, t1  15,  4,  0.
+ ioff,joff, t1  16,  4,  0.
+ ioff,joff, t1  17,  4,  0.
+ ioff,joff, t1  18,  4,  0.
+ ioff,joff, t1  19,  4,  0.
+ ioff,joff, t1  20,  4,  0.
+ ioff,joff, t1  21,  4,  0.
+ ioff,joff, t1  22,  4,  0.
+ ioff,joff, t1  23,  4,  0.
+ ioff,joff, t1  24,  4,  0.
+ ioff,joff, t1  25,  4,  0.
+ ioff,joff, t1  26,  4,  0.
+ ioff,joff, t1  27,  4,  0.
+ ioff,joff, t1  28,  4,  0.
+ ioff,joff, t1  29,  4,  0.
+ ioff,joff, t1  30,  4,  0.
+ ioff,joff, t1  31,  4,  0.
+ ioff,joff, t1  32,  4,  0.
+ ioff,joff, t1  33,  4,  0.
+ ioff,joff, t1  34,  4,  0.
+ ioff,joff, t1  35,  4,  0.
+ ioff,joff, t1  36,  4,  0.
+nu 36
+block x y z 192 1 1
+grid x y z 36 36 1
+ ioff,joff, t1  2*1,  -9.34273392749219029E-5
+ ioff,joff, t1  2,  1,  -9.70734650713486083E-16
+ ioff,joff, t1  3,  1,  -1.94055649922561459E-4
+ ioff,joff, t1  4,  1,  0.
+ ioff,joff, t1  5,  1,  -3.35468360983015351E-4
+ ioff,joff, t1  6,  1,  -5.04316340272590525E-17
+ ioff,joff, t1  7,  1,  -7.62890049886197396E-16
+ ioff,joff, t1  8,  1,  1.33578477277704907E-4
+ ioff,joff, t1  9,  1,  0.
+ ioff,joff, t1  10,  1,  -3.20940654549596572E-4
+ ioff,joff, t1  11,  1,  0.
+ ioff,joff, t1  12,  1,  -1.99953575796524267E-15
+ ioff,joff, t1  13,  1,  1.1971833113428981E-4
+ ioff,joff, t1  14,  1,  9.36544520031775163E-15
+ ioff,joff, t1  15,  1,  -2.84644018222789321E-15
+ ioff,joff, t1  16,  1,  1.17459778001933847E-4
+ ioff,joff, t1  17,  1,  0.
+ ioff,joff, t1  18,  1,  -7.74152926657485727E-5
+ ioff,joff, t1  19,  1,  0.
+ ioff,joff, t1  20,  1,  -2.14213522488293289E-4
+ ioff,joff, t1  21,  1,  7.07748053059426143E-15
+ ioff,joff, t1  22,  1,  0.
+ ioff,joff, t1  23,  1,  1.91871833328374845E-4
+ ioff,joff, t1  24,  1,  -1.30653111667657471E-15
+ ioff,joff, t1  25,  1,  0.
+ ioff,joff, t1  26,  1,  0.
+ ioff,joff, t1  27,  1,  5.7858531278110278E-5
+ ioff,joff, t1  28,  1,  -5.1446554574627909E-15
+ ioff,joff, t1  29,  1,  -3.10820166612245602E-4
+ ioff,joff, t1  30,  1,  -7.87088651358996263E-15
+ ioff,joff, t1  31,  1,  1.73961186524753562E-6
+ ioff,joff, t1  32,  1,  0.
+ ioff,joff, t1  33,  1,  -3.80973880144581809E-5
+ ioff,joff, t1  34,  1,  0.
+ ioff,joff, t1  35,  1,  -1.95313162794053959E-5
+ ioff,joff, t1  36,  1,  -5.05776781425665454E-15
+ ioff,joff, t1  1,  2,  -1.11892877399606489E-15
+ ioff,joff, t1  2*2,  2.52658672051263116E-4
+ ioff,joff, t1  3,  2,  -9.64195676835197094E-16
+ ioff,joff, t1  4,  2,  0.
+ ioff,joff, t1  5,  2,  3.18552858049588001E-16
+ ioff,joff, t1  6,  2,  -4.20655270760802427E-4
+ ioff,joff, t1  7,  2,  -4.76486061753853257E-4
+ ioff,joff, t1  8,  2,  -1.46659117150170399E-16
+ ioff,joff, t1  9,  2,  0.
+ ioff,joff, t1  10,  2,  4.12883919429657066E-16
+ ioff,joff, t1  11,  2,  0.
+ ioff,joff, t1  12,  2,  1.5508869426960386E-4
+ ioff,joff, t1  13,  2,  -7.00574048395405764E-16
+ ioff,joff, t1  14,  2,  3.63974588381974417E-4
+ ioff,joff, t1  15,  2,  1.05859166291199497E-4
+ ioff,joff, t1  16,  2,  -2.07003234722230977E-16
+ ioff,joff, t1  17,  2,  0.
+ ioff,joff, t1  18,  2,  2.30921067623339062E-16
+ ioff,joff, t1  19,  2,  0.
+ ioff,joff, t1  20,  2,  9.14913977277423472E-16
+ ioff,joff, t1  21,  2,  -2.17090509518865274E-5
+ ioff,joff, t1  22,  2,  0.
+ ioff,joff, t1  23,  2,  -2.40299152050693015E-16
+ ioff,joff, t1  24,  2,  1.35995202153373433E-7
+ ioff,joff, t1  25,  2,  0.
+ ioff,joff, t1  26,  2,  0.
+ ioff,joff, t1  27,  2,  -4.86188831689859701E-16
+ ioff,joff, t1  28,  2,  -3.30201269611632301E-4
+ ioff,joff, t1  29,  2,  3.267544302331667E-16
+ ioff,joff, t1  30,  2,  8.34683455278396516E-5
+ ioff,joff, t1  31,  2,  -2.08805379405626301E-15
+ ioff,joff, t1  32,  2,  0.
+ ioff,joff, t1  33,  2,  1.38281808569910619E-16
+ ioff,joff, t1  34,  2,  0.
+ ioff,joff, t1  35,  2,  -1.11059885251502795E-15
+ ioff,joff, t1  36,  2,  1.69454087659939374E-4
+ ioff,joff, t1  1,  3,  -3.91217209729768564E-5
+ ioff,joff, t1  2,  3,  -3.78784057772073798E-17
+ ioff,joff, t1  2*3,  1.18738728558901211E-4
+ ioff,joff, t1  4,  3,  0.
+ ioff,joff, t1  5,  3,  5.18963466497100007E-5
+ ioff,joff, t1  6,  3,  -9.46937582003270634E-17
+ ioff,joff, t1  7,  3,  1.96553943680363169E-17
+ ioff,joff, t1  8,  3,  -4.99697263213315588E-5
+ ioff,joff, t1  9,  3,  0.
+ ioff,joff, t1  10,  3,  1.5159791966619867E-4
+ ioff,joff, t1  11,  3,  0.
+ ioff,joff, t1  12,  3,  7.30441033114983788E-17
+ ioff,joff, t1  13,  3,  -2.92816150049545417E-5
+ ioff,joff, t1  14,  3,  -1.50361583598544255E-16
+ ioff,joff, t1  15,  3,  -6.1670092295038284E-18
+ ioff,joff, t1  16,  3,  2.70028346792779786E-5
+ ioff,joff, t1  17,  3,  0.
+ ioff,joff, t1  18,  3,  1.04556527018835019E-4
+ ioff,joff, t1  19,  3,  0.
+ ioff,joff, t1  20,  3,  -1.90665185627351311E-5
+ ioff,joff, t1  21,  3,  -2.31209329966518117E-16
+ ioff,joff, t1  22,  3,  0.
+ ioff,joff, t1  23,  3,  -1.89235531369497109E-5
+ ioff,joff, t1  24,  3,  -5.41419989834300378E-17
+ ioff,joff, t1  25,  3,  0.
+ ioff,joff, t1  26,  3,  0.
+ ioff,joff, t1  27,  3,  -1.39688716370189093E-6
+ ioff,joff, t1  28,  3,  8.4031154951053494E-17
+ ioff,joff, t1  29,  3,  -1.78996804659459891E-4
+ ioff,joff, t1  30,  3,  2.13297090111736469E-16
+ ioff,joff, t1  31,  3,  -5.55583581359208884E-5
+ ioff,joff, t1  32,  3,  0.
+ ioff,joff, t1  33,  3,  -9.06944089950452247E-5
+ ioff,joff, t1  34,  3,  0.
+ ioff,joff, t1  35,  3,  -7.96981570910377775E-5
+ ioff,joff, t1  36,  3,  2.33577120484368205E-16
+ ioff,joff, t1  1,  4,  0.
+ ioff,joff, t1  2,  4,  0.
+ ioff,joff, t1  3,  4,  0.
+ ioff,joff, t1  2*4,  -2.24667874894576906E-4
+ ioff,joff, t1  5,  4,  0.
+ ioff,joff, t1  6,  4,  0.
+ ioff,joff, t1  7,  4,  0.
+ ioff,joff, t1  8,  4,  0.
+ ioff,joff, t1  9,  4,  7.3400305790669515E-18
+ ioff,joff, t1  10,  4,  0.
+ ioff,joff, t1  11,  4,  -2.02551000472011108E-4
+ ioff,joff, t1  12,  4,  0.
+ ioff,joff, t1  13,  4,  0.
+ ioff,joff, t1  14,  4,  0.
+ ioff,joff, t1  15,  4,  0.
+ ioff,joff, t1  16,  4,  0.
+ ioff,joff, t1  17,  4,  7.94659820031708359E-5
+ ioff,joff, t1  18,  4,  0.
+ ioff,joff, t1  19,  4,  -7.40417973525477347E-17
+ ioff,joff, t1  20,  4,  0.
+ ioff,joff, t1  21,  4,  0.
+ ioff,joff, t1  22,  4,  -2.8371056706981444E-6
+ ioff,joff, t1  23,  4,  0.
+ ioff,joff, t1  24,  4,  0.
+ ioff,joff, t1  25,  4,  -7.07894622999928699E-17
+ ioff,joff, t1  26,  4,  4.20712021060293991E-5
+ ioff,joff, t1  27,  4,  0.
+ ioff,joff, t1  28,  4,  0.
+ ioff,joff, t1  29,  4,  0.
+ ioff,joff, t1  30,  4,  0.
+ ioff,joff, t1  31,  4,  0.
+ ioff,joff, t1  32,  4,  -6.55058213105429491E-5
+ ioff,joff, t1  33,  4,  0.
+ ioff,joff, t1  34,  4,  5.88147996965239024E-17
+ ioff,joff, t1  35,  4,  0.
+ ioff,joff, t1  36,  4,  0.
+ % complete =  4
+nu 36
+block x y z 192 1 1
+grid x y z 36 36 1
+ ioff,joff, t1  2*1,  -2.15568753576602588E-4
+ ioff,joff, t1  2,  1,  -1.47869985120968011E-15
+ ioff,joff, t1  3,  1,  -2.2864516833776276E-4
+ ioff,joff, t1  4,  1,  0.
+ ioff,joff, t1  5,  1,  -6.42958909301474943E-4
+ ioff,joff, t1  6,  1,  -5.26036029556418424E-17
+ ioff,joff, t1  7,  1,  -1.11850739318449104E-15
+ ioff,joff, t1  8,  1,  1.80323634306173641E-4
+ ioff,joff, t1  9,  1,  0.
+ ioff,joff, t1  10,  1,  -4.52979789908578977E-4
+ ioff,joff, t1  11,  1,  0.
+ ioff,joff, t1  12,  1,  -2.95948204007704622E-15
+ ioff,joff, t1  13,  1,  3.30277899798541146E-4
+ ioff,joff, t1  14,  1,  1.38451934152339752E-14
+ ioff,joff, t1  15,  1,  -4.35876766205189669E-15
+ ioff,joff, t1  16,  1,  1.33273781029515662E-4
+ ioff,joff, t1  17,  1,  0.
+ ioff,joff, t1  18,  1,  -1.38857509891716268E-4
+ ioff,joff, t1  19,  1,  0.
+ ioff,joff, t1  20,  1,  -2.66253739232954513E-4
+ ioff,joff, t1  21,  1,  1.06146679527115774E-14
+ ioff,joff, t1  22,  1,  0.
+ ioff,joff, t1  23,  1,  3.323720868933933E-4
+ ioff,joff, t1  24,  1,  -1.9982919568140472E-15
+ ioff,joff, t1  25,  1,  0.
+ ioff,joff, t1  26,  1,  0.
+ ioff,joff, t1  27,  1,  4.4174235583424724E-5
+ ioff,joff, t1  28,  1,  -7.81914487947063587E-15
+ ioff,joff, t1  29,  1,  -3.54683564801057871E-4
+ ioff,joff, t1  30,  1,  -1.14967465183831999E-14
+ ioff,joff, t1  31,  1,  -1.92395611148589022E-5
+ ioff,joff, t1  32,  1,  0.
+ ioff,joff, t1  33,  1,  -4.42809228613023404E-5
+ ioff,joff, t1  34,  1,  0.
+ ioff,joff, t1  35,  1,  -3.72297859152595601E-5
+ ioff,joff, t1  36,  1,  -7.42586914669942201E-15
+ ioff,joff, t1  1,  2,  -1.11892877399606489E-15
+ ioff,joff, t1  2*2,  2.52658672051263116E-4
+ ioff,joff, t1  3,  2,  -9.64195676835197094E-16
+ ioff,joff, t1  4,  2,  0.
+ ioff,joff, t1  5,  2,  3.18552858049588001E-16
+ ioff,joff, t1  6,  2,  -4.20655270760802427E-4
+ ioff,joff, t1  7,  2,  -4.76486061753853257E-4
+ ioff,joff, t1  8,  2,  -1.46659117150170399E-16
+ ioff,joff, t1  9,  2,  0.
+ ioff,joff, t1  10,  2,  4.12883919429657066E-16
+ ioff,joff, t1  11,  2,  0.
+ ioff,joff, t1  12,  2,  1.5508869426960386E-4
+ ioff,joff, t1  13,  2,  -7.00574048395405764E-16
+ ioff,joff, t1  14,  2,  3.63974588381974417E-4
+ ioff,joff, t1  15,  2,  1.05859166291199497E-4
+ ioff,joff, t1  16,  2,  -2.07003234722230977E-16
+ ioff,joff, t1  17,  2,  0.
+ ioff,joff, t1  18,  2,  2.30921067623339062E-16
+ ioff,joff, t1  19,  2,  0.
+ ioff,joff, t1  20,  2,  9.14913977277423472E-16
+ ioff,joff, t1  21,  2,  -2.17090509518865274E-5
+ ioff,joff, t1  22,  2,  0.
+ ioff,joff, t1  23,  2,  -2.40299152050693015E-16
+ ioff,joff, t1  24,  2,  1.35995202153373433E-7
+ ioff,joff, t1  25,  2,  0.
+ ioff,joff, t1  26,  2,  0.
+ ioff,joff, t1  27,  2,  -4.86188831689859701E-16
+ ioff,joff, t1  28,  2,  -3.30201269611632301E-4
+ ioff,joff, t1  29,  2,  3.267544302331667E-16
+ ioff,joff, t1  30,  2,  8.34683455278396516E-5
+ ioff,joff, t1  31,  2,  -2.08805379405626301E-15
+ ioff,joff, t1  32,  2,  0.
+ ioff,joff, t1  33,  2,  1.38281808569910619E-16
+ ioff,joff, t1  34,  2,  0.
+ ioff,joff, t1  35,  2,  -1.11059885251502795E-15
+ ioff,joff, t1  36,  2,  1.69454087659939374E-4
+ ioff,joff, t1  1,  3,  -1.37791817424383453E-4
+ ioff,joff, t1  2,  3,  -1.24513890912474956E-16
+ ioff,joff, t1  2*3,  4.49116358250693218E-4
+ ioff,joff, t1  4,  3,  0.
+ ioff,joff, t1  5,  3,  1.21855520019791488E-4
+ ioff,joff, t1  6,  3,  -2.56234667355252082E-16
+ ioff,joff, t1  7,  3,  -3.60711389390221414E-18
+ ioff,joff, t1  8,  3,  -1.87171169636991006E-4
+ ioff,joff, t1  9,  3,  0.
+ ioff,joff, t1  10,  3,  4.73479445971284327E-4
+ ioff,joff, t1  11,  3,  0.
+ ioff,joff, t1  12,  3,  8.23316193054341192E-17
+ ioff,joff, t1  13,  3,  9.61091663443637502E-6
+ ioff,joff, t1  14,  3,  3.26186825093874668E-17
+ ioff,joff, t1  15,  3,  -1.94811207902419551E-16
+ ioff,joff, t1  16,  3,  3.25179843943035615E-6
+ ioff,joff, t1  17,  3,  0.
+ ioff,joff, t1  18,  3,  1.70615705755555361E-4
+ ioff,joff, t1  19,  3,  0.
+ ioff,joff, t1  20,  3,  6.77024721135308289E-5
+ ioff,joff, t1  21,  3,  -1.2934566598018535E-16
+ ioff,joff, t1  22,  3,  0.
+ ioff,joff, t1  23,  3,  -1.17454136473987036E-4
+ ioff,joff, t1  24,  3,  -1.33294368369076493E-16
+ ioff,joff, t1  25,  3,  0.
+ ioff,joff, t1  26,  3,  0.
+ ioff,joff, t1  27,  3,  1.20535600075377223E-5
+ ioff,joff, t1  28,  3,  -2.7503242823512087E-17
+ ioff,joff, t1  29,  3,  -3.130924332323029E-4
+ ioff,joff, t1  30,  3,  1.02781570517413539E-16
+ ioff,joff, t1  31,  3,  -6.75848478090271065E-5
+ ioff,joff, t1  32,  3,  0.
+ ioff,joff, t1  33,  3,  -5.64066162126419836E-5
+ ioff,joff, t1  34,  3,  0.
+ ioff,joff, t1  35,  3,  -1.25218990130976197E-4
+ ioff,joff, t1  36,  3,  2.03065221196750002E-16
+ ioff,joff, t1  1,  4,  0.
+ ioff,joff, t1  2,  4,  0.
+ ioff,joff, t1  3,  4,  0.
+ ioff,joff, t1  2*4,  -4.62305371052830429E-4
+ ioff,joff, t1  5,  4,  0.
+ ioff,joff, t1  6,  4,  0.
+ ioff,joff, t1  7,  4,  0.
+ ioff,joff, t1  8,  4,  0.
+ ioff,joff, t1  9,  4,  -6.99745317717332546E-17
+ ioff,joff, t1  10,  4,  0.
+ ioff,joff, t1  11,  4,  -4.25300230852232984E-4
+ ioff,joff, t1  12,  4,  0.
+ ioff,joff, t1  13,  4,  0.
+ ioff,joff, t1  14,  4,  0.
+ ioff,joff, t1  15,  4,  0.
+ ioff,joff, t1  16,  4,  0.
+ ioff,joff, t1  17,  4,  9.75887148539711174E-5
+ ioff,joff, t1  18,  4,  0.
+ ioff,joff, t1  19,  4,  -1.24620768046081987E-16
+ ioff,joff, t1  20,  4,  0.
+ ioff,joff, t1  21,  4,  0.
+ ioff,joff, t1  22,  4,  1.66644278583222353E-4
+ ioff,joff, t1  23,  4,  0.
+ ioff,joff, t1  24,  4,  0.
+ ioff,joff, t1  25,  4,  -1.29749888691710238E-16
+ ioff,joff, t1  26,  4,  8.12947271198333899E-5
+ ioff,joff, t1  27,  4,  0.
+ ioff,joff, t1  28,  4,  0.
+ ioff,joff, t1  29,  4,  0.
+ ioff,joff, t1  30,  4,  0.
+ ioff,joff, t1  31,  4,  0.
+ ioff,joff, t1  32,  4,  -2.76751682442484468E-5
+ ioff,joff, t1  33,  4,  0.
+ ioff,joff, t1  34,  4,  9.85923694188211079E-17
+ ioff,joff, t1  35,  4,  0.
+ ioff,joff, t1  36,  4,  0.
+ % complete =  8
+nu 36
+block x y z 192 1 1
+grid x y z 36 36 1
+ ioff,joff, t1  2*1,  -2.15568753576602588E-4
+ ioff,joff, t1  2,  1,  -1.47869985120968011E-15
+ ioff,joff, t1  3,  1,  -2.2864516833776276E-4
+ ioff,joff, t1  4,  1,  0.
+ ioff,joff, t1  5,  1,  -6.42958909301474943E-4
+ ioff,joff, t1  6,  1,  -5.26036029556418424E-17
+ ioff,joff, t1  7,  1,  -1.11850739318449104E-15
+ ioff,joff, t1  8,  1,  1.80323634306173641E-4
+ ioff,joff, t1  9,  1,  0.
+ ioff,joff, t1  10,  1,  -4.52979789908578977E-4
+ ioff,joff, t1  11,  1,  0.
+ ioff,joff, t1  12,  1,  -2.95948204007704622E-15
+ ioff,joff, t1  13,  1,  3.30277899798541146E-4
+ ioff,joff, t1  14,  1,  1.38451934152339752E-14
+ ioff,joff, t1  15,  1,  -4.35876766205189669E-15
+ ioff,joff, t1  16,  1,  1.33273781029515662E-4
+ ioff,joff, t1  17,  1,  0.
+ ioff,joff, t1  18,  1,  -1.38857509891716268E-4
+ ioff,joff, t1  19,  1,  0.
+ ioff,joff, t1  20,  1,  -2.66253739232954513E-4
+ ioff,joff, t1  21,  1,  1.06146679527115774E-14
+ ioff,joff, t1  22,  1,  0.
+ ioff,joff, t1  23,  1,  3.323720868933933E-4
+ ioff,joff, t1  24,  1,  -1.9982919568140472E-15
+ ioff,joff, t1  25,  1,  0.
+ ioff,joff, t1  26,  1,  0.
+ ioff,joff, t1  27,  1,  4.4174235583424724E-5
+ ioff,joff, t1  28,  1,  -7.81914487947063587E-15
+ ioff,joff, t1  29,  1,  -3.54683564801057871E-4
+ ioff,joff, t1  30,  1,  -1.14967465183831999E-14
+ ioff,joff, t1  31,  1,  -1.92395611148589022E-5
+ ioff,joff, t1  32,  1,  0.
+ ioff,joff, t1  33,  1,  -4.42809228613023404E-5
+ ioff,joff, t1  34,  1,  0.
+ ioff,joff, t1  35,  1,  -3.72297859152595601E-5
+ ioff,joff, t1  36,  1,  -7.42586914669942201E-15
+ ioff,joff, t1  1,  2,  -2.23283400534653329E-15
+ ioff,joff, t1  2*2,  4.22120527139761533E-4
+ ioff,joff, t1  3,  2,  -1.82658728514167751E-15
+ ioff,joff, t1  4,  2,  0.
+ ioff,joff, t1  5,  2,  4.78678299000663443E-16
+ ioff,joff, t1  6,  2,  -6.90111450722972379E-4
+ ioff,joff, t1  7,  2,  -7.6390871194354339E-4
+ ioff,joff, t1  8,  2,  -1.6037433799465374E-16
+ ioff,joff, t1  9,  2,  0.
+ ioff,joff, t1  10,  2,  5.64199010729575304E-16
+ ioff,joff, t1  11,  2,  0.
+ ioff,joff, t1  12,  2,  2.28500170661227362E-4
+ ioff,joff, t1  13,  2,  -1.29891858264345521E-15
+ ioff,joff, t1  14,  2,  5.57925333977012843E-4
+ ioff,joff, t1  15,  2,  8.93557503433421073E-5
+ ioff,joff, t1  16,  2,  -6.89100364027431464E-16
+ ioff,joff, t1  17,  2,  0.
+ ioff,joff, t1  18,  2,  4.40903620447746864E-16
+ ioff,joff, t1  19,  2,  0.
+ ioff,joff, t1  20,  2,  1.8036875138322409E-15
+ ioff,joff, t1  21,  2,  -1.59532819713346434E-6
+ ioff,joff, t1  22,  2,  0.
+ ioff,joff, t1  23,  2,  -5.22807034003418066E-16
+ ioff,joff, t1  24,  2,  -4.15375734243298892E-5
+ ioff,joff, t1  25,  2,  0.
+ ioff,joff, t1  26,  2,  0.
+ ioff,joff, t1  27,  2,  -9.42950231782505395E-16
+ ioff,joff, t1  28,  2,  -6.06101140239136116E-4
+ ioff,joff, t1  29,  2,  9.17337798600823676E-16
+ ioff,joff, t1  30,  2,  2.18613309510928757E-4
+ ioff,joff, t1  31,  2,  -3.9066567042268012E-15
+ ioff,joff, t1  32,  2,  0.
+ ioff,joff, t1  33,  2,  3.22932699298648086E-16
+ ioff,joff, t1  34,  2,  0.
+ ioff,joff, t1  35,  2,  -2.05073659634407984E-15
+ ioff,joff, t1  36,  2,  1.61473346550841765E-4
+ ioff,joff, t1  1,  3,  -2.50724195552440581E-4
+ ioff,joff, t1  2,  3,  -2.30580533138319615E-16
+ ioff,joff, t1  2*3,  8.14123880544198792E-4
+ ioff,joff, t1  4,  3,  0.
+ ioff,joff, t1  5,  3,  2.26024690015910772E-4
+ ioff,joff, t1  6,  3,  -4.7003483884689498E-16
+ ioff,joff, t1  7,  3,  -1.96361898171741639E-16
+ ioff,joff, t1  8,  3,  -2.21214960441731449E-4
+ ioff,joff, t1  9,  3,  0.
+ ioff,joff, t1  10,  3,  8.63275943714375896E-4
+ ioff,joff, t1  11,  3,  0.
+ ioff,joff, t1  12,  3,  -1.25163240278116615E-16
+ ioff,joff, t1  13,  3,  -3.4419011645074306E-5
+ ioff,joff, t1  14,  3,  8.83864014198830888E-16
+ ioff,joff, t1  15,  3,  -6.12195931771673333E-16
+ ioff,joff, t1  16,  3,  8.14618468281666291E-5
+ ioff,joff, t1  17,  3,  0.
+ ioff,joff, t1  18,  3,  1.21949722131134086E-4
+ ioff,joff, t1  19,  3,  0.
+ ioff,joff, t1  20,  3,  2.56566640715046403E-5
+ ioff,joff, t1  21,  3,  4.87451930900325877E-16
+ ioff,joff, t1  22,  3,  0.
+ ioff,joff, t1  23,  3,  -2.0336464626868436E-5
+ ioff,joff, t1  24,  3,  -2.03796626733773752E-16
+ ioff,joff, t1  25,  3,  0.
+ ioff,joff, t1  26,  3,  0.
+ ioff,joff, t1  27,  3,  8.18136523035899247E-6
+ ioff,joff, t1  28,  3,  -4.00624480470580844E-16
+ ioff,joff, t1  29,  3,  -5.48351278903906462E-4
+ ioff,joff, t1  30,  3,  -4.90288828756837786E-16
+ ioff,joff, t1  31,  3,  -1.8765807611670842E-4
+ ioff,joff, t1  32,  3,  0.
+ ioff,joff, t1  33,  3,  -1.58163545220534122E-4
+ ioff,joff, t1  34,  3,  0.
+ ioff,joff, t1  35,  3,  -1.87311945314603542E-4
+ ioff,joff, t1  36,  3,  -2.81000443384389298E-17
+ ioff,joff, t1  1,  4,  0.
+ ioff,joff, t1  2,  4,  0.
+ ioff,joff, t1  3,  4,  0.
+ ioff,joff, t1  2*4,  -8.48898091951878352E-4
+ ioff,joff, t1  5,  4,  0.
+ ioff,joff, t1  6,  4,  0.
+ ioff,joff, t1  7,  4,  0.
+ ioff,joff, t1  8,  4,  0.
+ ioff,joff, t1  9,  4,  -6.49301427130817715E-17
+ ioff,joff, t1  10,  4,  0.
+ ioff,joff, t1  11,  4,  -9.76390500950352429E-4
+ ioff,joff, t1  12,  4,  0.
+ ioff,joff, t1  13,  4,  0.
+ ioff,joff, t1  14,  4,  0.
+ ioff,joff, t1  15,  4,  0.
+ ioff,joff, t1  16,  4,  0.
+ ioff,joff, t1  17,  4,  -2.25806133425867115E-5
+ ioff,joff, t1  18,  4,  0.
+ ioff,joff, t1  19,  4,  -1.6101062564324077E-16
+ ioff,joff, t1  20,  4,  0.
+ ioff,joff, t1  21,  4,  0.
+ ioff,joff, t1  22,  4,  2.30958582672141595E-4
+ ioff,joff, t1  23,  4,  0.
+ ioff,joff, t1  24,  4,  0.
+ ioff,joff, t1  25,  4,  -1.0550579698963154E-16
+ ioff,joff, t1  26,  4,  1.83265286610840856E-4
+ ioff,joff, t1  27,  4,  0.
+ ioff,joff, t1  28,  4,  0.
+ ioff,joff, t1  29,  4,  0.
+ ioff,joff, t1  30,  4,  0.
+ ioff,joff, t1  31,  4,  0.
+ ioff,joff, t1  32,  4,  -9.04553742221090847E-5
+ ioff,joff, t1  33,  4,  0.
+ ioff,joff, t1  34,  4,  1.0118609490567754E-16
+ ioff,joff, t1  35,  4,  0.
+ ioff,joff, t1  36,  4,  0.
+ % complete =  12
+walltime=        1.11133
+ ets/etd/ets+etd=   0.0003789620  -0.0056558662  -0.0052769042
+walltime=        1.14637
+ DDI: 1031720 bytes (1.0 MB / 0 MWords) used by master data server.
+
+ ----------------------------------------
+ CPU timing information for all processes
+ ========================================
+ 0: 12.156759 + 7.852490 = 20.009249
+ ----------------------------------------
+Application 118586 resources: utime ~13s, stime ~10s
