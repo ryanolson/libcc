@@ -60,7 +60,7 @@ ijk_gpu_driver(Integer *f_no, Integer *f_nu, double *f_t1, double *f_t2,
         no2 = no*no;
         nu2 = nu*nu;
         no3 = no*no2;
-        nu3 = nu*nu3;
+        nu3 = nu*nu2;
 
      // Device Resident Arrays
      // ======================
@@ -111,5 +111,5 @@ ijk_gpu_driver(Integer *f_no, Integer *f_nu, double *f_t1, double *f_t2,
      // Determine if voe can be resident, otherwise register it
      
      // Set up basic load-balancing
-
+        DDI_NProc( &ddi_np, &ddi_me );
      // 
