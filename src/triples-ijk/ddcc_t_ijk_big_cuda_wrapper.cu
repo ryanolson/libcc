@@ -3,6 +3,10 @@
 #include "cublas_v2.h"
 #include "cuda_kernels.h"
 
+#ifndef EH_EP_RESIDENT
+#define EH_EP_RESIDENT 1
+#endif
+
 //#define NO_CUDA_DEBUG
 #ifndef NO_CUDA_DEBUG
 #define CUDA_ERROR_CHECK()                                                                     \
@@ -22,8 +26,69 @@
 #define CUDA_ERROR_CHECK() {}
 #endif
 
+#define VM_INDEX(i,j) ( (no*nu*no)*(j-1) + (no*nu)*(i-1) )
 
 extern "C" {
+
+typedef long Integer;
+
+static double *d_eh = NULL;
+static double *d_ep = NULL;
+static double *d_vm = NULL;
+
+void gpu_arrays_init_(
+        Integer *f_no,
+        Integer *f_nu,
+        double *f_eh,
+        double *f_ep,
+        double *f_vm)
+{
+
+        long no = (long) *f_no;
+        long nu = (long) *f_nu;
+        long no3 = no*no*no;
+        size_t numbytes, gpu_bytes=0;
+
+        cublasStatus_t stat;
+        cublasHandle_t handle;
+        cudaError_t cudaStat;
+
+      # if EH_EP_RESIDENT
+     // d_eh
+        numbytes = sizeof(double) * no; gpu_bytes += numbytes;
+        cudaStat = cudaMalloc( (void **) &d_eh, numbytes );
+        CUDA_ERROR_CHECK();
+        cudaMemcpy( d_eh, f_eh, numbytes, cudaMemcpyHostToDevice );
+        CUDA_ERROR_CHECK();
+
+     // d_ep
+        numbytes = sizeof(double) * nu; gpu_bytes += numbytes;
+        cudaStat = cudaMalloc( (void **) &d_ep, numbytes );
+        CUDA_ERROR_CHECK();
+        cudaMemcpy( d_ep, f_ep, numbytes, cudaMemcpyHostToDevice );
+        CUDA_ERROR_CHECK();
+      # endif
+
+     // d_vm
+        numbytes = sizeof(double) * no3 * nu; gpu_bytes += numbytes;
+        cudaStat = cudaMalloc( (void **) &d_vm, numbytes );
+        CUDA_ERROR_CHECK();
+        cudaMemcpy( d_vm, f_vm, numbytes, cudaMemcpyHostToDevice );
+        CUDA_ERROR_CHECK();
+}
+
+void gpu_arrays_finalize_()
+{
+      # if EH_EP_RESIDENT
+        cudaFree( d_eh );
+        CUDA_ERROR_CHECK();
+        cudaFree( d_ep );
+        CUDA_ERROR_CHECK();
+      # endif
+        cudaFree( d_vm );
+        CUDA_ERROR_CHECK();
+}
+
 void ddcc_t_ijk_big_cuda_wrapper_(
     long int *p_nu, 
     long int *p_no,
@@ -75,18 +140,29 @@ void ddcc_t_ijk_big_cuda_wrapper_(
 
   size_t numbytes;
 
+/**
+ * Determine VM offsets
+ */
+  d_vm_ij = d_vm + VM_INDEX(i,j);
+  d_vm_ji = d_vm + VM_INDEX(j,i);
+  d_vm_ik = d_vm + VM_INDEX(i,k);
+  d_vm_ki = d_vm + VM_INDEX(k,i);
+  d_vm_jk = d_vm + VM_INDEX(j,k);
+  d_vm_kj = d_vm + VM_INDEX(k,j);
+
+
   numbytes = sizeof(double) * nu2 * no;
   cudaStat = cudaMalloc( (void **) &d_t2_j, numbytes );
   CUDA_ERROR_CHECK();
   cudaMemcpy( d_t2_j, t2_j, numbytes, cudaMemcpyHostToDevice );
   CUDA_ERROR_CHECK();
-
+/*
   numbytes = sizeof(double) * no * nu;
   cudaStat = cudaMalloc( (void **) &d_vm_ki, numbytes );
   CUDA_ERROR_CHECK();
   cudaMemcpy( d_vm_ki, vm_ki, numbytes, cudaMemcpyHostToDevice );
   CUDA_ERROR_CHECK();
-
+*/
   numbytes = sizeof(double) * nu3;
   cudaStat = cudaMalloc( (void **) &d_v3, numbytes );
   CUDA_ERROR_CHECK();
@@ -154,13 +230,13 @@ void ddcc_t_ijk_big_cuda_wrapper_(
   trant3_1_kernel<<< grid, block >>>( nu, d_v3 );
   CUDA_ERROR_CHECK();
 
-
+/*
   numbytes = sizeof(double) * nu * no;
   cudaStat = cudaMalloc( (void **) &d_vm_ji, numbytes );
   CUDA_ERROR_CHECK();
   cudaMemcpy( d_vm_ji, vm_ji, numbytes, cudaMemcpyHostToDevice );
   CUDA_ERROR_CHECK();
-
+*/
   stat = cublasDgemm( handle,
            CUBLAS_OP_T, CUBLAS_OP_T,
 	   nu, nu2, no, &om,
@@ -193,13 +269,13 @@ void ddcc_t_ijk_big_cuda_wrapper_(
   CUDA_ERROR_CHECK();
   cudaMemcpy( d_t2_i, t2_i, numbytes, cudaMemcpyHostToDevice );
   CUDA_ERROR_CHECK();
-
+/*
   numbytes = sizeof(double) * no * nu;
   cudaStat = cudaMalloc( (void **) &d_vm_kj, numbytes );
   CUDA_ERROR_CHECK();
   cudaMemcpy( d_vm_kj, vm_kj, numbytes, cudaMemcpyHostToDevice );
   CUDA_ERROR_CHECK();
-
+*/
   stat = cublasDgemm( handle,
            CUBLAS_OP_N, CUBLAS_OP_N,
 	   nu2, nu, no, &om,
@@ -229,13 +305,13 @@ void ddcc_t_ijk_big_cuda_wrapper_(
 	   &d_t2_i[nu2*(k-1)], nu,
 	   d_ve_j, nu, &one,
 	   d_v3, nu );
-
+/*
   numbytes = sizeof(double) * no * nu;
   cudaStat = cudaMalloc( (void **) &d_vm_ik, numbytes );
   CUDA_ERROR_CHECK();
   cudaMemcpy( d_vm_ik, vm_ik, numbytes, cudaMemcpyHostToDevice );
   CUDA_ERROR_CHECK();
-
+*/
   stat = cublasDgemm( handle,
            CUBLAS_OP_T, CUBLAS_OP_T,
 	   nu, nu2, no, &om,
@@ -247,13 +323,13 @@ void ddcc_t_ijk_big_cuda_wrapper_(
   trant3_1_kernel<<< grid, block >>>( nu, d_v3 );
   CUDA_ERROR_CHECK();
 
-  
+/* 
   numbytes = sizeof(double) * no * nu;
   cudaStat = cudaMalloc( (void **) &d_vm_jk, numbytes );
   CUDA_ERROR_CHECK();
   cudaMemcpy( d_vm_jk, vm_jk, numbytes, cudaMemcpyHostToDevice );
   CUDA_ERROR_CHECK();
-
+*/
   stat = cublasDgemm( handle,
            CUBLAS_OP_N, CUBLAS_OP_N,
 	   nu2, nu, no, &om,
@@ -276,13 +352,13 @@ void ddcc_t_ijk_big_cuda_wrapper_(
 	   &d_t2_i[nu2*(j-1)], nu,
 	   d_ve_k, nu, &one,
 	   d_v3, nu );
-
+/*
   numbytes = sizeof(double) * no * nu;
   cudaStat = cudaMalloc( (void **) &d_vm_ij, numbytes );
   CUDA_ERROR_CHECK();
   cudaMemcpy( d_vm_ij, vm_ij, numbytes, cudaMemcpyHostToDevice );
   CUDA_ERROR_CHECK();
-
+*/
 
   stat = cublasDgemm( handle,
            CUBLAS_OP_T, CUBLAS_OP_T,
@@ -303,6 +379,7 @@ void ddcc_t_ijk_big_cuda_wrapper_(
 //  cudaMemcpy( v3, d_v3, numbytes, cudaMemcpyDeviceToHost );
 //  CUDA_ERROR_CHECK();
 
+/*
   cudaFree( d_vm_ij );
   CUDA_ERROR_CHECK();
   cudaFree( d_vm_ji );
@@ -315,6 +392,7 @@ void ddcc_t_ijk_big_cuda_wrapper_(
   CUDA_ERROR_CHECK();
   cudaFree( d_vm_kj );
   CUDA_ERROR_CHECK();
+*/
   cudaFree( d_t2_i );
   CUDA_ERROR_CHECK();
   cudaFree( d_t2_j );
@@ -334,7 +412,6 @@ void ddcc_t_ijk_big_cuda_wrapper_(
 
   double *d_t1;
   double *d_voe_ij, *d_voe_ji, *d_voe_ik, *d_voe_ki, *d_voe_kj, *d_voe_jk;
-  double *d_eh, *d_ep;
   double *d_x3, *d_etd_reduce;
 
 
@@ -386,6 +463,7 @@ void ddcc_t_ijk_big_cuda_wrapper_(
   cudaMemcpy( d_t1, t1, numbytes, cudaMemcpyHostToDevice );
   CUDA_ERROR_CHECK();
 
+# if EH_EP_RESIDENT == 0
   numbytes = sizeof(double) * no;
   cudaStat = cudaMalloc( (void **) &d_eh, numbytes );
   CUDA_ERROR_CHECK();
@@ -397,6 +475,7 @@ void ddcc_t_ijk_big_cuda_wrapper_(
   CUDA_ERROR_CHECK();
   cudaMemcpy( d_ep, ep, numbytes, cudaMemcpyHostToDevice );
   CUDA_ERROR_CHECK();
+# endif
 
   numbytes = sizeof(double);
   cudaStat = cudaMalloc( (void **) &d_x3, numbytes );
@@ -513,10 +592,12 @@ void ddcc_t_ijk_big_cuda_wrapper_(
   CUDA_ERROR_CHECK();
   cudaFree( d_t1 );
   CUDA_ERROR_CHECK();
+# if EH_EP_RESIDENT == 0
   cudaFree( d_eh );
   CUDA_ERROR_CHECK();
   cudaFree( d_ep );
   CUDA_ERROR_CHECK();
+# endif
   cudaFree( d_v3 );
   CUDA_ERROR_CHECK();
   cudaFree( d_x3 );

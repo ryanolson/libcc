@@ -352,6 +352,12 @@ call mpi_comm_rank(working_compute_comm, ddi_me, ierr)
 call mpi_comm_size(working_compute_comm, ddi_np, ierr)
 call ddi_sync(1234)
 
+if(gpu_driver.eq.1) then
+   call gpu_arrays_init(no,nu,eh,ep,vm)
+endif
+
+call ddi_sync(1234)
+
 ! if(ddi_me.eq.0) ijk_start = mpi_wtime()
 
 if(gpu_driver.eq.1) then
@@ -420,6 +426,8 @@ do iwrk = sr, sr+nr-1
      end if
   end if
 end do
+
+call gpu_arrays_finalize()
 
 end if ! gpu_driver == 1
 
