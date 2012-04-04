@@ -1,0 +1,4 @@
+NOTES:
+
+* The cudaMemcpy only needs to pull NUTR*NU*sizeof(double) instead of NU3*sizeof(double)
+* Expand from end of the occuppied region into the end of the unoccuppied region; no need for temp arrays

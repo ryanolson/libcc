@@ -1,10 +1,24 @@
+#ifndef HAS_VE_EXPANSION
+#define HAS_VE_EXPANSION 0
+#endif
+
 #define INDX(a,b,c,ld) ( ( (c) * (ld) * (ld) ) \
                        + ( (b) * (ld) ) \
                        + ( (a) ) )
 
 #define SHARED_REDUCTION_SIZE 128
 
+#ifndef HAVE_VE_EXPANSION_KERNEL
+#define HAVE_VE_EXPANSION_KERNEL 1
+#endif
+
 extern "C" {
+
+__global__ void exp_trsq_kernel( long int n, double *v, double *a );
+
+__global__ void expand_tr_kernel( long int n, double *v );
+
+__global__ void expand_trsq_kernel( long int n, double *v );
 
 __global__ void trant3_1_kernel( long int n, double *v );
 

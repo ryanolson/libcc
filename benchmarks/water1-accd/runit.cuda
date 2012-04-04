@@ -4,7 +4,7 @@
 #PBS -l mppwidth=16
 #PBS -l mppnppn=16
 #PBS -l walltime=02:00:00
-#PBS -q core16q
+#PBS -q xk
 #PBS -j oe
 #PBS -S /usr/bin/tcsh
 #
@@ -12,7 +12,7 @@
 limit coredumpsize unlimited 
 cd $PBS_O_WORKDIR
 echo "Verification:                  ets+etd should be -0.0052499877"
-aprun -n1 -N1 ../triples-cuda.x
+aprun -n8 -N8 -d2 ../triples-cuda.x
 #aprun -n 512 -N8 -cc 1,3,5,7,9,11,13,15 ../triples.x
 #aprun -n 512 -N8 -cc 1,3,5,7,9,11,13,14 -r1 ../triples-ijk.x # core specialization
 

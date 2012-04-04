@@ -250,6 +250,7 @@ double precision :: eh(no),ep(nu),v1(nou),t1(*),t2(*),v3(*),t3(*)
 double precision :: vm(*),voe(*),ve_i(*),ve_j(*),ve_k(*)
 integer :: nr, sr, iwrk, i, j, k, mytask, divisor, partial, icntr
 integer :: iold, jold, kold, comm_core
+integer :: ilo,ihi
 
 integer :: gpu_driver
 integer :: n_ijk_tuples, n_iij_tuples, n_ijj_tuples
@@ -258,6 +259,8 @@ integer :: ierr
 double precision ddot
 double precision :: mpi_wtime
 double precision :: ijk_start, ijk_stop
+
+integer ioff, joff, koff, iloop, jloop, kloop, ij
 
 allocate( tmp(nu2) )
 
@@ -370,38 +373,73 @@ do iwrk = sr, sr+nr-1
 
   comm_core = 0
 
-  if(i.ne.iold) then
-    if(smp_me.eq.comm_core) call ddcc_t_getve(nu,i,tmp,vei)
-    comm_core = comm_core+1
-    if(comm_core.eq.smp_np) comm_core=0
-  end if
+  if(gpu_driver.eq.0) then
 
-  if(j.ne.jold) then
-    if(smp_me.eq.comm_core) call ddcc_t_getve(nu,j,tmp,vej)
-    comm_core = comm_core+1
-    if(comm_core.eq.smp_np) comm_core=0
-  end if
+   ! CPU CODE 
 
-  if(k.ne.kold) then
-    if(smp_me.eq.comm_core) call ddcc_t_getve(nu,k,tmp,ve_k)
-    comm_core = comm_core+1
-    if(comm_core.eq.smp_np) comm_core=0
-  end if
+     if(i.ne.iold) then
+       if(smp_me.eq.comm_core) call ddcc_t_getve(nu,i,tmp,vei)
+       comm_core = comm_core+1
+       if(comm_core.eq.smp_np) comm_core=0
+     end if
+   
+     if(j.ne.jold) then
+       if(smp_me.eq.comm_core) call ddcc_t_getve(nu,j,tmp,vej)
+       comm_core = comm_core+1
+       if(comm_core.eq.smp_np) comm_core=0
+     end if
+   
+     if(k.ne.kold) then
+       if(smp_me.eq.comm_core) call ddcc_t_getve(nu,k,tmp,ve_k)
+       comm_core = comm_core+1
+       if(comm_core.eq.smp_np) comm_core=0
+     end if
+   
+     if(i.ne.iold) then
+       call trant3_1(nu,vei)
+       iold = i
+     end if
+   
+     if(j.ne.jold) then
+       call trant3_1(nu,vej)
+       jold = j
+     end if
+   
+     if(k.ne.kold) then
+       call trant3_1(nu,ve_k)
+       kold = k
+     end if
 
-  if(i.ne.iold) then
-    call trant3_1(nu,vei)
-    iold = i
-  end if
+  else ! gpu_driver.eq.0
 
-  if(j.ne.jold) then
-    call trant3_1(nu,vej)
-    jold = j
-  end if
+   ! GPU CODE
+     if(i.ne.iold) then
+!      if(smp_me.eq.comm_core) call ddcc_t_getve(nu,i,tmp,vei)
+       ilo = nu*(i-1) + 1
+       ihi = ilo + nu
+       if(smp_me.eq.comm_core) call ddi_get(d_vvvo,1,nutr,ilo,ihi,vei)
+       comm_core = comm_core+1
+       if(comm_core.eq.smp_np) comm_core=0
+     end if
+!   
+     if(j.ne.jold) then
+       ilo = nu*(j-1) + 1
+       ihi = ilo + nu
+       if(smp_me.eq.comm_core) call ddi_get(d_vvvo,1,nutr,ilo,ihi,vej)
+       if(comm_core.eq.smp_np) comm_core=0
+     end if
+   
+     if(k.ne.kold) then
+       ilo = nu*(k-1) + 1
+       ihi = ilo + nu
+       if(smp_me.eq.comm_core) call ddi_get(d_vvvo,1,nutr,ilo,ihi,ve_k)
+       comm_core = comm_core+1
+       if(comm_core.eq.smp_np) comm_core=0
+     end if
+     ! NOTE: ddcc_t_ijk_gpu must expand and perfrom a trant3_1 operation
+     ! on vei, vej, vek prior to use!
 
-  if(k.ne.kold) then
-    call trant3_1(nu,ve_k)
-    kold = k
-  end if
+  end if ! gpu_driver.eq.0
 
   if(gpu_driver.eq.0) then
      call ddcc_t_ijk_big(no,nu,i,j,k,v1,t2,vm,v3,voe,eh,ep,ve_i,ve_j,ve_k)
