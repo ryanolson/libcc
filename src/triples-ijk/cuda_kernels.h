@@ -1,7 +1,3 @@
-#ifndef HAS_VE_EXPANSION
-#define HAS_VE_EXPANSION 0
-#endif
-
 #define INDX(a,b,c,ld) ( ( (c) * (ld) * (ld) ) \
                        + ( (b) * (ld) ) \
                        + ( (a) ) )
