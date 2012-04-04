@@ -43,12 +43,17 @@ static double *d_ve_k = NULL;
 static double *d_temp = NULL;
 static double *d_t2 = NULL;
 
+static double *t2  = NULL;
+static double *voe = NULL;
+
 void ijk_gpu_init_(
         Integer *f_no,
         Integer *f_nu,
         double *f_eh,
         double *f_ep,
-        double *f_vm)
+        double *f_vm,
+        double *f_t2,
+        double *f_voe)
 {
 
         long no = (long) *f_no;
@@ -113,6 +118,17 @@ void ijk_gpu_init_(
         cudaStat = cudaMalloc( (void **) &d_t2, numbytes );
         CUDA_ERROR_CHECK();
 
+     // host pointer to shared memory arrays - try to register them
+
+     // t2
+        t2  = f_t2;
+        cudaStat = cudaHostRegister( t2, no2u2, 0);
+        if(cudaStat != cudaSuccess) printf("cudaHostRegister failed on t2 array.\n");
+        
+     // voe
+        voe = f_voe;
+        cudaStat = cudaHostRegister( voe, no2u2, 0);
+        if(cudaStat != cudaSuccess) printf("cudaHostRegister failed for voe array.\n");
 }
 
 void ijk_gpu_finalize_()
@@ -182,6 +198,7 @@ void ijk_gpu_driver_(
   long int nu3 = nu2 * nu;
   long int nou2 = no * nu2;
   long int nutr = (nu2 + nu) / 2;
+  long int ntuples = (no*(no-1)*(no-2)) / 6;
 
   double *d_t2_i, *d_t2_j, *d_t2_k;
   double *d_vm_ij, *d_vm_ji, *d_vm_ik, *d_vm_ki, *d_vm_kj, *d_vm_jk;
@@ -242,6 +259,19 @@ void ijk_gpu_driver_(
   } /* end if */
 
   dim3 grid( gridx, gridy, 1 );
+
+/**
+ * Loop over ijk tuples
+ */
+# if 0
+  for(ijk=sr; ijk<nr; ijk++) 
+  {
+     ijk_tuple_from_counter(ijk, &i, &j, &k);
+
+  // copy t2 values into place
+  // copy voe values into place
+  // get ve_i, ve_j, ve_k
+# endif
 
 /**
  * Form V3

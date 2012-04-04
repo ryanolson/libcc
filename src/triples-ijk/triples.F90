@@ -356,7 +356,7 @@ call mpi_comm_size(working_compute_comm, ddi_np, ierr)
 call ddi_sync(1234)
 
 if(gpu_driver.eq.1) then
-   call ijk_gpu_init(no,nu,eh,ep,vm)
+   call ijk_gpu_init(no,nu,eh,ep,vm,t2,voe)
 endif
 
 call ddi_sync(1234)
