@@ -9,10 +9,10 @@
 cd $PBS_O_WORKDIR
 
 aprun -n512 -N8 -d2 ../triples-cuda.x | tee ar6h-0512-N8-d2.out
-aprun -n256 -N8 -d2 ../triples-cuda.x | tee ar6h-0256-N8-d2.out
-aprun -n128 -N8 -d2 ../triples-cuda.x | tee ar6h-0128-N8-d2.out
-aprun -n64  -N8 -d2 ../triples-cuda.x | tee ar6h-0064-N8-d2.out
-aprun -n32  -N8 -d2 ../triples-cuda.x | tee ar6h-0032-N8-d2.out
+#aprun -n256 -N8 -d2 ../triples-cuda.x | tee ar6h-0256-N8-d2.out
+#aprun -n128 -N8 -d2 ../triples-cuda.x | tee ar6h-0128-N8-d2.out
+#aprun -n64  -N8 -d2 ../triples-cuda.x | tee ar6h-0064-N8-d2.out
+#aprun -n32  -N8 -d2 ../triples-cuda.x | tee ar6h-0032-N8-d2.out
 
 #aprun -n512 -N16 -d1 ../triples-cuda.x | tee ar6h-0512-N16-d1.out
 #aprun -n256 -N16 -d1 ../triples-cuda.x | tee ar6h-0256-N16-d1.out
