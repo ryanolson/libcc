@@ -43,7 +43,7 @@ static double *d_ve_k = NULL;
 static double *d_temp = NULL;
 static double *d_t2 = NULL;
 
-void gpu_arrays_init_(
+void ijk_gpu_init_(
         Integer *f_no,
         Integer *f_nu,
         double *f_eh,
@@ -115,7 +115,7 @@ void gpu_arrays_init_(
 
 }
 
-void gpu_arrays_finalize_()
+void ijk_gpu_finalize_()
 {
         cudaFree( d_eh );
         CUDA_ERROR_CHECK();
@@ -137,7 +137,7 @@ void gpu_arrays_finalize_()
         CUDA_ERROR_CHECK();
 }
 
-void ddcc_t_ijk_big_cuda_wrapper_(
+void ijk_gpu_driver_(
     long int *p_nu, 
     long int *p_no,
     long int *p_i,
