@@ -448,6 +448,10 @@ do iwrk = sr, sr+nr-1
   end if
   call smp_sync()
 
+  iold = i
+  jold = j
+  kold = k
+
 ! if(ddi_my.eq.0) then
 !    write(6,*) ddi_me, etd
 ! end if
