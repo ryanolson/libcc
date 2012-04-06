@@ -9,13 +9,8 @@ C
      &                 EH(NO),EP(NU),T2(NU*NU,NO,NO),
      &                 ve_i(*),ve_j(*),ve_k(*) 
 C
-      call ddcc_t_ijk_big_cuda_wrapper(nu,no,i,j,k,
-     &               t2(1,1,i),t2(1,1,j),t2(1,1,k),
-     &               vm(1,1,i,j),vm(1,1,j,i),vm(1,1,i,k),
-     &               vm(1,1,k,i),vm(1,1,j,k),vm(1,1,k,j),
+      call ijk_gpu_driver(nu,no,i,j,k,
      &               ve_i,ve_j,ve_k,
-     &               voe(1,1,i,j),voe(1,1,j,i),voe(1,1,i,k),
-     &               voe(1,1,k,i),voe(1,1,j,k),voe(1,1,k,j),
      &               t1, eh, ep, etd )
       RETURN
       END

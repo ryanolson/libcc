@@ -356,7 +356,7 @@ call mpi_comm_size(working_compute_comm, ddi_np, ierr)
 call ddi_sync(1234)
 
 if(gpu_driver.eq.1) then
-   call gpu_arrays_init(no,nu,eh,ep,vm)
+   call ijk_gpu_init(no,nu,eh,ep,v1,t2,vm,voe)
 endif
 
 call ddi_sync(1234)
@@ -465,7 +465,7 @@ do iwrk = sr, sr+nr-1
   end if
 end do
 
-call gpu_arrays_finalize()
+call ijk_gpu_finalize(no,nu,etd)
 
 end if ! gpu_driver == 1
 
