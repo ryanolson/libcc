@@ -1,0 +1,1 @@
+../src/triples-ijk/triples-cuda.x
