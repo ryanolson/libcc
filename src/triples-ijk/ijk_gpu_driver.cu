@@ -294,6 +294,17 @@ void ijk_gpu_driver_(
   d_voe_kj = d_voe_jk + nu2;
 
 /**
+ * Set up cuda streams
+ */
+  cudaStream_t stream1, stream2;
+  cudaStreamCreate ( &stream1 );
+  CUDA_ERROR_CHECK();
+  cudaStreamCreate ( &stream2 );
+
+  cudaEvent_t event_vej_exp;
+  cudaEventCreate( &event_vej_exp );
+
+/**
  * Set up cublas
  */
   stat = cublasCreate( &handle );
@@ -325,29 +336,19 @@ void ijk_gpu_driver_(
 
   dim3 grid( gridx, gridy, 1 );
 
-/**
- * Loop over ijk tuples
- */
-# if 0
-  for(ijk=sr; ijk<nr; ijk++) 
-  {
-     ijk_tuple_from_counter(ijk, &i, &j, &k);
-
-  // copy t2 values into place
-  // copy voe values into place
-  // get ve_i, ve_j, ve_k
-# endif
 
 /**
  * Form V3
  */
- 
+
+// Note: putting the first copy in the compute stream to avoid the need for an event
+
   if(j != jold) {
      numbytes = sizeof(double) * no * nu2;
-     cudaMemcpy( d_t2_j, t2_j, numbytes, cudaMemcpyHostToDevice );
-     CUDA_ERROR_CHECK();
+     cudaMemcpyAsync( d_t2_j, t2_j, numbytes, cudaMemcpyHostToDevice, stream1 );
   }
 
+  stat = cublasSetStream( handle, stream1 );
   stat = cublasDgemm( handle,
            CUBLAS_OP_N, CUBLAS_OP_N,
 	   nu2, nu, no, &om,
@@ -355,28 +356,31 @@ void ijk_gpu_driver_(
 	   d_vm_ki, no, &zero,
 	   d_v3, nu2 );
 
+  if(k != kold) {
+     numbytes = sizeof(double) * no * nu2;
+     cudaMemcpyAsync( d_t2_k, t2_k, numbytes, cudaMemcpyHostToDevice, stream2 );
+     CUDA_ERROR_CHECK();
+  }
+
   if(j != jold) {
    # if HAVE_VE_EXPANSION_KERNEL
      numbytes = sizeof(double) * nutr * nu;
-     cudaMemcpy( d_temp, ve_j, numbytes, cudaMemcpyHostToDevice );
+     cudaMemcpyAsync( d_temp, ve_j, numbytes, cudaMemcpyHostToDevice, stream2 );
      CUDA_ERROR_CHECK();
-     exp_trsq_kernel<<< grid, block >>>( nu, d_temp, d_ve_j );
+     exp_trsq_kernel<<< grid, block, 0, stream2 >>>( nu, d_temp, d_ve_j );
      CUDA_ERROR_CHECK();
-     trant3_1_kernel<<< grid, block >>>( nu, d_ve_j );
+     cudaEventRecord( event_vej_exp, stream2 );
+     CUDA_ERROR_CHECK();
+     trant3_1_kernel<<< grid, block, 0, stream2 >>>( nu, d_ve_j );
      CUDA_ERROR_CHECK();
    # else
-     numbytes = sizeof(double) * nu3;
-     cudaMemcpy( d_ve_j, ve_j, numbytes, cudaMemcpyHostToDevice );
-     CUDA_ERROR_CHECK();
+   # error "HAVE_VE_EXPANSION_KERNEL must be enabled"
    # endif
   }
 
-  if(k != kold) {
-     numbytes = sizeof(double) * no * nu2;
-     cudaMemcpy( d_t2_k, t2_k, numbytes, cudaMemcpyHostToDevice );
-     CUDA_ERROR_CHECK();
-  }
-
+  cudaStreamSynchronize( stream1 );
+  CUDA_ERROR_CHECK();
+  stat = cublasSetStream( handle, stream2 );
   stat = cublasDgemm( handle,
            CUBLAS_OP_T, CUBLAS_OP_T,
 	   nu2, nu, nu, &one,
@@ -384,7 +388,7 @@ void ijk_gpu_driver_(
 	   &d_t2_k[nu2*(i-1)], nu, &one,
 	   d_v3, nu2 );
 
-  trant3_1_kernel<<< grid, block >>>( nu, d_v3 );
+  trant3_1_kernel<<< grid, block, 0, stream2 >>>( nu, d_v3 );
   CUDA_ERROR_CHECK();
 
   stat = cublasDgemm( handle,
@@ -396,20 +400,23 @@ void ijk_gpu_driver_(
   
   if(k != kold) {
    # if HAVE_VE_EXPANSION_KERNEL
+  // d_ve_j must be expanded before d_temp can be reused
+     cudaStreamWaitEvent( stream1, event_vej_exp, 0 ); 
+     CUDA_ERROR_CHECK();
      numbytes = sizeof(double) * nutr * nu;
-     cudaMemcpy( d_temp, ve_k, numbytes, cudaMemcpyHostToDevice );
+     cudaMemcpyAsync( d_temp, ve_k, numbytes, cudaMemcpyHostToDevice, stream1 );
      CUDA_ERROR_CHECK();
-     exp_trsq_kernel<<< grid, block >>>( nu, d_temp, d_ve_k );
+
+     exp_trsq_kernel<<< grid, block, 0, stream1 >>>( nu, d_temp, d_ve_k );
      CUDA_ERROR_CHECK();
-     trant3_1_kernel<<< grid, block >>>( nu, d_ve_k );
-     CUDA_ERROR_CHECK();
-   # else
-     numbytes = sizeof(double) * nu3;
-     cudaMemcpy( d_ve_k, ve_k, numbytes, cudaMemcpyHostToDevice );
+     trant3_1_kernel<<< grid, block, 0, stream1 >>>( nu, d_ve_k );
      CUDA_ERROR_CHECK();
    # endif
   }
   
+  cudaStreamSynchronize( stream2 );
+  CUDA_ERROR_CHECK();
+  stat = cublasSetStream( handle, stream1 );
   stat = cublasDgemm( handle,
            CUBLAS_OP_N, CUBLAS_OP_N,
 	   nu, nu2, nu, &one,
@@ -417,15 +424,18 @@ void ijk_gpu_driver_(
 	   d_ve_k, nu, &one,
 	   d_v3, nu );
 
-  trant3_4_kernel<<< grid, block >>>( nu, d_v3 );
+  trant3_4_kernel<<< grid, block, 0, stream1 >>>( nu, d_v3 );
   CUDA_ERROR_CHECK();
 
   if(i != iold) {
      numbytes = sizeof(double) * no * nu2;
-     cudaMemcpy( d_t2_i, t2_i, numbytes, cudaMemcpyHostToDevice );
+     cudaMemcpyAsync( d_t2_i, t2_i, numbytes, cudaMemcpyHostToDevice, stream2 );
      CUDA_ERROR_CHECK();
    }
 
+  cudaStreamSynchronize( stream1 );
+  CUDA_ERROR_CHECK();
+  stat = cublasSetStream( handle, stream2 );
   stat = cublasDgemm( handle,
            CUBLAS_OP_N, CUBLAS_OP_N,
 	   nu2, nu, no, &om,
@@ -435,20 +445,20 @@ void ijk_gpu_driver_(
 
   if(i != iold) {
    # if HAVE_VE_EXPANSION_KERNEL
+  // no need to wait on a vek expand event (event_vek_exp), because it was done in stream1
      numbytes = sizeof(double) * nutr * nu;
-     cudaMemcpy( d_temp, ve_i, numbytes, cudaMemcpyHostToDevice );
+     cudaMemcpyAsync( d_temp, ve_i, numbytes, cudaMemcpyHostToDevice, stream1 );
      CUDA_ERROR_CHECK();
-     exp_trsq_kernel<<< grid, block >>>( nu, d_temp, d_ve_i );
+     exp_trsq_kernel<<< grid, block, 0, stream1 >>>( nu, d_temp, d_ve_i );
      CUDA_ERROR_CHECK();
-     trant3_1_kernel<<< grid, block >>>( nu, d_ve_i );
-     CUDA_ERROR_CHECK();
-   # else
-     numbytes = sizeof(double) * nu3;
-     cudaMemcpy( d_ve_i, ve_i, numbytes, cudaMemcpyHostToDevice );
+     trant3_1_kernel<<< grid, block, 0, stream1 >>>( nu, d_ve_i );
      CUDA_ERROR_CHECK();
    # endif
   }
 
+  cudaStreamSynchronize( stream2 );
+  CUDA_ERROR_CHECK();
+  stat = cublasSetStream( handle, stream1 );
   stat = cublasDgemm( handle,
            CUBLAS_OP_T, CUBLAS_OP_T,
 	   nu2, nu, nu, &one,
@@ -470,7 +480,7 @@ void ijk_gpu_driver_(
 	   d_t2_j, nu2, &one,
 	   d_v3, nu );
 
-  trant3_1_kernel<<< grid, block >>>( nu, d_v3 );
+  trant3_1_kernel<<< grid, block, 0, stream1 >>>( nu, d_v3 );
   CUDA_ERROR_CHECK();
 
   stat = cublasDgemm( handle,
@@ -501,7 +511,7 @@ void ijk_gpu_driver_(
 	   d_t2_k, nu2, &one,
 	   d_v3, nu );
 
-  trant3_1_kernel<<< grid, block >>>( nu, d_v3 );
+  trant3_1_kernel<<< grid, block, 0, stream1 >>>( nu, d_v3 );
   CUDA_ERROR_CHECK();
 
 /* 
@@ -518,27 +528,27 @@ void ijk_gpu_driver_(
   double x3;
 
   numbytes = sizeof(double) * nu2;
-  cudaMemcpy( d_voe_ij, voe_ij, numbytes, cudaMemcpyHostToDevice );
+  cudaMemcpyAsync( d_voe_ij, voe_ij, numbytes, cudaMemcpyHostToDevice, stream2 );
   CUDA_ERROR_CHECK();
 
   numbytes = sizeof(double) * nu2;
-  cudaMemcpy( d_voe_ji, voe_ji, numbytes, cudaMemcpyHostToDevice );
+  cudaMemcpyAsync( d_voe_ji, voe_ji, numbytes, cudaMemcpyHostToDevice, stream2 );
   CUDA_ERROR_CHECK();
   
   numbytes = sizeof(double) * nu2;
-  cudaMemcpy( d_voe_ik, voe_ik, numbytes, cudaMemcpyHostToDevice );
+  cudaMemcpyAsync( d_voe_ik, voe_ik, numbytes, cudaMemcpyHostToDevice, stream2 );
   CUDA_ERROR_CHECK();
 
   numbytes = sizeof(double) * nu2;
-  cudaMemcpy( d_voe_ki, voe_ki, numbytes, cudaMemcpyHostToDevice );
+  cudaMemcpyAsync( d_voe_ki, voe_ki, numbytes, cudaMemcpyHostToDevice, stream2 );
   CUDA_ERROR_CHECK();
 
   numbytes = sizeof(double) * nu2;
-  cudaMemcpy( d_voe_jk, voe_jk, numbytes, cudaMemcpyHostToDevice );
+  cudaMemcpyAsync( d_voe_jk, voe_jk, numbytes, cudaMemcpyHostToDevice, stream2 );
   CUDA_ERROR_CHECK();
 
   numbytes = sizeof(double) * nu2;
-  cudaMemcpy( d_voe_kj, voe_kj, numbytes, cudaMemcpyHostToDevice );
+  cudaMemcpyAsync( d_voe_kj, voe_kj, numbytes, cudaMemcpyHostToDevice, stream2 );
   CUDA_ERROR_CHECK();
 
   int device = 0;
@@ -576,7 +586,19 @@ void ijk_gpu_driver_(
  * set the temporary array to zero it will be used for the reduction
  */
   numbytes = sizeof(double) * gridx * gridy;
-  cudaMemset( d_etd_reduce, 0, numbytes );
+  cudaMemsetAsync( d_etd_reduce, 0, numbytes, stream2 );
+  CUDA_ERROR_CHECK();
+
+// ensure streams are complete & destroy 
+  cudaStreamSynchronize( stream1 );
+  CUDA_ERROR_CHECK();
+  cudaStreamDestroy( stream1 );
+  CUDA_ERROR_CHECK();
+  cudaStreamSynchronize( stream2 );
+  CUDA_ERROR_CHECK();
+  cudaStreamDestroy( stream2 );
+  CUDA_ERROR_CHECK();
+  cudaEventDestroy( event_vej_exp );
   CUDA_ERROR_CHECK();
 
   etd_cuda_kernel<<< grid, block >>>( i, j, k, no, nu, d_v3,
