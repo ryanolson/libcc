@@ -1,0 +1,17 @@
+#!/usr/bin/tcsh
+#PBS -N ar6-acc
+#PBS -l mppwidth=1024
+#PBS -l mppnppn=16
+#PBS -l walltime=04:00:00
+#PBS -j oe
+#PBS -S /usr/bin/tcsh
+#
+cd $PBS_O_WORKDIR
+
+aprun -n64 -N1 ../triples-acc.x | tee ar6-0064-N1.out
+#aprun -n32 -N1 ../triples-acc.x | tee ar6-0032-N1.out 
+#aprun -n16 -N1 ../triples-acc.x | tee ar6-0016-N1.out 
+#aprun -n8  -N1 ../triples-acc.x | tee ar6-0008-N1.out 
+#aprun -n4  -N1 ../triples-acc.x | tee ar6-0004-N1.out 
+
+

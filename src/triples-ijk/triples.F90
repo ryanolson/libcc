@@ -40,9 +40,8 @@ implicit none
 
 ! call ddi_gpu_ndevices(gpu_nd)
 ! this call should wrap the functionality of the following
-! ifdef block
   call ddi_get_workingcomm( global_comm )
-#if defined GPU
+#if defined GPU && defined USE_CUDA
   gpu_nd = 1
   call ddi_gpu_createcomm( global_comm, hybrid_comm )
 #else
@@ -118,11 +117,11 @@ implicit none
 
 ! each rank that drive a gpu will have it's own offset to the 
 ! non-cpu arrays; otherwise, gve{ijk} will point to the cpu storage
-if(smp_me.lt.gpu_nd .and. ddi_my.eq.0) then
-   write(6,*) 'me=',ddi_me,' lvei=',lvei
+if(smp_me.lt.gpu_nd) then
+   if(ddi_my.eq.0) write(6,*) 'me=',ddi_me,' lvei=',lvei
    lvei = lvei + nu3*(smp_me+1)
    lvej = lvej + nu3*(smp_me+1)
-   write(6,*) 'me=',ddi_me,' gvei=',lvei
+   if(ddi_my.eq.0) write(6,*) 'me=',ddi_me,' gvei=',lvei
 endif
 
   call ddi_create(nutr,nou,d_vvvo)
@@ -252,7 +251,9 @@ integer :: nr, sr, iwrk, i, j, k, mytask, divisor, partial, icntr
 integer :: iold, jold, kold, comm_core
 integer :: ilo,ihi
 
+#ifdef USE_CUDA
 integer :: gpu_driver
+#endif
 integer :: n_ijk_tuples, n_iij_tuples, n_ijj_tuples
 integer :: ierr
 
@@ -265,8 +266,10 @@ integer ioff, joff, koff, iloop, jloop, kloop, ij
 allocate( tmp(nu2) )
 
 ! gpu
+#ifdef USE_CUDA
 gpu_driver = 0
 if(smp_me.lt.gpu_nd) gpu_driver=1
+#endif
 
 ! load-balancing strategy
 ! =======================
@@ -346,6 +349,7 @@ if(smp_me.eq.0) then
 endif
 
 ! switch scopes
+#ifdef USE_CUDA
 call ddi_sync(1234)
 working_smp_comm = hybrid_smp_comm
 working_compute_comm = hybrid_compute_comm
@@ -358,14 +362,16 @@ call ddi_sync(1234)
 if(gpu_driver.eq.1) then
    call ijk_gpu_init(no,nu,eh,ep,v1,t2,vm,voe)
 endif
+#endif // ifdef USE_CUDA
 
 call ddi_sync(1234)
 
 ! if(ddi_me.eq.0) ijk_start = mpi_wtime()
 
+#ifdef USE_CUDA
 if(gpu_driver.eq.1) then
-
 allocate( vei(nu3), vej(nu3) )
+#endif
 
 do iwrk = sr, sr+nr-1
   mytask = iwrk
@@ -373,18 +379,20 @@ do iwrk = sr, sr+nr-1
 
   comm_core = 0
 
+# ifdef USE_CUDA
   if(gpu_driver.eq.0) then
+# endif
 
    ! CPU CODE 
 
      if(i.ne.iold) then
-       if(smp_me.eq.comm_core) call ddcc_t_getve(nu,i,tmp,vei)
+       if(smp_me.eq.comm_core) call ddcc_t_getve(nu,i,tmp,ve_i)
        comm_core = comm_core+1
        if(comm_core.eq.smp_np) comm_core=0
      end if
    
      if(j.ne.jold) then
-       if(smp_me.eq.comm_core) call ddcc_t_getve(nu,j,tmp,vej)
+       if(smp_me.eq.comm_core) call ddcc_t_getve(nu,j,tmp,ve_j)
        comm_core = comm_core+1
        if(comm_core.eq.smp_np) comm_core=0
      end if
@@ -396,12 +404,12 @@ do iwrk = sr, sr+nr-1
      end if
    
      if(i.ne.iold) then
-       call trant3_1(nu,vei)
+       call trant3_1(nu,ve_i)
        iold = i
      end if
    
      if(j.ne.jold) then
-       call trant3_1(nu,vej)
+       call trant3_1(nu,ve_j)
        jold = j
      end if
    
@@ -410,6 +418,9 @@ do iwrk = sr, sr+nr-1
        kold = k
      end if
 
+     call smp_sync()
+
+# ifdef USE_CUDA
   else ! gpu_driver.eq.0
 
    ! GPU CODE
@@ -440,12 +451,19 @@ do iwrk = sr, sr+nr-1
      ! on vei, vej, vek prior to use!
 
   end if ! gpu_driver.eq.0
+# endif
 
+# ifdef USE_CUDA
   if(gpu_driver.eq.0) then
+# endif
+
      call ddcc_t_ijk_big(no,nu,i,j,k,v1,t2,vm,v3,voe,eh,ep,ve_i,ve_j,ve_k)
+
+# ifdef USE_CUDA
   else
      call ddcc_t_ijk_gpu(no,nu,i,j,k,v1,t2,vm,voe,eh,ep,vei,vej,ve_k)
   end if
+# endif
   call smp_sync()
 
   iold = i
@@ -469,9 +487,10 @@ do iwrk = sr, sr+nr-1
   end if
 end do
 
+#ifdef USE_CUDA
 call ijk_gpu_finalize(no,nu,etd)
-
 end if ! gpu_driver == 1
+#endif
 
 ! call ddi_sync(1234)
 
@@ -485,7 +504,9 @@ end if ! gpu_driver == 1
 !  9001 format('ijk time=',F15.5)
 ! end if
 
+#ifdef USE_CUDA
 if(gpu_driver .eq. 0) then
+#endif
 
 ! counters and load-balancing for iij and ijj tuples
 icntr = 0
@@ -536,9 +557,12 @@ do i=1,no
 end do
 
 ! if(smp_me.eq.0) write(6,*) 'cpu node ',ddi_my,' finshed iij/ijj'
+#ifdef USE_CUDA
 end if ! gpu_driver == 0
+#endif
 
 ! switch scopes
+#ifdef USE_CUDA
 call ddi_sync(1234)
 working_smp_comm = global_smp_comm
 working_compute_comm = global_compute_comm
@@ -547,6 +571,7 @@ call mpi_comm_size(working_smp_comm, smp_np, ierr)
 call mpi_comm_rank(working_compute_comm, ddi_me, ierr)
 call mpi_comm_size(working_compute_comm, ddi_np, ierr)
 call ddi_sync(1234)
+#endif
 
 call ddi_gsumf(123,eh,no)
 call ddi_gsumf(124,ep,nu)

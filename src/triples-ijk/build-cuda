@@ -1,7 +1,7 @@
 #!/bin/tcsh
 
 #make triples.x
-module load cuda
+module load cudatoolkit
 module load gcc/4.5.3
 #module list
 make triples-cuda.x
