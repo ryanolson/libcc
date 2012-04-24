@@ -148,7 +148,9 @@ do ii = ilo,ihi
 end do
 end do
 
-call ddi_sync_on_array(d_out)
+call ddi_get_communicator_for_array(d_out, comm)
+
+call ddi_sync(comm)
 
 end subroutine tranmd_ddi_12
 

@@ -90,11 +90,12 @@ do j = 1,TEST_JJ
 do i = 1,TEST_II
 
    if(i.ne.it .or. j.ne.jt .or. k.ne.kt .or. l.ne.lt) then
-      write(6,*) 'fail : ',i,j,k,l
+      write(6,9000) i,j,k,l,it,jt,kt,lt
+ 9000 format(' fail : ',8I4)
       return
    endif
 
-   call increment_4d(i,j,k,l,TEST_II,TEST_JJ,TEST_KK,TEST_LL,1)
+   call increment_4d(it,jt,kt,lt,TEST_II,TEST_JJ,TEST_KK,TEST_LL,1)
 
 end do
 end do
