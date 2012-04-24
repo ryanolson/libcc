@@ -3,6 +3,7 @@ implicit none
 
 call test_4d_from_2d()
 call test_2d_from_4d()
+call test_increment_4d()
 
 end program unit_tests
 
@@ -69,3 +70,37 @@ end do
 write(6,*) 'pass: test_2d_from_4d'
 
 end subroutine test_2d_from_4d
+
+
+subroutine test_increment_4d()
+use cc_transformations
+implicit none
+
+integer :: i, j, k, l
+integer :: it, jt, kt, lt
+
+it = 1
+jt = 1
+kt = 1
+lt = 1
+
+do l = 1,TEST_LL-1
+do k = 1,TEST_KK
+do j = 1,TEST_JJ
+do i = 1,TEST_II
+
+   if(i.ne.it .or. j.ne.jt .or. k.ne.kt .or. l.ne.lt) then
+      write(6,*) 'fail : ',i,j,k,l
+      return
+   endif
+
+   call increment_4d(i,j,k,l,TEST_II,TEST_JJ,TEST_KK,TEST_LL,1)
+
+end do
+end do
+end do
+end do
+
+write(6,*) 'pass: increment_4d'
+
+end subroutine test_increment_4d
