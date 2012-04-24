@@ -1,0 +1,842 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.7	//
+Accept	tcp_sockets.c	/^   int Accept(int socket,struct sockaddr *address,socklen_t *address_len) {$/;"	f
+BGLRank	ddi_bgl.h	/^} BGLRank;$/;"	t	typeref:struct:__anon15
+BGLRank_pset_comparator	ddi_bgl.c	/^int BGLRank_pset_comparator(const void *a, const void *b) {$/;"	f
+CACHE_LINE_SIZE	common.h	33;"	d
+CC	Makefile	/^      CC := $(shell $(GA_CONFIG) --cc)$/;"	m
+CFLAGS	Makefile	/^  CFLAGS := $(shell $(GA_CONFIG) --cflags)$/;"	m
+CFLAGS	Makefile	/^CFLAGS = " "$/;"	m
+CLIENT_SOCKET	common.h	105;"	d
+CPPFLAGS	Makefile	/^CPPFLAGS := $(shell $(GA_CONFIG) --cppflags)$/;"	m
+CS_int	ddi_base.h	/^   } CS_int;$/;"	t	typeref:struct:__anon8
+Chdir	std_system.c	/^   int Chdir(const char *path) {$/;"	f
+Comm_acquire_realm	ds_thread.c	/^void Comm_acquire_realm() {$/;"	f
+Comm_bcast	ddi_comm_bcast.c	/^   void Comm_bcast(void *buffer,size_t size,int root,const DDI_Comm *comm) {$/;"	f
+Comm_bcast_list	ddi_comm_bcast.c	/^   void Comm_bcast_list(void *buff,size_t size,const DDI_List *list) {$/;"	f
+Comm_bcast_node	ddi_comm_bcast.c	/^   void Comm_bcast_node(void *buff,size_t size,int root,const DDI_Comm *comm) {$/;"	f
+Comm_bcast_smp	ddi_comm_bcast.c	/^   void Comm_bcast_smp(void *buff,size_t size,int root,const DDI_Comm *comm) {$/;"	f
+Comm_create	ddi_comm_create.c	/^   void Comm_create(int np,int *ids, int ngroups, int mygroup, int comm_id, int *new_comm_id) {$/;"	f
+Comm_divide	ddi_comm_create.c	/^   void Comm_divide(int ngroups, int comm_id, int *new_comm_id) {$/;"	f
+Comm_divide_custom	ddi_comm_create.c	/^   void Comm_divide_custom(int ngroups, int *list, int comm_id, int *new_comm_id) {$/;"	f
+Comm_find	ddi_comm.c	/^   void *Comm_find(int comm_id) {$/;"	f
+Comm_find_end	ddi_comm.c	/^   void *Comm_find_end() {$/;"	f
+Comm_gsum	ddi_comm_gsum.c	/^   void Comm_gsum(void *data,size_t n,int type,const DDI_Comm *comm) {$/;"	f
+Comm_gsum_list	ddi_comm_gsum.c	/^   void Comm_gsum_list(void *data,  size_t size_d,$/;"	f
+Comm_gsum_node	ddi_comm_gsum.c	/^   void Comm_gsum_node(void *data,size_t n,int type,const DDI_Comm *comm) {$/;"	f
+Comm_gsum_smp	ddi_comm_gsum.c	/^   void Comm_gsum_smp(void *data,size_t size_d,int type,const DDI_Comm *comm) {$/;"	f
+Comm_init	ddi_comm.c	/^   void Comm_init() {$/;"	f
+Comm_init_data	ddi_comm.c	/^   void Comm_init_data(const DDI_Comm *comm) {$/;"	f
+Comm_patch_print	ds_thread.c	/^void Comm_patch_print(const DDI_Patch *patch) { $/;"	f
+Comm_print	ddi_comm_create.c	/^   void Comm_print(const DDI_Comm *comm) {$/;"	f
+Comm_rank	ddi_comm_nproc.c	/^   int Comm_rank(int commid) {$/;"	f
+Comm_recv	ddi_comm_recv.c	/^   void Comm_recv(void *buff,size_t size,int from,const DDI_Comm *comm) {$/;"	f
+Comm_recv_	ddi_comm_recv.c	/^   void Comm_recv_(void *buff,size_t size,int from,const DDI_Comm *comm) {$/;"	f
+Comm_recv_list	ddi_comm_recv.c	/^   void Comm_recv_list(void *buff,size_t size,int from,const DDI_List *list) {$/;"	f
+Comm_recv_list_	ddi_comm_recv.c	/^   void Comm_recv_list_(void *buff,size_t size,int from,const DDI_List *list) {$/;"	f
+Comm_release_realm	ds_thread.c	/^void Comm_release_realm() {$/;"	f
+Comm_send	ddi_comm_send.c	/^   void Comm_send(void *buff,size_t size,int to,const DDI_Comm *comm) {$/;"	f
+Comm_send_	ddi_comm_send.c	/^   void Comm_send_(void* buff,size_t size,int to,const DDI_Comm *comm) {$/;"	f
+Comm_send_list	ddi_comm_send.c	/^   void Comm_send_list(void *buff,size_t size,int to,const DDI_List *list) {$/;"	f
+Comm_send_list_	ddi_comm_send.c	/^   void Comm_send_list_(void* buff,size_t size,int to,const DDI_List *list) {$/;"	f
+Comm_size	ddi_comm_nproc.c	/^   int Comm_size(int commid) {$/;"	f
+Comm_smp_rank	ddi_comm_nproc.c	/^   int Comm_smp_rank(int commid) {$/;"	f
+Comm_smp_size	ddi_comm_nproc.c	/^   int Comm_smp_size(int commid) {$/;"	f
+Comm_sync	ddi_comm_sync.c	/^   void Comm_sync(int tag,const DDI_Comm *comm) {$/;"	f
+Comm_sync_list	ddi_comm_sync.c	/^   void Comm_sync_list(const DDI_List *list) {$/;"	f
+Comm_sync_node	ddi_comm_sync.c	/^   void Comm_sync_node(int tag,const DDI_Comm *comm) {$/;"	f
+Comm_sync_smp	ddi_comm_sync.c	/^   void Comm_sync_smp(const DDI_Comm *comm) {$/;"	f
+Connect	tcp_sockets.c	/^   int Connect(int s, const struct sockaddr *name, socklen_t namelen) {$/;"	f
+DB_CREATE_ENTRY	ddi.h	193;"	d
+DB_Entry	ddi_base.h	/^   } DB_Entry;$/;"	t	typeref:struct:__anon11
+DB_READ_ENTRY	ddi.h	194;"	d
+DB_WRITE_ENTRY	ddi.h	195;"	d
+DDA_Index	ddi_base.h	/^   } DDA_Index;$/;"	t	typeref:struct:__anon12
+DDA_Remote_Index	ddi_armci.h	/^} DDA_Remote_Index;$/;"	t	typeref:struct:__anon3
+DDI_ACC	ddi.h	183;"	d
+DDI_AM_Compl_hndlr	ddi_lapi.c	/^   void DDI_AM_Compl_hndlr(lapi_handle_t *handl,void *param) {$/;"	f
+DDI_AM_Header_hndlr	ddi_lapi.c	/^   void *DDI_AM_Header_hndlr(lapi_handle_t *hndl, void *uhdr, uint *uhdrlen,$/;"	f
+DDI_ARMCI_Acc	ddi_armci_acc.c	/^void DDI_ARMCI_Acc(DDI_Patch *patch, double alpha, void *buf) {$/;"	f
+DDI_ARMCI_Acc_domain_SMP	ddi_armci_acc.c	/^inline int DDI_ARMCI_Acc_domain_SMP(DDI_Patch *patch, double alpha, void *buf, int domain) {$/;"	f
+DDI_ARMCI_Acc_proc	ddi_armci_acc.c	/^inline int DDI_ARMCI_Acc_proc(DDI_Patch *patch, double alpha, void *buf, int pid) {$/;"	f
+DDI_ARMCI_Acquire	ddi_armci.c	/^void DDI_ARMCI_Acquire(int handle, int pid, int ltype, void **array, int *armciPid) {$/;"	f
+DDI_ARMCI_Barrier	ddi_armci.c	/^void DDI_ARMCI_Barrier(MPI_Comm comm) {$/;"	f
+DDI_ARMCI_Counters_init	ddi_armci.c	/^void DDI_ARMCI_Counters_init() {$/;"	f
+DDI_ARMCI_DLBNext	ddi_armci.c	/^void DDI_ARMCI_DLBNext(size_t *counter) {$/;"	f
+DDI_ARMCI_DLBReset	ddi_armci.c	/^void DDI_ARMCI_DLBReset() {$/;"	f
+DDI_ARMCI_Finalize	ddi_armci.c	/^void DDI_ARMCI_Finalize() {$/;"	f
+DDI_ARMCI_GDLBNext	ddi_armci.c	/^void DDI_ARMCI_GDLBNext(size_t *counter) {$/;"	f
+DDI_ARMCI_GDLBReset	ddi_armci.c	/^void DDI_ARMCI_GDLBReset() {$/;"	f
+DDI_ARMCI_Get	ddi_armci_get.c	/^void DDI_ARMCI_Get(DDI_Patch *patch, void *buf) {$/;"	f
+DDI_ARMCI_GetAcc	ddi_armci_getacc.c	/^void DDI_ARMCI_GetAcc(DDI_Patch *patch, void *buf) {$/;"	f
+DDI_ARMCI_Get_domain_SMP	ddi_armci_get.c	/^inline int DDI_ARMCI_Get_domain_SMP(DDI_Patch *patch, void *buf, int domain) {$/;"	f
+DDI_ARMCI_Get_proc	ddi_armci_get.c	/^inline int DDI_ARMCI_Get_proc(DDI_Patch *patch, void *buf, int pid) {$/;"	f
+DDI_ARMCI_H	ddi_armci.h	2;"	d
+DDI_ARMCI_IMPLICIT_NBACC	ddi_armci.h	92;"	d
+DDI_ARMCI_IMPLICIT_NBGET	ddi_armci.h	74;"	d
+DDI_ARMCI_IMPLICIT_NBPUT	ddi_armci.h	56;"	d
+DDI_ARMCI_IMPLICIT_WAIT	ddi_armci.h	110;"	d
+DDI_ARMCI_INIT_ERROR	ddi_armci.h	114;"	d
+DDI_ARMCI_INIT_ERROR_MESSAGE	ddi_armci.h	123;"	d
+DDI_ARMCI_Index_create	ddi_armci.c	/^void DDI_ARMCI_Index_create(DDA_Index *index, int handle) {$/;"	f
+DDI_ARMCI_Init	ddi_armci_init.c	/^void DDI_ARMCI_Init(int argc,char **argv) {$/;"	f
+DDI_ARMCI_LOCK	ddi_armci.h	38;"	d
+DDI_ARMCI_Lock	ddi_armci.c	/^inline void DDI_ARMCI_Lock(int mutex, int pid) {$/;"	f
+DDI_ARMCI_MEMORY_FINALIZE_ERROR	ddi_armci.h	120;"	d
+DDI_ARMCI_MEMORY_FINALIZE_ERROR_MESSAGE	ddi_armci.h	129;"	d
+DDI_ARMCI_MEMORY_INIT_ERROR	ddi_armci.h	118;"	d
+DDI_ARMCI_MEMORY_INIT_ERROR_MESSAGE	ddi_armci.h	127;"	d
+DDI_ARMCI_MPI_Comm_init	ddi_armci_init.c	/^void DDI_ARMCI_MPI_Comm_init(int nprocs, int *pids, int pid, int domainNp,$/;"	f
+DDI_ARMCI_MPI_INIT_ERROR	ddi_armci.h	116;"	d
+DDI_ARMCI_MPI_INIT_ERROR_MESSAGE	ddi_armci.h	125;"	d
+DDI_ARMCI_MPI_Init	ddi_armci_init.c	/^void DDI_ARMCI_MPI_Init(int argc,char *argv[]) {$/;"	f
+DDI_ARMCI_MPI_global_rank	ddi_armci_init.c	/^void DDI_ARMCI_MPI_global_rank(int *rank) {$/;"	f
+DDI_ARMCI_Memory_finalize	ddi_armci.c	/^void DDI_ARMCI_Memory_finalize() {$/;"	f
+DDI_ARMCI_Memory_init	ddi_armci.c	/^void DDI_ARMCI_Memory_init(size_t size) {$/;"	f
+DDI_ARMCI_Put	ddi_armci_put.c	/^void DDI_ARMCI_Put(DDI_Patch *patch, void *buf) {$/;"	f
+DDI_ARMCI_Put_domain_SMP	ddi_armci_put.c	/^inline int DDI_ARMCI_Put_domain_SMP(DDI_Patch *patch, void *buf, int domain) {$/;"	f
+DDI_ARMCI_Put_proc	ddi_armci_put.c	/^inline int DDI_ARMCI_Put_proc(DDI_Patch *patch, void *buf, int pid) {$/;"	f
+DDI_ARMCI_Release	ddi_armci.c	/^void DDI_ARMCI_Release(int handle, int pid, int ltype) {$/;"	f
+DDI_ARMCI_Unlock	ddi_armci.c	/^inline void DDI_ARMCI_Unlock(int mutex, int pid) {$/;"	f
+DDI_ARR_ACC	ddi_arr.h	158;"	d
+DDI_ARR_ADD	ddi_arr.h	157;"	d
+DDI_ARR_BASE_H	ddi_arr.h	144;"	d
+DDI_ARR_DMA	ddi_arr.h	147;"	d
+DDI_ARR_DOT	ddi_arr.h	156;"	d
+DDI_ARR_Element	ddi_arr.h	/^} DDI_ARR_Element;$/;"	t	typeref:struct:__anon4
+DDI_ARR_Element_select	ddi_arr_select.c	/^void DDI_ARR_Element_select(DDI_ARR_Element *a, DDI_ARR_Element *b, int op) {$/;"	f
+DDI_ARR_FILL	ddi_arr.h	152;"	d
+DDI_ARR_H	ddi_arr.h	2;"	d
+DDI_ARR_MAX	ddi_arr.h	155;"	d
+DDI_ARR_MIN	ddi_arr.h	154;"	d
+DDI_ARR_Patch	ddi_arr.h	/^} DDI_ARR_Patch;$/;"	t	typeref:struct:__anon5
+DDI_ARR_SCALE	ddi_arr.h	153;"	d
+DDI_ARR_ZERO	ddi_arr.h	151;"	d
+DDI_ARR_acc	ddi_arr.c	/^void DDI_ARR_acc(int dA, int dAi, int dAi2, int dAj, int dAj2, double alpha, double *buf) {$/;"	f
+DDI_ARR_acc_	ddi_arr_acc.c	/^void DDI_ARR_acc_(DDI_Patch *dAPatch, double alpha, double *buf) {$/;"	f
+DDI_ARR_acc_server	ddi_arr_acc.c	/^void DDI_ARR_acc_server(DDI_Patch *dAPatch, int rank) {$/;"	f
+DDI_ARR_add	ddi_arr.c	/^void DDI_ARR_add(int dA, int dAi, int dAi2, int dAj, int dAj2, double alpha,$/;"	f
+DDI_ARR_add_	ddi_arr_add.c	/^void DDI_ARR_add_(DDI_Patch *dAPatch, double alpha, DDI_Patch *dBPatch, double beta, DDI_Patch *dCPatch) {$/;"	f
+DDI_ARR_add_local	ddi_arr_add.c	/^void DDI_ARR_add_local(DDI_Patch *dAPatch, double alpha, DDI_Patch *dBPatch, double beta, DDI_Patch *dCPatch) {$/;"	f
+DDI_ARR_add_remote	ddi_arr_add.c	/^void DDI_ARR_add_remote(DDI_Patch *dAPatch, double alpha, DDI_Patch *dBPatch, double beta, DDI_Patch *dCPatch, int rank) {$/;"	f
+DDI_ARR_add_server	ddi_arr_add.c	/^void DDI_ARR_add_server(DDI_Patch *request, int rank) {$/;"	f
+DDI_ARR_dot	ddi_arr.c	/^void DDI_ARR_dot(int dA, int dAi, int dAi2, int dAj, int dAj2,$/;"	f
+DDI_ARR_dot_	ddi_arr_dot.c	/^void DDI_ARR_dot_(DDI_Patch *dAPatch, DDI_Patch *dBPatch, double *x) {$/;"	f
+DDI_ARR_dot_local	ddi_arr_dot.c	/^void DDI_ARR_dot_local(DDI_Patch *dAPatch, DDI_Patch *dBPatch, double *x) {$/;"	f
+DDI_ARR_dot_remote	ddi_arr_dot.c	/^void DDI_ARR_dot_remote(DDI_Patch *dAPatch, DDI_Patch *dBPatch, double *x, int rank) {$/;"	f
+DDI_ARR_dot_server	ddi_arr_dot.c	/^void DDI_ARR_dot_server(DDI_Patch *dAPatch, int rank) {$/;"	f
+DDI_ARR_fill	ddi_arr.c	/^void DDI_ARR_fill(int dA, int dAi, int dAi2, int dAj, int dAj2, double alpha) {$/;"	f
+DDI_ARR_max	ddi_arr.c	/^void DDI_ARR_max(int dA, int dAi, int dAi2, int dAj, int dAj2, double *alpha, int *index) {$/;"	f
+DDI_ARR_min	ddi_arr.c	/^void DDI_ARR_min(int dA, int dAi, int dAi2, int dAj, int dAj2, double *alpha, int *index) {$/;"	f
+DDI_ARR_scalar_	ddi_arr_scalar.c	/^void DDI_ARR_scalar_(DDI_Patch *dAPatch, double alpha) {$/;"	f
+DDI_ARR_scalar_local	ddi_arr_scalar.c	/^void DDI_ARR_scalar_local(DDI_Patch *dAPatch, double alpha) {$/;"	f
+DDI_ARR_scalar_remote	ddi_arr_scalar.c	/^void DDI_ARR_scalar_remote(DDI_Patch *dAPatch, double alpha, int rank) {$/;"	f
+DDI_ARR_scalar_server	ddi_arr_scalar.c	/^void DDI_ARR_scalar_server(DDI_Patch *dAPatch, int rank) {$/;"	f
+DDI_ARR_scale	ddi_arr.c	/^void DDI_ARR_scale(int dA, int dAi, int dAi2, int dAj, int dAj2, double alpha) {$/;"	f
+DDI_ARR_select_	ddi_arr_select.c	/^void DDI_ARR_select_(DDI_Patch *dAPatch, double *alpha, int *index) {$/;"	f
+DDI_ARR_select_local	ddi_arr_select.c	/^void DDI_ARR_select_local(DDI_Patch *dAPatch, DDI_ARR_Element *element) {$/;"	f
+DDI_ARR_select_remote	ddi_arr_select.c	/^void DDI_ARR_select_remote(DDI_Patch *dAPatch, DDI_ARR_Element *element, int rank) {$/;"	f
+DDI_ARR_select_server	ddi_arr_select.c	/^void DDI_ARR_select_server(DDI_Patch *dAPatch, int rank) {$/;"	f
+DDI_ARR_zero	ddi_arr.c	/^void DDI_ARR_zero(int dA, int dAi, int dAi2, int dAj, int dAj2) {$/;"	f
+DDI_AScope	ddi_comm_group.c	/^void DDI_AScope(int comm_id) {$/;"	f
+DDI_Abort	ddi_signals.c	/^void DDI_Abort(int signo) {$/;"	f
+DDI_Acc	ddi_acc.c	/^   void DDI_Acc(int handle,int ilo,int ihi,int jlo,int jhi,void *buff) {$/;"	f
+DDI_AccP	ddi_acc.c	/^   void DDI_AccP(int handle,DDI_Patch *patch,double alpha,void *buff) {$/;"	f
+DDI_Acc_lapi_server	ddi_acc.c	/^   void DDI_Acc_lapi_server(DDI_Patch *patch, void *buffer) {$/;"	f
+DDI_Acc_local	ddi_acc.c	/^   void DDI_Acc_local(const DDI_Patch* patch,double alpha,void *buff) {$/;"	f
+DDI_Acc_remote	ddi_acc.c	/^   void DDI_Acc_remote(double alpha, void *buff,DDI_Patch *patch,int remote_id) {$/;"	f
+DDI_Acc_server	ddi_acc.c	/^   void DDI_Acc_server(const DDI_Patch *msg,int from) {$/;"	f
+DDI_Acquire	ddi_index.c	/^   void DDI_Acquire(const DDA_Index *index,int handle,int ltype,void **array) {$/;"	f
+DDI_Array_zero	ddi_index.c	/^   void DDI_Array_zero(int handle) {$/;"	f
+DDI_BASE_H	ddi_base.h	2;"	d
+DDI_BCast	ddi_comm_bcast.c	/^   void DDI_BCast(void *buffer,size_t size,int root) {$/;"	f
+DDI_BCast_comm	ddi_comm_bcast.c	/^   void DDI_BCast_comm(void *buffer,size_t size,int root,int commid) {$/;"	f
+DDI_BCast_node	ddi_comm_bcast.c	/^   void DDI_BCast_node(void *buffer,size_t size,int root) {$/;"	f
+DDI_BCast_smp	ddi_comm_bcast.c	/^   void DDI_BCast_smp(void *buffer,size_t size,int root) {$/;"	f
+DDI_BGL_Comm_divide_custom	ddi_bgl.c	/^int DDI_BGL_Comm_divide_custom(int nGroups, int *nNodesByGroup, int commId, int *newCommId) {$/;"	f
+DDI_BGL_File_IONode_rank	ddi_bgl.c	/^int DDI_BGL_File_IONode_rank(DDI_Comm *comm) {$/;"	f
+DDI_BGL_File_IO_rank	ddi_bgl.c	/^int DDI_BGL_File_IO_rank(DDI_Comm *comm) {$/;"	f
+DDI_BGL_H	ddi_bgl.h	2;"	d
+DDI_BGL_Runtime_print	ddi_bgl.c	/^void DDI_BGL_Runtime_print(FILE *stream) {$/;"	f
+DDI_BGP_H	ddi_bgp.h	2;"	d
+DDI_BGP_Runtime_print	ddi_bgp.c	/^void DDI_BGP_Runtime_print(FILE *stream) {$/;"	f
+DDI_BUFFER_SIZE	ddi_base.h	40;"	d
+DDI_CHECK_ARGS	debug.h	48;"	d
+DDI_CHECK_RUN	ddi_base.h	49;"	d
+DDI_COMM_WORLD	ddi.h	22;"	d
+DDI_CREATE	ddi.h	179;"	d
+DDI_Comm	ddi_base.h	/^   } DDI_Comm;$/;"	t	typeref:struct:__anon6
+DDI_Comm_destroy	ddi_comm_create.c	/^   void DDI_Comm_destroy(int commid) {$/;"	f
+DDI_Comm_smp_nproc	ddi_comm_nproc.c	/^   void DDI_Comm_smp_nproc(int* smpnp,int *smpme,int commid) {$/;"	f
+DDI_Create	ddi_create.c	/^   void DDI_Create(int idim,int jdim,int *handle) {$/;"	f
+DDI_Create_custom	ddi_create.c	/^   void DDI_Create_custom(int idim,int jdim,int *jcols,int *handle) {$/;"	f
+DDI_DEBUGFLAG	ddi.h	192;"	d
+DDI_DEBUG_RUN	ddi_base.h	48;"	d
+DDI_DESTROY	ddi.h	180;"	d
+DDI_DLBNEXT	ddi.h	186;"	d
+DDI_DLBNext	ddi_dlb.c	/^   void DDI_DLBNext(size_t *counter) {$/;"	f
+DDI_DLBNext_local	ddi_dlb.c	/^   void DDI_DLBNext_local(size_t *counter) {$/;"	f
+DDI_DLBRESET	ddi.h	185;"	d
+DDI_DLBReset	ddi_dlb.c	/^   void DDI_DLBReset() {$/;"	f
+DDI_DLBReset_local	ddi_dlb.c	/^   void DDI_DLBReset_local() {$/;"	f
+DDI_DOUBLE	ddi.h	34;"	d
+DDI_Data	ddi_base.h	/^   } DDI_Data;$/;"	t	typeref:struct:__anon9
+DDI_Destroy	ddi_destroy.c	/^   void DDI_Destroy(int handle) {$/;"	f
+DDI_Distrib	ddi_distrib.c	/^   void DDI_Distrib(int handle,int rank,int *ilo,int *ihi,int *jlo,int *jhi) {$/;"	f
+DDI_DistribP	ddi_distrib.c	/^   void DDI_DistribP(int handle,int rank,DDI_Patch *patch) {$/;"	f
+DDI_ERROR_H	ddi_error.h	2;"	d
+DDI_Error	ddi_signals.c	/^void DDI_Error(int signo, char *message) {$/;"	f
+DDI_FENCE	ddi.h	191;"	d
+DDI_FILE_IONODE_RANK_	ddi_bgl.h	25;"	d
+DDI_FILE_IO_RANK_	ddi_bgl.h	18;"	d
+DDI_FULL_LOCK	ddi_base.h	56;"	d
+DDI_Fence_acquire	ddi_index.c	/^   void DDI_Fence_acquire(int handle) {$/;"	f
+DDI_Fence_check	ddi_index.c	/^   void DDI_Fence_check(int handle) {$/;"	f
+DDI_Fence_init	ddi_index.c	/^   void DDI_Fence_init() {$/;"	f
+DDI_Fence_release	ddi_index.c	/^   void DDI_Fence_release(int handle) {$/;"	f
+DDI_Finalize	ddi_finalize.c	/^   void DDI_Finalize() {$/;"	f
+DDI_GDLBNEXT	ddi.h	188;"	d
+DDI_GDLBNext	ddi_gdlb.c	/^   void DDI_GDLBNext(size_t *counter) {$/;"	f
+DDI_GDLBNext_local	ddi_gdlb.c	/^   void DDI_GDLBNext_local(size_t *counter) {$/;"	f
+DDI_GDLBRESET	ddi.h	187;"	d
+DDI_GDLBReset	ddi_gdlb.c	/^   void DDI_GDLBReset() {$/;"	f
+DDI_GDLBReset_local	ddi_gdlb.c	/^   void DDI_GDLBReset_local() {$/;"	f
+DDI_GET	ddi.h	181;"	d
+DDI_GETACC	ddi.h	184;"	d
+DDI_GROUP	ddi.h	171;"	d
+DDI_GSum	ddi_comm_gsum.c	/^   void DDI_GSum(void* data,size_t n,int type) {$/;"	f
+DDI_GSum_comm	ddi_comm_gsum.c	/^   void DDI_GSum_comm(void *data,size_t n,int type,int comm_id) {$/;"	f
+DDI_GSum_node	ddi_comm_gsum.c	/^   void DDI_GSum_node(void* data,size_t n,int type) {$/;"	f
+DDI_GSum_smp	ddi_comm_gsum.c	/^   void DDI_GSum_smp(void* data,size_t n,int type) {$/;"	f
+DDI_Get	ddi_get.c	/^   void DDI_Get(int handle,int ilo,int ihi,int jlo,int jhi,void *buff) {$/;"	f
+DDI_GetAcc	ddi_getacc.c	/^   void DDI_GetAcc(int handle,int ilo,int ihi,int jlo,int jhi,void *buff) {$/;"	f
+DDI_GetAccP	ddi_getacc.c	/^   void DDI_GetAccP(int handle,DDI_Patch *patch,void *buff) {$/;"	f
+DDI_GetAcc_lapi_server	ddi_getacc.c	/^   void DDI_GetAcc_lapi_server(DDI_Patch *patch, void *buffer) {$/;"	f
+DDI_GetAcc_local	ddi_getacc.c	/^   void DDI_GetAcc_local(const DDI_Patch* patch,void *buff) {$/;"	f
+DDI_GetAcc_server	ddi_getacc.c	/^   void DDI_GetAcc_server(const DDI_Patch *msg,int from) {$/;"	f
+DDI_GetP	ddi_get.c	/^   void DDI_GetP(int handle,DDI_Patch *patch,void *buff) {$/;"	f
+DDI_GetP_comm	ddi_get.c	/^   void DDI_GetP_comm(int handle, DDI_Patch *patch, void *buff,int commid) {$/;"	f
+DDI_Get_build	ddi_runtime.c	/^void DDI_Get_build(char *build) {$/;"	f
+DDI_Get_lapi_server	ddi_get.c	/^   void DDI_Get_lapi_server(DDI_Patch *patch, void *buffer) {$/;"	f
+DDI_Get_local	ddi_get.c	/^   void DDI_Get_local(const DDI_Patch* patch,void *buff) {$/;"	f
+DDI_Get_remote	ddi_get.c	/^   void DDI_Get_remote(void *buff,DDI_Patch *patch,int remote_id,int commid) {$/;"	f
+DDI_Get_server	ddi_get.c	/^   void DDI_Get_server(const DDI_Patch *msg,int from) {$/;"	f
+DDI_Get_version	ddi_runtime.c	/^void DDI_Get_version(int *version, int *subversion) {$/;"	f
+DDI_Group_create	ddi_comm_group.c	/^void DDI_Group_create(int ngroups,int *world,int *group, int *master) {$/;"	f
+DDI_Group_create_custom	ddi_comm_group.c	/^void DDI_Group_create_custom(int ngroups,int *grp_list,int *world,int *group, int *master) {$/;"	f
+DDI_INT	ddi.h	35;"	d
+DDI_INT64	ddi.h	29;"	d
+DDI_INT64	ddi.h	31;"	d
+DDI_IRecv	ddi_irecv.c	/^   void DDI_IRecv(void *buffer,size_t size,int to,int *req_val) {$/;"	f
+DDI_IRecv_thread	ddi_irecv.c	/^   static void *DDI_IRecv_thread(void *myarg) {$/;"	f	file:
+DDI_ISend	ddi_isend.c	/^   void DDI_ISend(void *buffer,size_t size,int to,int *req_val) {$/;"	f
+DDI_ISend_thread	ddi_isend.c	/^   static void *DDI_ISend_thread(void *myarg) {$/;"	f	file:
+DDI_Id	ddi_id.c	/^   const char *DDI_Id() {$/;"	f
+DDI_Index_create	ddi_index.c	/^   void DDI_Index_create(const DDI_Patch *msg) { $/;"	f
+DDI_Index_destroy	ddi_index.c	/^   void DDI_Index_destroy(const DDI_Patch *msg) {$/;"	f
+DDI_Init	ddi_init.c	/^   void DDI_Init(int argc,char **argv) {$/;"	f
+DDI_LAPI_dummy	ddi_lapi.c	/^   void DDI_LAPI_dummy(void) { return; }$/;"	f
+DDI_LONG	ddi.h	36;"	d
+DDI_List	ddi_base.h	/^   } DDI_List;$/;"	t	typeref:struct:__anon7
+DDI_MASTERS	ddi.h	172;"	d
+DDI_MAX_BUILD	ddi_runtime.h	9;"	d
+DDI_MAX_NODES_ERROR	ddi_error.h	12;"	d
+DDI_MAX_PROCESSORS_ERROR	ddi_error.h	11;"	d
+DDI_MAX_SMP_PROCS_ERROR	ddi_error.h	13;"	d
+DDI_MEMORY	ddi.h	178;"	d
+DDI_Memory	ddi_memory.c	/^   void DDI_Memory(size_t size) {$/;"	f
+DDI_Memory_avail	ddi_memory.c	/^   void DDI_Memory_avail(size_t *size) {$/;"	f
+DDI_Memory_finalize	ddi_memory.c	/^   void DDI_Memory_finalize() {$/;"	f
+DDI_Memory_heap_free	ddi_memory.c	/^   void DDI_Memory_heap_free(void *buffer,size_t size) {$/;"	f
+DDI_Memory_heap_malloc	ddi_memory.c	/^   void DDI_Memory_heap_malloc(void **buffer,size_t size) {$/;"	f
+DDI_Memory_init	ddi_memory.c	/^   void DDI_Memory_init(size_t size) {$/;"	f
+DDI_Memory_pop	ddi_memory.c	/^   void DDI_Memory_pop(size_t size) {$/;"	f
+DDI_Memory_push	ddi_memory.c	/^   void DDI_Memory_push(size_t size,void **addr,size_t *offset) {$/;"	f
+DDI_Memory_server	ddi_memory.c	/^   void DDI_Memory_server(size_t size) {$/;"	f
+DDI_Memory_sysv	ddi_memory.c	/^   static void DDI_Memory_sysv(size_t size) {$/;"	f	file:
+DDI_NDistrib	ddi_distrib.c	/^   void DDI_NDistrib(int handle,int rank,int *ilo,int *ihi,int *jlo,int *jhi) {$/;"	f
+DDI_NDistribP	ddi_distrib.c	/^   void DDI_NDistribP(int handle,int rank,DDI_Patch *patch) {$/;"	f
+DDI_NGroup	ddi_comm_group.c	/^void DDI_NGroup(int* ngroups,int *mygroup) {$/;"	f
+DDI_NNode	ddi_comm_nnode.c	/^   void DDI_NNode(int *nn,int *my) {$/;"	f
+DDI_NNode_comm	ddi_comm_nnode.c	/^   void DDI_NNode_comm(int commid,int *nn,int *my) {$/;"	f
+DDI_NProc	ddi_comm_nproc.c	/^   void DDI_NProc(int *np,int *me) {$/;"	f
+DDI_NProc_comm	ddi_comm_nproc.c	/^   void DDI_NProc_comm(int comm_id,int *np,int *me) {$/;"	f
+DDI_Output	ddi_create.c	/^   void DDI_Output(int flag) {$/;"	f
+DDI_POSIX_Runtime_print	ddi_runtime.c	/^void DDI_POSIX_Runtime_print(FILE *stream) {$/;"	f
+DDI_PUT	ddi.h	182;"	d
+DDI_Patch	ddi.h	/^   } DDI_Patch;$/;"	t	typeref:struct:__anon16
+DDI_Patch_info	ddi_id.c	/^   const char *DDI_Patch_info(const DDI_Patch *p) {$/;"	f
+DDI_ProcDLB_create	ddi_dlb_proc.c	/^   void DDI_ProcDLB_create(int *hnd) {$/;"	f
+DDI_ProcDLB_destroy	ddi_dlb_proc.c	/^   void DDI_ProcDLB_destroy(int hnd) {$/;"	f
+DDI_ProcDLB_next	ddi_dlb_proc.c	/^   void DDI_ProcDLB_next(int hnd, int proc, int *counter) {$/;"	f
+DDI_ProcDLB_reset	ddi_dlb_proc.c	/^   void DDI_ProcDLB_reset(int hnd) {$/;"	f
+DDI_Profile_counter	ddi_base.h	/^   } DDI_Profile_counter;$/;"	t	typeref:struct:__anon14
+DDI_Put	ddi_put.c	/^   void DDI_Put(int handle,int ilo,int ihi,int jlo,int jhi,void *buff) {$/;"	f
+DDI_PutP	ddi_put.c	/^   void DDI_PutP(int handle,DDI_Patch *patch,void *buff) {$/;"	f
+DDI_PutP_comm	ddi_put.c	/^   void DDI_PutP_comm(int handle,DDI_Patch *patch,void *buff,int commid) {$/;"	f
+DDI_Put_lapi_server	ddi_put.c	/^    void DDI_Put_lapi_server(DDI_Patch *patch, void *buffer) {$/;"	f
+DDI_Put_local	ddi_put.c	/^   void DDI_Put_local(const DDI_Patch* patch,void *buff) {$/;"	f
+DDI_Put_remote	ddi_put.c	/^   void DDI_Put_remote(void *buff,DDI_Patch *patch,int remote_id,int commid) {$/;"	f
+DDI_Put_server	ddi_put.c	/^   void DDI_Put_server(const DDI_Patch *msg,int from) {$/;"	f
+DDI_QUIT	ddi.h	189;"	d
+DDI_READ_ACCESS	ddi_base.h	58;"	d
+DDI_RUNTIME_H	ddi_runtime.h	2;"	d
+DDI_RUNTIME_PRINT_	ddi_bgl.h	32;"	d
+DDI_RUNTIME_PRINT_	ddi_bgp.h	9;"	d
+DDI_RUNTIME_PRINT_	ddi_runtime.h	17;"	d
+DDI_Recv	ddi_comm_recv.c	/^   void DDI_Recv(void *buff,size_t size,int from) {$/;"	f
+DDI_Recv_comm	ddi_comm_recv.c	/^   void DDI_Recv_comm(void *buff,size_t size,int from,int comm_id) {$/;"	f
+DDI_Recv_request	ddi_recv.c	/^   void DDI_Recv_request(void *buff,int *from) {$/;"	f
+DDI_Recvany	ddi_recvany.c	/^   void DDI_Recvany(void *buff,size_t size,int *from) {$/;"	f
+DDI_Release	ddi_index.c	/^   void DDI_Release(const DDA_Index *index,int handle,int ltype) {$/;"	f
+DDI_Request	ddi_base.h	/^   typedef MPI_Request DDI_Request;$/;"	t
+DDI_Request	ddi_base.h	/^   } DDI_Request;$/;"	t	typeref:struct:__anon13
+DDI_Runtime_print	ddi_runtime.c	/^void DDI_Runtime_print(FILE *stream) {$/;"	f
+DDI_SMP_Array	ddi_smp.c	/^   void *DDI_SMP_Array(int handle) {$/;"	f
+DDI_SMP_Create	ddi_smp.c	/^   void DDI_SMP_Create(size_t size,int *handle) {$/;"	f
+DDI_SMP_Destroy	ddi_smp.c	/^   void DDI_SMP_Destroy(int handle) {$/;"	f
+DDI_SMP_NProc	ddi_comm_nproc.c	/^   void DDI_SMP_NProc(int* smpnp,int *smpme) {$/;"	f
+DDI_SPECIFIC_CPU	debug.h	43;"	d
+DDI_SPECIFIC_CPU	debug.h	45;"	d
+DDI_STANDARD_RUN	ddi_base.h	47;"	d
+DDI_STDERR	ddi_error.h	9;"	d
+DDI_SUBVERSION	ddi.h	17;"	d
+DDI_Scope	ddi_comm_group.c	/^void DDI_Scope(int comm_id) {$/;"	f
+DDI_Sem_acquire	sysv_ipc.c	/^   void DDI_Sem_acquire(int semid,int semnum,int access) {$/;"	f
+DDI_Sem_oper	sysv_ipc.c	/^   int DDI_Sem_oper(int semid,int semnum,int semop) {$/;"	f
+DDI_Sem_release	sysv_ipc.c	/^   void DDI_Sem_release(int semid,int semnum,int access) {$/;"	f
+DDI_Sem_remove	sysv_ipc.c	/^   void DDI_Sem_remove(int semid) {$/;"	f
+DDI_Send	ddi_comm_send.c	/^   void DDI_Send(void* buff,size_t size,int to) {$/;"	f
+DDI_Send_comm	ddi_comm_send.c	/^   void DDI_Send_comm(void* buff,size_t size,int to,int comm_id) {$/;"	f
+DDI_Send_request	ddi_send.c	/^   void DDI_Send_request(void *buff,int *to,DDI_Request *req) {$/;"	f
+DDI_Send_request_comm	ddi_send.c	/^   void DDI_Send_request_comm(void *buff,int *to,DDI_Request *req,int commid) {$/;"	f
+DDI_Server	ddi_server.c	/^   void DDI_Server() {$/;"	f
+DDI_Shm_remove	sysv_ipc.c	/^   void DDI_Shm_remove(int shmid) {$/;"	f
+DDI_Subpatch	ddi_subpatch.c	/^   void DDI_Subpatch(int handle,const DDI_Patch* patch,int *nsubp,int *ranks,DDI_Patch *subp) {$/;"	f
+DDI_Subpatch_comm	ddi_subpatch.c	/^   void DDI_Subpatch_comm(int handle,const DDI_Patch* patch,int *nsubp,int *ranks,DDI_Patch *subp,int commid) {$/;"	f
+DDI_Subpatch_node	ddi_subpatch.c	/^void DDI_Subpatch_node(int handle, const DDI_Patch* patch, int *nsubp, int *ranks, DDI_Patch *subp, int node) {$/;"	f
+DDI_Sync	ddi_comm_sync.c	/^   void DDI_Sync(int tag) {$/;"	f
+DDI_Sync_comm	ddi_comm_sync.c	/^   void DDI_Sync_comm(int tag,int comm_id) {$/;"	f
+DDI_Sync_node	ddi_comm_sync.c	/^   void DDI_Sync_node(int tag) {$/;"	f
+DDI_Sync_smp	ddi_comm_sync.c	/^   void DDI_Sync_smp(int tag) {$/;"	f
+DDI_Sysv_dummy	sysv_ipc.c	/^   void DDI_Sysv_dummy(void) { return;  }$/;"	f
+DDI_Timer_output	ddi_timer.c	/^   void DDI_Timer_output() {$/;"	f
+DDI_Timer_reset	ddi_timer.c	/^   void DDI_Timer_reset() {$/;"	f
+DDI_UTIL_H	ddi_util.h	2;"	d
+DDI_VERSION	ddi.h	16;"	d
+DDI_WORKING_COMM	ddi.h	23;"	d
+DDI_WORLD	ddi.h	170;"	d
+DDI_WRITE_ACCESS	ddi_base.h	59;"	d
+DDI_WRITE_LOCK	ddi_base.h	55;"	d
+DDI_Wait	ddi_wait.c	/^   void DDI_Wait(const int req_val) {$/;"	f
+DDI_ZERO	ddi.h	190;"	d
+DEBUG_BLOCK	debug.h	51;"	d
+DEBUG_ELSEIF	debug.h	52;"	d
+DEBUG_END	debug.h	53;"	d
+DEBUG_MAX	debug.h	24;"	d
+DEBUG_MIN	debug.h	22;"	d
+DEBUG_OFF	debug.h	21;"	d
+DEBUG_OUT	debug.h	55;"	d
+DEBUG_OUT	debug.h	72;"	d
+DEBUG_ROOT	debug.h	62;"	d
+DEBUG_ROOT	debug.h	78;"	d
+DEBUG_START	debug.h	50;"	d
+DEBUG_STD	debug.h	23;"	d
+DEBUG_ULTRA	debug.h	25;"	d
+DELTA_EPOCH_IN_MICROSECS	mysystem.h	194;"	d
+DELTA_EPOCH_IN_MICROSECS	mysystem.h	196;"	d
+DEPS	Makefile	/^DEPS = ddi.h ddi_armci.h$/;"	m
+DS_Thread_finalize	ds_thread.c	/^void DS_Thread_finalize() {$/;"	f
+DS_Thread_init	ds_thread.c	/^void DS_Thread_init() {$/;"	f
+DS_Thread_main	ds_thread.c	/^void* DS_Thread_main(void* arg) {$/;"	f
+Data_find	ddi_comm.c	/^   void *Data_find(int data_id) {$/;"	f
+Data_find_end	ddi_comm.c	/^   void *Data_find_end() {$/;"	f
+DebugOutput	debug.c	/^void DebugOutput(int value) $/;"	f
+DebugValue	debug.c	/^int DebugValue() {$/;"	f
+E2BIG	mysystem.h	183;"	d
+EACCES	mysystem.h	185;"	d
+EFAULT	mysystem.h	187;"	d
+EIO	mysystem.h	181;"	d
+ELOOP	mysystem.h	182;"	d
+ENAMETOOLONG	mysystem.h	191;"	d
+ENOENT	mysystem.h	186;"	d
+ENOEXEC	mysystem.h	189;"	d
+ENOMEM	mysystem.h	184;"	d
+ENOTDIR	mysystem.h	188;"	d
+ETXTBSY	mysystem.h	190;"	d
+Execvp	std_system.c	/^   int Execvp(const char *file,char *const argv[]) {$/;"	f
+F77	Makefile	/^     F77 := $(shell $(GA_CONFIG) --f77)$/;"	m
+F77_ARR_acc	ddi_fortran.c	/^void F77_ARR_acc(int_f77 *dA, int_f77 *dAi, int_f77 *dAi2,$/;"	f
+F77_ARR_acc	ddi_fortran.h	162;"	d
+F77_ARR_acc	ddi_fortran.h	87;"	d
+F77_ARR_add	ddi_fortran.c	/^void F77_ARR_add(int_f77 *dA, int_f77 *dAi, int_f77 *dAi2,$/;"	f
+F77_ARR_add	ddi_fortran.h	161;"	d
+F77_ARR_add	ddi_fortran.h	86;"	d
+F77_ARR_dot	ddi_fortran.c	/^void F77_ARR_dot(int_f77 *dA, int_f77 *dAi, int_f77 *dAi2,$/;"	f
+F77_ARR_dot	ddi_fortran.h	160;"	d
+F77_ARR_dot	ddi_fortran.h	85;"	d
+F77_ARR_fill	ddi_fortran.c	/^void F77_ARR_fill(int_f77 *dA, int_f77 *dAi, int_f77 *dAi2,$/;"	f
+F77_ARR_fill	ddi_fortran.h	156;"	d
+F77_ARR_fill	ddi_fortran.h	81;"	d
+F77_ARR_max	ddi_fortran.c	/^void F77_ARR_max(int_f77 *dA, int_f77 *dAi, int_f77 *dAi2,$/;"	f
+F77_ARR_max	ddi_fortran.h	159;"	d
+F77_ARR_max	ddi_fortran.h	84;"	d
+F77_ARR_min	ddi_fortran.c	/^void F77_ARR_min(int_f77 *dA, int_f77 *dAi, int_f77 *dAi2,$/;"	f
+F77_ARR_min	ddi_fortran.h	158;"	d
+F77_ARR_min	ddi_fortran.h	83;"	d
+F77_ARR_scale	ddi_fortran.c	/^void F77_ARR_scale(int_f77 *dA, int_f77 *dAi, int_f77 *dAi2,$/;"	f
+F77_ARR_scale	ddi_fortran.h	157;"	d
+F77_ARR_scale	ddi_fortran.h	82;"	d
+F77_ARR_zero	ddi_fortran.c	/^void F77_ARR_zero(int_f77 *dA, int_f77 *dAi, int_f77 *dAi2,$/;"	f
+F77_ARR_zero	ddi_fortran.h	155;"	d
+F77_ARR_zero	ddi_fortran.h	80;"	d
+F77_AScope	ddi_fortran.c	/^   void F77_AScope(int_f77 *scope) {$/;"	f
+F77_AScope	ddi_fortran.h	129;"	d
+F77_AScope	ddi_fortran.h	71;"	d
+F77_Acc	ddi_fortran.c	/^   void F77_Acc(int_f77 *handle, int_f77 *ilo, int_f77 *ihi,$/;"	f
+F77_Acc	ddi_fortran.h	108;"	d
+F77_Acc	ddi_fortran.h	50;"	d
+F77_Acc_comm	ddi_fortran.h	153;"	d
+F77_Addr_test	ddi_fortran.c	/^   void F77_Addr_test(void *addr) {$/;"	f
+F77_Addr_test	ddi_fortran.h	147;"	d
+F77_BCast	ddi_fortran.c	/^   void F77_BCast(int_f77* msgtag, char *type,$/;"	f
+F77_BCast	ddi_fortran.h	116;"	d
+F77_BCast	ddi_fortran.h	58;"	d
+F77_BCast_node	ddi_fortran.c	/^   void F77_BCast_node(int_f77* msgtag, char *type, void *buffer,$/;"	f
+F77_BCast_node	ddi_fortran.h	141;"	d
+F77_BCast_smp	ddi_fortran.c	/^   void F77_BCast_smp(int_f77* msgtag, char *type, void *buffer,$/;"	f
+F77_BCast_smp	ddi_fortran.h	138;"	d
+F77_Create	ddi_fortran.c	/^   void F77_Create(int_f77 *idim, int_f77 *jdim, int_f77 *handle) {$/;"	f
+F77_Create	ddi_fortran.h	38;"	d
+F77_Create	ddi_fortran.h	96;"	d
+F77_Create_custom	ddi_fortran.c	/^   void F77_Create_custom(int_f77 *idim, int_f77 *jdim,$/;"	f
+F77_Create_custom	ddi_fortran.h	39;"	d
+F77_Create_custom	ddi_fortran.h	97;"	d
+F77_DB_Create	ddi_fortran.h	148;"	d
+F77_DB_Read	ddi_fortran.h	149;"	d
+F77_DB_Write	ddi_fortran.h	150;"	d
+F77_DLBNext	ddi_fortran.c	/^   void F77_DLBNext(int_f77 *counter) {$/;"	f
+F77_DLBNext	ddi_fortran.h	103;"	d
+F77_DLBNext	ddi_fortran.h	45;"	d
+F77_DLBReset	ddi_fortran.c	/^   void F77_DLBReset() {$/;"	f
+F77_DLBReset	ddi_fortran.h	102;"	d
+F77_DLBReset	ddi_fortran.h	44;"	d
+F77_Debug	ddi_fortran.c	/^   void F77_Debug(int_f77 *flag) {$/;"	f
+F77_Debug	ddi_fortran.h	122;"	d
+F77_Debug	ddi_fortran.h	64;"	d
+F77_Destroy	ddi_fortran.c	/^   void F77_Destroy(int_f77 *handle) {$/;"	f
+F77_Destroy	ddi_fortran.h	40;"	d
+F77_Destroy	ddi_fortran.h	98;"	d
+F77_Distrib	ddi_fortran.c	/^   void F77_Distrib(int_f77 *handle, int_f77 *rank,$/;"	f
+F77_Distrib	ddi_fortran.h	100;"	d
+F77_Distrib	ddi_fortran.h	42;"	d
+F77_Extern	f77_extern.h	26;"	d
+F77_Extern	f77_extern.h	28;"	d
+F77_Extern	f77_extern.h	30;"	d
+F77_Finalize	ddi_fortran.c	/^   void F77_Finalize() {$/;"	f
+F77_Finalize	ddi_fortran.h	34;"	d
+F77_Finalize	ddi_fortran.h	92;"	d
+F77_GDLBNext	ddi_fortran.c	/^   void F77_GDLBNext(int_f77 *counter) {$/;"	f
+F77_GDLBNext	ddi_fortran.h	132;"	d
+F77_GDLBNext	ddi_fortran.h	74;"	d
+F77_GDLBReset	ddi_fortran.c	/^   void F77_GDLBReset() {$/;"	f
+F77_GDLBReset	ddi_fortran.h	131;"	d
+F77_GDLBReset	ddi_fortran.h	73;"	d
+F77_GSumF	ddi_fortran.c	/^   void F77_GSumF(int_f77 *msgtag, void *buffer, int_f77 *len) {$/;"	f
+F77_GSumF	ddi_fortran.h	117;"	d
+F77_GSumF	ddi_fortran.h	59;"	d
+F77_GSumF_node	ddi_fortran.c	/^   void F77_GSumF_node(int_f77 *msgtag, void *buffer, int_f77 *len) {$/;"	f
+F77_GSumF_node	ddi_fortran.h	143;"	d
+F77_GSumF_smp	ddi_fortran.c	/^   void F77_GSumF_smp(int_f77 *msgtag, void *buffer, int_f77 *len) {$/;"	f
+F77_GSumF_smp	ddi_fortran.h	140;"	d
+F77_GSumI	ddi_fortran.c	/^   void F77_GSumI(int_f77 *msgtag, void *buffer, int_f77 *len) {$/;"	f
+F77_GSumI	ddi_fortran.h	118;"	d
+F77_GSumI	ddi_fortran.h	60;"	d
+F77_GSumI_node	ddi_fortran.c	/^   void F77_GSumI_node(int_f77 *msgtag, void *buffer, int_f77 *len) {$/;"	f
+F77_GSumI_node	ddi_fortran.h	142;"	d
+F77_GSumI_smp	ddi_fortran.c	/^   void F77_GSumI_smp(int_f77 *msgtag, void *buffer, int_f77 *len) {$/;"	f
+F77_GSumI_smp	ddi_fortran.h	139;"	d
+F77_Get	ddi_fortran.c	/^   void F77_Get(int_f77 *handle, int_f77 *ilo, int_f77 *ihi,$/;"	f
+F77_Get	ddi_fortran.h	106;"	d
+F77_Get	ddi_fortran.h	48;"	d
+F77_Get_comm	ddi_fortran.c	/^   void F77_Get_comm(int_f77 *handle, int_f77 *ilo, int_f77 *ihi,$/;"	f
+F77_Get_comm	ddi_fortran.h	151;"	d
+F77_Group_create	ddi_fortran.c	/^   void F77_Group_create(int_f77 *ngroups, int_f77 *world,$/;"	f
+F77_Group_create	ddi_fortran.h	126;"	d
+F77_Group_create	ddi_fortran.h	68;"	d
+F77_Group_create_custom	ddi_fortran.c	/^   void F77_Group_create_custom(int_f77 *ngroups, int_f77 *group_size,$/;"	f
+F77_Group_create_custom	ddi_fortran.h	127;"	d
+F77_Group_create_custom	ddi_fortran.h	69;"	d
+F77_IAcc	ddi_fortran.h	113;"	d
+F77_IAcc	ddi_fortran.h	55;"	d
+F77_IGet	ddi_fortran.h	111;"	d
+F77_IGet	ddi_fortran.h	53;"	d
+F77_IPut	ddi_fortran.h	112;"	d
+F77_IPut	ddi_fortran.h	54;"	d
+F77_IRecv	ddi_fortran.c	/^   void F77_IRecv(void *buffer, int_f77 *size, int_f77 *from, int_f77 *req) {$/;"	f
+F77_IRecv	ddi_fortran.h	110;"	d
+F77_IRecv	ddi_fortran.h	52;"	d
+F77_ISend	ddi_fortran.c	/^   void F77_ISend(void *buffer, int_f77 *size, int_f77 *to, int_f77 *req) {$/;"	f
+F77_ISend	ddi_fortran.h	109;"	d
+F77_ISend	ddi_fortran.h	51;"	d
+F77_Init	ddi_fortran.c	/^   void F77_Init() {$/;"	f
+F77_Init	ddi_fortran.h	32;"	d
+F77_Init	ddi_fortran.h	90;"	d
+F77_Level	ddi_fortran.c	/^   void F77_Level(int_f77 *implementation) {$/;"	f
+F77_Level	ddi_fortran.h	121;"	d
+F77_Level	ddi_fortran.h	63;"	d
+F77_Memory	ddi_fortran.c	/^   void F77_Memory(int_f77 *mem_rep, int_f77 *mem_ddi, int_f77 *exetyp) {$/;"	f
+F77_Memory	ddi_fortran.h	37;"	d
+F77_Memory	ddi_fortran.h	95;"	d
+F77_NDistrib	ddi_fortran.c	/^   void F77_NDistrib(int_f77 *handle, int_f77 *rank,$/;"	f
+F77_NDistrib	ddi_fortran.h	101;"	d
+F77_NDistrib	ddi_fortran.h	43;"	d
+F77_NGroup	ddi_fortran.c	/^   void F77_NGroup(int_f77 *ngroups, int_f77 *mygroup) {$/;"	f
+F77_NGroup	ddi_fortran.h	130;"	d
+F77_NGroup	ddi_fortran.h	72;"	d
+F77_NNode	ddi_fortran.c	/^   void F77_NNode(int_f77* np, int_f77* me) {$/;"	f
+F77_NNode	ddi_fortran.h	36;"	d
+F77_NNode	ddi_fortran.h	94;"	d
+F77_NProc	ddi_fortran.c	/^   void F77_NProc(int_f77* np, int_f77* me) {$/;"	f
+F77_NProc	ddi_fortran.h	35;"	d
+F77_NProc	ddi_fortran.h	93;"	d
+F77_Output	ddi_fortran.c	/^   void F77_Output(int_f77 *value) {$/;"	f
+F77_Output	ddi_fortran.h	120;"	d
+F77_Output	ddi_fortran.h	62;"	d
+F77_PBeg	ddi_fortran.c	/^   void F77_PBeg(int_f77 *nwdvar) {$/;"	f
+F77_PBeg	ddi_fortran.h	31;"	d
+F77_PBeg	ddi_fortran.h	89;"	d
+F77_PEnd	ddi_fortran.c	/^   void F77_PEnd(int_f77 *status) {$/;"	f
+F77_PEnd	ddi_fortran.h	33;"	d
+F77_PEnd	ddi_fortran.h	91;"	d
+F77_ProcDLB_create	ddi_fortran.c	/^   void F77_ProcDLB_create(int_f77 *handle) {$/;"	f
+F77_ProcDLB_create	ddi_fortran.h	133;"	d
+F77_ProcDLB_create	ddi_fortran.h	75;"	d
+F77_ProcDLB_destroy	ddi_fortran.c	/^   void F77_ProcDLB_destroy(int_f77 *handle) {$/;"	f
+F77_ProcDLB_destroy	ddi_fortran.h	136;"	d
+F77_ProcDLB_destroy	ddi_fortran.h	78;"	d
+F77_ProcDLB_next	ddi_fortran.c	/^   void F77_ProcDLB_next(int_f77 *handle, int_f77 *proc, int_f77 *counter) {$/;"	f
+F77_ProcDLB_next	ddi_fortran.h	134;"	d
+F77_ProcDLB_next	ddi_fortran.h	76;"	d
+F77_ProcDLB_reset	ddi_fortran.c	/^   void F77_ProcDLB_reset(int_f77 *handle) {$/;"	f
+F77_ProcDLB_reset	ddi_fortran.h	135;"	d
+F77_ProcDLB_reset	ddi_fortran.h	77;"	d
+F77_Put	ddi_fortran.c	/^   void F77_Put(int_f77 *handle, int_f77 *ilo, int_f77 *ihi,$/;"	f
+F77_Put	ddi_fortran.h	107;"	d
+F77_Put	ddi_fortran.h	49;"	d
+F77_Put_comm	ddi_fortran.c	/^   void F77_Put_comm(int_f77 *handle, int_f77 *ilo, int_f77 *ihi,$/;"	f
+F77_Put_comm	ddi_fortran.h	152;"	d
+F77_Rcvany	ddi_fortran.h	119;"	d
+F77_Rcvany	ddi_fortran.h	61;"	d
+F77_Recv	ddi_fortran.c	/^   void F77_Recv(void *buff,int_f77 *size,int_f77* from) {$/;"	f
+F77_Recv	ddi_fortran.h	105;"	d
+F77_Recv	ddi_fortran.h	47;"	d
+F77_SMP_Create	ddi_fortran.c	/^   void F77_SMP_Create(int_f77 *size, int_f77 *handle) {$/;"	f
+F77_SMP_Create	ddi_fortran.h	144;"	d
+F77_SMP_Destroy	ddi_fortran.c	/^   void F77_SMP_Destroy(int_f77 *handle) {$/;"	f
+F77_SMP_Destroy	ddi_fortran.h	145;"	d
+F77_SMP_NProc	ddi_fortran.c	/^   void F77_SMP_NProc(int_f77* np, int_f77* me) {$/;"	f
+F77_SMP_NProc	ddi_fortran.h	125;"	d
+F77_SMP_NProc	ddi_fortran.h	67;"	d
+F77_SMP_Offset	ddi_fortran.c	/^   void F77_SMP_Offset(int_f77 *handle, void *addr, int_f77 *offset) {$/;"	f
+F77_SMP_Offset	ddi_fortran.h	146;"	d
+F77_SMP_sync	ddi_fortran.c	/^   void F77_SMP_sync() {$/;"	f
+F77_SMP_sync	ddi_fortran.h	137;"	d
+F77_Scope	ddi_fortran.c	/^   void F77_Scope(int_f77 *scope) {$/;"	f
+F77_Scope	ddi_fortran.h	128;"	d
+F77_Scope	ddi_fortran.h	70;"	d
+F77_Send	ddi_fortran.c	/^   void F77_Send(void *buff,int_f77 *size,int_f77 *to) {$/;"	f
+F77_Send	ddi_fortran.h	104;"	d
+F77_Send	ddi_fortran.h	46;"	d
+F77_Sync	ddi_fortran.c	/^   void F77_Sync(int_f77 *msgtag) {$/;"	f
+F77_Sync	ddi_fortran.h	115;"	d
+F77_Sync	ddi_fortran.h	57;"	d
+F77_Timer_output	ddi_fortran.c	/^   void F77_Timer_output() {$/;"	f
+F77_Timer_output	ddi_fortran.h	124;"	d
+F77_Timer_output	ddi_fortran.h	66;"	d
+F77_Timer_reset	ddi_fortran.c	/^   void F77_Timer_reset() {$/;"	f
+F77_Timer_reset	ddi_fortran.h	123;"	d
+F77_Timer_reset	ddi_fortran.h	65;"	d
+F77_Wait	ddi_fortran.c	/^   void F77_Wait(int_f77 *req) {$/;"	f
+F77_Wait	ddi_fortran.h	114;"	d
+F77_Wait	ddi_fortran.h	56;"	d
+F77_Zero	ddi_fortran.c	/^   void F77_Zero(int_f77 *handle) {$/;"	f
+F77_Zero	ddi_fortran.h	41;"	d
+F77_Zero	ddi_fortran.h	99;"	d
+FFLAGS	Makefile	/^  FFLAGS := $(shell $(GA_CONFIG) --fflags)$/;"	m
+FLIBS	Makefile	/^   FLIBS := $(shell $(GA_CONFIG) --flibs)$/;"	m
+FULL_SMP	common.h	50;"	d
+FULL_SMP	common.h	52;"	d
+Fatal_error	ddi_signals.c	/^void Fatal_error(int signo) {$/;"	f
+GA_CONFIG	Makefile	/^  GA_CONFIG := \/lus\/scratch\/ryan\/local\/bin\/ga-config$/;"	m
+Gethostbyname	std_system.c	/^   struct hostent *Gethostbyname(const char *name) {$/;"	f
+HOSTNAME_LEN	ddi_init.c	148;"	d	file:
+IS_ROOT	debug.h	61;"	d
+Init_counters	ddi_init.c	/^   static void Init_counters() {$/;"	f	file:
+Init_lapi	ddi_init.c	/^   static void Init_lapi() {$/;"	f	file:
+Init_mpi	ddi_init.c	/^   static void Init_mpi(int targc,char *targv[]) {$/;"	f	file:
+Init_scratch	ddi_init.c	/^   void Init_scratch(int argc,char *argv[]) {$/;"	f
+Init_smp	ddi_init.c	/^   static void Init_smp() {$/;"	f	file:
+Init_soc	ddi_init.c	/^   static void Init_soc(int argc,char** argv) {$/;"	f	file:
+Init_soc_accept	ddi_init.c	/^   static void Init_soc_accept(int np, int me,int recvsock, int *sockets) {$/;"	f	file:
+Init_soc_create	ddi_init.c	/^   static void Init_soc_create(int np,int me,int nsocks,int *ports,int *sockets) {$/;"	f	file:
+LDFLAGS	Makefile	/^ LDFLAGS := $(shell $(GA_CONFIG) --ldflags)$/;"	m
+LIBS	Makefile	/^    LIBS := $(shell $(GA_CONFIG) --libs)$/;"	m
+LVL1	debug.h	27;"	d
+LVL2	debug.h	28;"	d
+LVL3	debug.h	29;"	d
+LVL4	debug.h	30;"	d
+LVL5	debug.h	31;"	d
+LVL6	debug.h	32;"	d
+LVL7	debug.h	33;"	d
+LVL8	debug.h	34;"	d
+LVL9	debug.h	35;"	d
+MAX_DD_ARRAYS	ddi_base.h	32;"	d
+MAX_DEBUG	debug.h	56;"	d
+MAX_DEBUG	debug.h	73;"	d
+MAX_DEBUG_ROOT	debug.h	63;"	d
+MAX_DEBUG_ROOT	debug.h	79;"	d
+MAX_DS_MSG_SIZE	common.h	29;"	d
+MAX_DS_MSG_WORDS	common.h	25;"	d
+MAX_NODES	common.h	40;"	d
+MAX_PROCESSORS	common.h	47;"	d
+MAX_PTP_MSG_SIZE	common.h	21;"	d
+MAX_SMP_PROCS	common.h	44;"	d
+MIN_DEBUG	debug.h	58;"	d
+MIN_DEBUG	debug.h	75;"	d
+MIN_DEBUG_ROOT	debug.h	65;"	d
+MIN_DEBUG_ROOT	debug.h	81;"	d
+MMATH_H	mmath.h	2;"	d
+Malloc	std_system.c	/^   void *Malloc(size_t size) {$/;"	f
+NO_COLLECTIVE_SMP	mysystem.h	17;"	d
+NRequests	ddi_server.c	/^   static int NRequests;$/;"	v	file:
+NRequests	ds_thread.c	/^static int NRequests;$/;"	v	file:
+Node_info	common.h	/^   } Node_info;$/;"	t	typeref:struct:__anon1
+OBJS	Makefile	/^OBJS = ddi_armci.o ddi_armci_init.o ddi_armci_get.o ddi_armci_put.o ddi_armci_acc.o ddi_armci_getacc.o \\$/;"	m
+ONE_GB	common.h	17;"	d
+ONE_KB	common.h	14;"	d
+ONE_MB	common.h	15;"	d
+ONE_MWORD	common.h	18;"	d
+Parse_node_args	parse_node_args.c	/^int Parse_node_args(int argc,char **argv,int nodearg,int nnodes,Node_info *ddinodes) {$/;"	f
+Proc_info	common.h	/^   } Proc_info;$/;"	t	typeref:struct:__anon2
+RUSAGE_CHILDREN	mysystem.h	206;"	d
+RUSAGE_SELF	mysystem.h	205;"	d
+Recv	tcp_sockets.c	/^   ssize_t Recv(int s, void *buf, size_t len, int flags) {$/;"	f
+SERVER_SOCKET	common.h	104;"	d
+SHM_R	mysystem.h	68;"	d
+SHM_W	mysystem.h	71;"	d
+SIGALRM	mysystem.h	162;"	d
+SIGBUS	mysystem.h	155;"	d
+SIGCHLD	mysystem.h	165;"	d
+SIGCONT	mysystem.h	166;"	d
+SIGHUP	mysystem.h	149;"	d
+SIGIO	mysystem.h	179;"	d
+SIGIOT	mysystem.h	154;"	d
+SIGKILL	mysystem.h	157;"	d
+SIGPIPE	mysystem.h	161;"	d
+SIGPROF	mysystem.h	177;"	d
+SIGQUIT	mysystem.h	151;"	d
+SIGSTKFLT	mysystem.h	164;"	d
+SIGSTOP	mysystem.h	167;"	d
+SIGTRAP	mysystem.h	153;"	d
+SIGTSTP	mysystem.h	168;"	d
+SIGTTIN	mysystem.h	171;"	d
+SIGTTOU	mysystem.h	172;"	d
+SIGURG	mysystem.h	173;"	d
+SIGUSR1	mysystem.h	158;"	d
+SIGUSR2	mysystem.h	160;"	d
+SIGVTALRM	mysystem.h	176;"	d
+SIGWINCH	mysystem.h	178;"	d
+SIGXCPU	mysystem.h	174;"	d
+SIGXFSZ	mysystem.h	175;"	d
+SMP_Data	ddi_base.h	/^   } SMP_Data;$/;"	t	typeref:struct:__anon10
+SMP_create	ddi_smp.c	/^   int SMP_create(size_t size) {$/;"	f
+SMP_destroy	ddi_smp.c	/^   void SMP_destroy(int handle) {$/;"	f
+SMP_find	ddi_smp.c	/^   void *SMP_find(int handle) {$/;"	f
+SMP_find_end	ddi_smp.c	/^   void *SMP_find_end() {$/;"	f
+SOC_Create	soc_create.c	/^   int SOC_Create(int type,int *port,const char *hostname) {$/;"	f
+STD_DEBUG	debug.h	57;"	d
+STD_DEBUG	debug.h	74;"	d
+STD_DEBUG_ROOT	debug.h	64;"	d
+STD_DEBUG_ROOT	debug.h	80;"	d
+Semget	sysv_ipc.c	/^   int Semget(key_t key,int nsems,int semflg) {$/;"	f
+Semop	sysv_ipc.c	/^   int Semop(int semid,struct sembuf *opers,size_t nops) {$/;"	f
+Send	tcp_sockets.c	/^   ssize_t Send(int s,const void *msg,size_t len,int flags) {$/;"	f
+Shmat	sysv_ipc.c	/^   void *Shmat(int shmid, void *addr, int flag) {$/;"	f
+Shmctl	sysv_ipc.c	/^   int Shmctl(int shmid, int cmd, struct shmid_ds *buff) {$/;"	f
+Shmget	sysv_ipc.c	/^   int Shmget(key_t key, size_t size, int flag) {$/;"	f
+TEN_MB	common.h	16;"	d
+ULTRA_DEBUG	debug.h	59;"	d
+ULTRA_DEBUG	debug.h	76;"	d
+USE_TCP_LOCAL	common.h	56;"	d
+USING_DATA_SERVERS	common.h	60;"	d
+USING_DATA_SERVERS	common.h	64;"	d
+USING_DATA_SERVERS	common.h	66;"	d
+USING_DATA_SERVERS	common.h	69;"	d
+Vec_sum_d	ddi_comm_gsum.c	/^   void Vec_sum_d(double *dest,const double *src,size_t size) {$/;"	f
+Vec_sum_i	ddi_comm_gsum.c	/^   void Vec_sum_i(int *dest,const int *src,size_t size) {$/;"	f
+Vec_sum_l	ddi_comm_gsum.c	/^   void Vec_sum_l(DDI_INT64 *dest,const DDI_INT64 *src,size_t size) {$/;"	f
+_KERNEL	mysystem.h	52;"	d
+_REENTRANT	mysystem.h	14;"	d
+_sigurg_hndlr	ddi_signals.c	/^   void _sigurg_hndlr(int signo) {$/;"	f
+addr	ddi_base.h	/^      void  *addr;$/;"	m	struct:__anon10
+alpha	ddi.h	/^     double alpha;$/;"	m	struct:__anon16
+alpha	ddi_arr.h	/^  double alpha;$/;"	m	struct:__anon4
+alpha	ddi_arr.h	/^  double alpha;$/;"	m	struct:__anon5
+buffer	ddi_base.h	/^      void   *buffer;      \/* shared-memory buffer                 *\/$/;"	m	struct:__anon9
+buffer	ddi_base.h	/^     void       *buffer;$/;"	m	struct:__anon13
+buffer	ddi_comm_gsum.c	/^   static char buffer[DDI_BUFFER_SIZE];$/;"	v	file:
+buffer_size	ddi_base.h	/^      size_t  buffer_size; \/* shared-memory buffer size (bytes)    *\/$/;"	m	struct:__anon9
+cache_line_offset	ddi_base.h	/^      char cache_line_offset[CACHE_LINE_SIZE];$/;"	m	struct:__anon8
+comm	ddi_base.h	/^      MPI_Comm comm;$/;"	m	struct:__anon7
+commId	ddi_base.h	/^     int commId;$/;"	m	struct:__anon12
+compute_comm	ddi_base.h	/^     MPI_Comm compute_comm; \/* communicator for all compute processes      *\/$/;"	m	struct:__anon6
+cp_buffer_addr	ddi.h	/^     void  *cp_buffer_addr;$/;"	m	struct:__anon16
+cp_lapi_cntr	ddi.h	/^     void  *cp_lapi_cntr;$/;"	m	struct:__anon16
+cp_lapi_id	ddi.h	/^     int    cp_lapi_id;$/;"	m	struct:__anon16
+cpus	common.h	/^     int  cpus;            \/* number of cpus on node *\/$/;"	m	struct:__anon1
+dda_index	ddi.c	/^   DDA_Index *gv(dda_index) = NULL;$/;"	v
+dda_output	ddi.c	/^   int gv(dda_output) = 1;$/;"	v
+ddi_comm_id	ddi_comm.c	/^   int gv(ddi_comm_id)      = DDI_COMM_WORLD;$/;"	v
+ddi_data_id	ddi_comm.c	/^   int gv(ddi_data_id)      = 17;$/;"	v
+ddi_working_comm	ddi_comm.c	/^   int gv(ddi_working_comm) = DDI_COMM_WORLD;$/;"	v
+ds_buffer_size	ddi.h	/^     size_t ds_buffer_size;$/;"	m	struct:__anon16
+ds_thread	ddi_base.h	/^     pthread_t         *ds_thread;$/;"	v
+ds_thread	ds_thread.c	/^pthread_t *ds_thread = NULL;$/;"	v
+dummy	tcp_sockets.c	/^   static int dummy = 0;$/;"	v	file:
+flag	debug.c	/^  static int flag=0;$/;"	v	file:
+flag	debug.c	/^  static int flag=DDI_DEBUG;$/;"	v	file:
+getarg_	ddi_fortran.c	20;"	d	file:
+getrusage	windows.c	/^int getrusage(int who, struct rusage * rusage)$/;"	f
+gettimeofday	ddi_timer.c	/^int gettimeofday(struct timeval *tv, struct timezone *tz)$/;"	f
+global_dsid	ddi_base.h	/^     int *global_dsid; \/* global process ids of data servers by node  *\/$/;"	m	struct:__anon6
+global_nid	ddi_base.h	/^     int *global_nid;  \/* global node ids of all processes mapped     *\/$/;"	m	struct:__anon6
+global_node_map	ddi.c	/^   int *gv(global_node_map) = NULL;$/;"	v
+global_pid	ddi_base.h	/^     int *global_pid;  \/* global process ids of all processes mapped  *\/$/;"	m	struct:__anon6
+global_proc_map	ddi.c	/^   int *gv(global_proc_map) = NULL;$/;"	v
+gv	ddi_base.h	65;"	d
+handle	ddi.h	/^     int handle;$/;"	m	struct:__anon16
+handle	ddi_base.h	/^      int    handle;$/;"	m	struct:__anon10
+hnd_thread	ddi_base.h	/^     pthread_t   hnd_thread;$/;"	m	struct:__anon13
+hostname	common.h	/^     char *hostname;       \/* hostname for the node *\/$/;"	m	struct:__anon1
+hostname	common.h	/^     char *hostname;$/;"	m	struct:__anon2
+iargc_	ddi_fortran.c	19;"	d	file:
+id	ddi_base.h	/^      int     id;          \/* linked-list id                       *\/$/;"	m	struct:__anon9
+id	ddi_base.h	/^     int id;$/;"	m	struct:__anon6
+ihi	ddi.h	/^     int ihi;$/;"	m	struct:__anon16
+ihi	ddi_base.h	/^     int ilo,ihi,jlo,jhi,ncols,nrows,semid;$/;"	m	struct:__anon12
+ilo	ddi.h	/^     int ilo;$/;"	m	struct:__anon16
+ilo	ddi_base.h	/^     int ilo,ihi,jlo,jhi,ncols,nrows,semid;$/;"	m	struct:__anon12
+index	ddi_arr.h	/^  int index[2];$/;"	m	struct:__anon4
+index_ds	ddi_server.c	/^   static int *index_ds = NULL;$/;"	v	file:
+index_ds	ds_thread.c	/^static int *index_ds = NULL;$/;"	v	file:
+int_f77	ddi_fortran.h	/^   typedef INT_SIZE int_f77;$/;"	t
+jhi	ddi.h	/^     int jhi;$/;"	m	struct:__anon16
+jhi	ddi_base.h	/^     int ilo,ihi,jlo,jhi,ncols,nrows,semid;$/;"	m	struct:__anon12
+jlo	ddi.h	/^     int jlo;$/;"	m	struct:__anon16
+jlo	ddi_base.h	/^     int ilo,ihi,jlo,jhi,ncols,nrows,semid;$/;"	m	struct:__anon12
+join	ddi_util.c	/^void join(char *to, const char *from, const char *delim) {$/;"	f
+local_nid	ddi_base.h	/^     int *local_nid;   \/* local node ids of allthe proccesses mapped  *\/$/;"	m	struct:__anon6
+master_map	ddi.c	/^   int *gv(master_map)      = NULL;$/;"	v
+max	mysystem.h	140;"	d
+me	ddi_base.h	/^      int me;$/;"	m	struct:__anon7
+me	ddi_base.h	/^     int me;           \/* process rank                                *\/$/;"	m	struct:__anon6
+me_local	ddi_base.h	/^     int me_local;     \/* local process rank                          *\/$/;"	m	struct:__anon6
+mem_addr	ddi_base.h	/^static char   *gv(mem_addr)  = NULL;$/;"	v
+mem_heap_max	ddi_base.h	/^static size_t gv(mem_heap_max) = 0;$/;"	v
+mem_heap_total	ddi_base.h	/^static size_t gv(mem_heap_total) = 0;$/;"	v
+mem_max	ddi_base.h	/^static size_t *gv(mem_max)   = NULL;$/;"	v
+mem_total	ddi_base.h	/^static size_t *gv(mem_total) = NULL;$/;"	v
+mem_used	ddi_base.h	/^static size_t *gv(mem_used)  = NULL;$/;"	v
+mfill	mmath.c	/^void mfill(double alpha, double *A, int ALda, int Ai, int Aj, int m, int n) {$/;"	f
+min	mysystem.h	141;"	d
+mmadd	mmath.c	/^void mmadd(double alpha, double *A, int ALda, int Ai, int Aj,$/;"	f
+mmax	mmath.c	/^void mmax(double *A, int ALda, int Ai, int Aj, int m, int n, double *alpha, int *index) {$/;"	f
+mmdot	mmath.c	/^void mmdot(double *A, int ALda, int Ai, int Aj, double *B, int BLda, int Bi, int Bj,$/;"	f
+mmin	mmath.c	/^void mmin(double *A, int ALda, int Ai, int Aj, int m, int n, double *alpha, int *index) {$/;"	f
+mpi_realm_mutex	ddi_base.h	/^     pthread_mutex_t   *mpi_realm_mutex;$/;"	v
+mpi_realm_mutex	ds_thread.c	/^pthread_mutex_t *mpi_realm_mutex = NULL;$/;"	v
+mscale	mmath.c	/^void mscale(double alpha, double *A, int ALda, int Ai, int Aj, int m, int n) {$/;"	f
+mutex	ddi_armci.h	/^  int mutex;      \/**< @brief Distributed array mutex. *\/$/;"	m	struct:__anon3
+my	ddi_base.h	/^     int my;           \/* node rank                                   *\/$/;"	m	struct:__anon6
+myds	common.h	/^     int  myds;            \/* rank of data server for inter-node communication *\/$/;"	m	struct:__anon1
+mygroup	ddi_base.h	/^     int mygroup;      \/* rank of the ddi group on which this comm$/;"	m	struct:__anon6
+nbytes	ddi_base.h	/^      size_t nbytes;$/;"	m	struct:__anon14
+nbytes_local	ddi_base.h	/^      size_t nbytes_local;$/;"	m	struct:__anon14
+nc	ddi.c	/^   int gv(nc) = -1;  \/* total number of compute processes *\/$/;"	v
+nc_by_node	ddi.c	/^   int *nc_by_node;$/;"	v
+ncalls	ddi_base.h	/^      size_t ncalls;$/;"	m	struct:__anon14
+ncalls_local	ddi_base.h	/^      size_t ncalls_local;$/;"	m	struct:__anon14
+ncols	ddi_base.h	/^     int ilo,ihi,jlo,jhi,ncols,nrows,semid;$/;"	m	struct:__anon12
+nd	ddi.c	/^   int gv(nd) = -1;  \/* total number of data servers      *\/$/;"	v
+nd_by_node	ddi.c	/^   int *nd_by_node;$/;"	v
+netext	common.h	/^     char *netext[8];      \/* extensions to the hostname for premium network *\/$/;"	m	struct:__anon1
+nets	common.h	/^     int  nets;            \/* number of unique network names *\/$/;"	m	struct:__anon1
+network	common.h	/^     char *network[8];     \/* used when the premium network has completely$/;"	m	struct:__anon1
+next	ddi_base.h	/^      void  *next;$/;"	m	struct:__anon10
+next	ddi_base.h	/^      void*   next;        \/* pointer to next DDI_Data struct *\/$/;"	m	struct:__anon9
+next	ddi_base.h	/^     void *next;       \/* pointer to next communicator (linked-list)  *\/$/;"	m	struct:__anon6
+ngroups	ddi_base.h	/^     int ngroups;      \/* number of ddi groups running concurrently   *\/$/;"	m	struct:__anon6
+nics	common.h	/^     int  nics;            \/* number of HPC nics *\/$/;"	m	struct:__anon1
+nn	ddi_base.h	/^     int nn;           \/* number of nodes                             *\/$/;"	m	struct:__anon6
+node	common.h	/^     int node;$/;"	m	struct:__anon2
+node_comm	ddi_base.h	/^     MPI_Comm node_comm;    \/* communicator containing the master process$/;"	m	struct:__anon6
+node_master	ddi_base.h	/^     int *node_master; \/* global process ids of each node master      *\/$/;"	m	struct:__anon6
+nodemaster	common.h	/^     int  nodemaster;      \/* rank of master on node *\/$/;"	m	struct:__anon1
+np	ddi.c	/^   int gv(np) = -1;  \/* total number of ranked processes  *\/$/;"	v
+np	ddi_base.h	/^      int np;$/;"	m	struct:__anon7
+np	ddi_base.h	/^     int np;           \/* number of processes                         *\/$/;"	m	struct:__anon6
+np_by_node	ddi.c	/^   int *np_by_node;$/;"	v
+np_local	ddi_base.h	/^     int np_local;     \/* number of local processes                   *\/$/;"	m	struct:__anon6
+nrows	ddi_base.h	/^     int ilo,ihi,jlo,jhi,ncols,nrows,semid;$/;"	m	struct:__anon12
+nwrites	ddi_index.c	/^   static int *nwrites = NULL;$/;"	v	file:
+offset	ddi_armci.h	/^  size_t offset;  \/**< @brief Distributed array offset. *\/$/;"	m	struct:__anon3
+offset	ddi_base.h	/^      long   offset;$/;"	m	struct:__anon11
+offset	ddi_base.h	/^     size_t size,offset;$/;"	m	struct:__anon12
+oper	ddi.h	/^     int oper;$/;"	m	struct:__anon16
+p	ddi_server.c	/^   static DDI_Patch *p = NULL;$/;"	v	file:
+p	ds_thread.c	/^static DDI_Patch *p = NULL;$/;"	v	file:
+patch	ddi_arr.h	/^  DDI_Patch patch;$/;"	m	struct:__anon5
+pids	ddi_base.h	/^      const int *pids;$/;"	m	struct:__anon7
+port	common.h	/^     int port;$/;"	m	struct:__anon2
+pset	ddi_bgl.h	/^  int pset;  \/**< @brief BG\/L pset *\/$/;"	m	struct:__anon15
+r	ddi_server.c	/^   static MPI_Request *r = NULL;$/;"	v	file:
+r	ds_thread.c	/^static MPI_Request *r = NULL;$/;"	v	file:
+rank	ddi_bgl.h	/^  int rank;  \/**< @brief MPI rank *\/$/;"	m	struct:__anon15
+ranks_by_node	ddi.c	/^   int **ranks_by_node;$/;"	v
+root	ddi_base.h	/^      int root;$/;"	m	struct:__anon7
+ru_stime	mysystem.h	/^  struct timeval ru_stime;        \/* system time used *\/$/;"	m	struct:rusage	typeref:struct:rusage::timeval
+ru_utime	mysystem.h	/^  struct timeval ru_utime;        \/* user time used *\/$/;"	m	struct:rusage	typeref:struct:rusage::timeval
+rusage	mysystem.h	/^struct rusage$/;"	s
+s	ddi_server.c	/^   static MPI_Status *s = NULL;$/;"	v	file:
+s	ds_thread.c	/^static MPI_Status *s = NULL;$/;"	v	file:
+semid	ddi_base.h	/^      int    semid;$/;"	m	struct:__anon10
+semid	ddi_base.h	/^     int ilo,ihi,jlo,jhi,ncols,nrows,semid;$/;"	m	struct:__anon12
+shmem_lb_counter	ddi_dlb.c	/^   long shmem_lb_counter = 0;$/;"	v
+shmid	ddi_base.h	/^      int    shmid;$/;"	m	struct:__anon10
+size	ddi.h	/^     size_t size;$/;"	m	struct:__anon16
+size	ddi_base.h	/^      size_t size;$/;"	m	struct:__anon10
+size	ddi_base.h	/^      size_t size;$/;"	m	struct:__anon11
+size	ddi_base.h	/^     size_t      size;$/;"	m	struct:__anon13
+size	ddi_base.h	/^     size_t size,offset;$/;"	m	struct:__anon12
+smp_base_data	ddi_smp.c	/^   SMP_Data*      gv(smp_base_data) = NULL;$/;"	v
+smp_comm	ddi_base.h	/^     MPI_Comm smp_comm;     \/* communicator for all smp compute processes  *\/$/;"	m	struct:__anon6
+smp_data_id	ddi_smp.c	/^   static int     gv(smp_data_id) = 1;$/;"	v	file:
+smp_pid	ddi_base.h	/^     int *smp_pid;     \/* global process ids of all local processes   *\/$/;"	m	struct:__anon6
+smp_world	ddi_base.h	/^     MPI_Comm smp_world;    \/* SMP_World_comm from Init_mpi                *\/$/;"	m	struct:__anon6
+strf2c	ddi_util.c	/^void strf2c(char *cstr, char *fstr, size_t len) {$/;"	f
+sync_array	ddi_base.h	/^      CS_int *sync_array;  \/* cache-safe int array for syncs       *\/$/;"	m	struct:__anon9
+sync_num	ddi_base.h	/^      int     sync_num;    \/* sync number -- important for syncing *\/$/;"	m	struct:__anon9
+tag	ddi_base.h	/^      int tag;$/;"	m	struct:__anon7
+timer	ddi_base.h	/^      struct timeval timer;$/;"	m	struct:__anon14	typeref:struct:__anon14::timeval
+timezone	mysystem.h	/^struct timezone $/;"	s
+to	ddi_base.h	/^     int         to; $/;"	m	struct:__anon13
+tz_dsttime	mysystem.h	/^  int  tz_dsttime;     \/* type of dst correction *\/$/;"	m	struct:timezone
+tz_minuteswest	mysystem.h	/^  int  tz_minuteswest; \/* minutes W of Greenwich *\/$/;"	m	struct:timezone
+usleep	std_system.c	/^int usleep(unsigned int micro) {$/;"	f
+val	ddi_base.h	/^      volatile int  val;$/;"	m	struct:__anon8
+world_comm	ddi_base.h	/^     MPI_Comm world_comm;   \/* communicator containing the ddi ordered$/;"	m	struct:__anon6
