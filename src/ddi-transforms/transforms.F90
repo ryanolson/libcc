@@ -21,7 +21,6 @@ n12  = n1*n2
 n123 = n12*n3
 
 iijj = nr*(jj-1) + ii
-write(6,'(3I4)') ii,jj,iijj
 
 l = (iijj-1) / n123
 
