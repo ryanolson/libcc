@@ -45,8 +45,8 @@ __device__ void warpReduce( volatile double *sdata )
 __global__ void etd_cuda_kernel( const int i, const int j, const int k, 
         const int no, const int nu,
         const double *v3, const double *voe_ij, const double *voe_ji, 
-	const double *voe_ik, const double *voe_ki, 
-	const double *voe_jk, const double *voe_kj,
+        const double *voe_ik, const double *voe_ki, 
+        const double *voe_jk, const double *voe_kj,
         double *t1, const double *eh, const double *ep, double *etd_reduce )
 {
 
@@ -78,7 +78,7 @@ __shared__ double etd_shared[SHARED_REDUCTION_SIZE];
 
       d1 = v3[INDX(a, b, c, nu)];
       d2 = v3[INDX(a, c, b, nu)] + v3[INDX(c, b, a, nu)] 
-	        + v3[INDX(b, a, c, nu)];
+                + v3[INDX(b, a, c, nu)];
       d3 = v3[INDX(b, c, a, nu)] + v3[INDX(c, a, b, nu)];
       f  = d1*eight - d2*four + d3*two;
       x3        += f*d1*denom;
@@ -87,7 +87,7 @@ __shared__ double etd_shared[SHARED_REDUCTION_SIZE];
 
       d1 = v3[INDX(b, a, c, nu)];
       d2 = v3[INDX(b, c, a, nu)] + v3[INDX(c, a, b, nu)] 
-	 + v3[INDX(a, b, c, nu)];
+         + v3[INDX(a, b, c, nu)];
       d3 = v3[INDX(a, c, b, nu)] + v3[INDX(c, b, a, nu)];
       f  = d1*eight - d2*four + d3*two;
       x3 += f*d1*denom;
@@ -145,8 +145,8 @@ loop_end:
 __global__ void t1a_cuda_kernel( const int i, const int j, const int k, 
         const int no, const int nu,
         const double *v3, const double *voe_ij, const double *voe_ji, 
-	const double *voe_ik, const double *voe_ki, 
-	const double *voe_jk, const double *voe_kj,
+        const double *voe_ik, const double *voe_ki, 
+        const double *voe_jk, const double *voe_kj,
         double *t1, const double *eh, const double *ep, double *etd_reduce )
 {
 
@@ -160,61 +160,65 @@ __shared__ double etd_shared[SHARED_REDUCTION_SIZE];
   double d1,d2,d3,f, t1ai = 0.0, t1aj = 0.0, t1ak = 0.0;
   double t1bi = 0.0, t1bj = 0.0, t1bk = 0.0;
 
-  for( b = 0; b < nu; b++ )
-  { 
-    for( int idx = 0; idx < nu; idx += blockDim.x )
+  for( int idx = 0; idx < nu; idx += blockDim.x )
+  {
+        b = idx + threadIdx.x;
+    if( b < nu && a <= b )
     {
-      int c = idx + threadIdx.x;
-
 /*
  * don't do the loop if my id is outside the bounds of nu
  */
-
-      if( c < nu )
+      for( int c = 0; c < nu; c++ )
       {
-        if( a > b ) goto loop_end;
-        if( a == b && b == c ) goto loop_end;
+        if( a == b && b == c ) continue;
         double dabc = ep[a] + ep[b] + ep[c];
         double denom = 1.0 / ( dijk - dabc );
-        if( a == b ) goto loop_end;
+        if( a == b ) continue;
 
+                double abcbac = v3[INDX(a,b,c,nu)] - v3[INDX(b,a,c,nu)];
+                double acbbca = v3[INDX(a,c,b,nu)] - v3[INDX(b,c,a,nu)];
+                double cabcba = v3[INDX(c,a,b,nu)] - v3[INDX(c,b,a,nu)];
+
+        double t3_ab1 = abcbac * two - acbbca;
+        double t3_ab2 = acbbca * two - abcbac;
+        double t3_ab3 = - ( abcbac * two + cabcba );
+                double t3_ab4 = ( - acbbca * two ) + cabcba;
+                double t3_ab5 = cabcba * two + abcbac;
+                double t3_ab6 = ( - cabcba * two ) + acbbca;
+/*
         double t3_ab1 = ( v3[INDX(a,b,c,nu)] - v3[INDX(b,a,c,nu)] ) * two
-   	              -   v3[INDX(a,c,b,nu)] + v3[INDX(b,c,a,nu)];
+                      -   v3[INDX(a,c,b,nu)] + v3[INDX(b,c,a,nu)];
 
         double t3_ab2 = ( v3[INDX(a,c,b,nu)] - v3[INDX(b,c,a,nu)] ) * two
-	              -   v3[INDX(a,b,c,nu)] + v3[INDX(b,a,c,nu)];
+                      -   v3[INDX(a,b,c,nu)] + v3[INDX(b,a,c,nu)];
 
         double t3_ab3 = ( v3[INDX(b,a,c,nu)] - v3[INDX(a,b,c,nu)] ) * two
-   	              -   v3[INDX(c,a,b,nu)] + v3[INDX(c,b,a,nu)];
+                      -   v3[INDX(c,a,b,nu)] + v3[INDX(c,b,a,nu)];
 
         double t3_ab5 = ( v3[INDX(c,a,b,nu)] - v3[INDX(c,b,a,nu)] ) * two
-	              -   v3[INDX(b,a,c,nu)] + v3[INDX(a,b,c,nu)];
+                      -   v3[INDX(b,a,c,nu)] + v3[INDX(a,b,c,nu)];
 
         double t3_ab4 = ( v3[INDX(b,c,a,nu)] - v3[INDX(a,c,b,nu)] ) * two
-	              -   v3[INDX(c,b,a,nu)] + v3[INDX(c,a,b,nu)];
+                      -   v3[INDX(c,b,a,nu)] + v3[INDX(c,a,b,nu)];
 
         double t3_ab6 = ( v3[INDX(c,b,a,nu)] - v3[INDX(c,a,b,nu)] ) * two
-	              -   v3[INDX(b,c,a,nu)] + v3[INDX(a,c,b,nu)];
-
+                      -   v3[INDX(b,c,a,nu)] + v3[INDX(a,c,b,nu)];
+*/
 //      if( a == 0 && b == 4 ) printf("c %d t3_ab1 %22.17e t3_ab2 %22.17e\n",
-//	   c,t3_ab1,t3_ab2);
+//         c,t3_ab1,t3_ab2);
 
         t1ai += ( t3_ab1*voe_jk[INDX(b,c,0,nu)] 
-	     +    t3_ab2*voe_kj[INDX(b,c,0,nu)] ) * denom;
+             +    t3_ab2*voe_kj[INDX(b,c,0,nu)] ) * denom;
 
         t1aj += ( t3_ab3*voe_ik[INDX(b,c,0,nu)] 
-	     +    t3_ab5*voe_ki[INDX(b,c,0,nu)] ) * denom;
+             +    t3_ab5*voe_ki[INDX(b,c,0,nu)] ) * denom;
 
         t1ak += ( t3_ab4*voe_ij[INDX(b,c,0,nu)] 
-	     +    t3_ab6*voe_ji[INDX(b,c,0,nu)] ) * denom;
+             +    t3_ab6*voe_ji[INDX(b,c,0,nu)] ) * denom;
 
-      } /* end if */
-
-loop_end:
-
-    } /* end idx loop */
-
-  } /* end b loop */
+      } /* end c loop */
+    } /* end if */
+  } /* end idx loop */
 
 
   etd_shared[threadIdx.x] = t1ai;
@@ -281,64 +285,67 @@ loop_end:
   if( threadIdx.x == 0 ) t1[offk] += etd_shared[0];
 
 #if 1
-
   b = blockIdx.x;
 
-  for( a = 0; a < nu; a++ )
-  { 
-    for( int idx = 0; idx < nu; idx += blockDim.x )
-    {
-      int c = idx + threadIdx.x;
-
+  for( int idx = 0; idx < nu; idx += blockDim.x )
+  {
+        a = idx + threadIdx.x;
 /*
  * don't do the loop if my id is outside the bounds of nu
  */
-
-      if( c < nu )
+    if( a < nu && a <= b )
+    {
+      for( int c = 0; c < nu; c++ )
       {
-        if( a > b ) goto loop_end1;
-        if( a == b && b == c ) goto loop_end1;
+        if( a == b && b == c ) continue;
         double dabc = ep[a] + ep[b] + ep[c];
         double denom = 1.0 / ( dijk - dabc );
-        if( a == b ) goto loop_end1;
+        if( a == b ) continue;
 
+                double abcbac = v3[INDX(a,b,c,nu)] - v3[INDX(b,a,c,nu)];
+                double acbbca = v3[INDX(a,c,b,nu)] - v3[INDX(b,c,a,nu)];
+                double cabcba = v3[INDX(c,a,b,nu)] - v3[INDX(c,b,a,nu)];
+
+        double t3_ab1 = abcbac * two - acbbca;
+        double t3_ab2 = acbbca * two - abcbac;
+        double t3_ab3 = - ( abcbac * two + cabcba );
+                double t3_ab4 = ( - acbbca * two ) + cabcba;
+                double t3_ab5 = cabcba * two + abcbac;
+                double t3_ab6 = ( - cabcba * two ) + acbbca;
+/*
         double t3_ab1 = ( v3[INDX(a,b,c,nu)] - v3[INDX(b,a,c,nu)] ) * two
-   	              -   v3[INDX(a,c,b,nu)] + v3[INDX(b,c,a,nu)];
+                      -   v3[INDX(a,c,b,nu)] + v3[INDX(b,c,a,nu)];
 
         double t3_ab2 = ( v3[INDX(a,c,b,nu)] - v3[INDX(b,c,a,nu)] ) * two
-	              -   v3[INDX(a,b,c,nu)] + v3[INDX(b,a,c,nu)];
+                      -   v3[INDX(a,b,c,nu)] + v3[INDX(b,a,c,nu)];
 
         double t3_ab3 = ( v3[INDX(b,a,c,nu)] - v3[INDX(a,b,c,nu)] ) * two
-   	              -   v3[INDX(c,a,b,nu)] + v3[INDX(c,b,a,nu)];
+                      -   v3[INDX(c,a,b,nu)] + v3[INDX(c,b,a,nu)];
 
         double t3_ab5 = ( v3[INDX(c,a,b,nu)] - v3[INDX(c,b,a,nu)] ) * two
-	              -   v3[INDX(b,a,c,nu)] + v3[INDX(a,b,c,nu)];
+                      -   v3[INDX(b,a,c,nu)] + v3[INDX(a,b,c,nu)];
 
         double t3_ab4 = ( v3[INDX(b,c,a,nu)] - v3[INDX(a,c,b,nu)] ) * two
-	              -   v3[INDX(c,b,a,nu)] + v3[INDX(c,a,b,nu)];
+                      -   v3[INDX(c,b,a,nu)] + v3[INDX(c,a,b,nu)];
 
         double t3_ab6 = ( v3[INDX(c,b,a,nu)] - v3[INDX(c,a,b,nu)] ) * two
-	              -   v3[INDX(b,c,a,nu)] + v3[INDX(a,c,b,nu)];
-
+                      -   v3[INDX(b,c,a,nu)] + v3[INDX(a,c,b,nu)];
+*/
 //      if( a == 0 && b == 4 ) printf("c %d t3_ab1 %22.17e t3_ab2 %22.17e\n",
-//	   c,t3_ab1,t3_ab2);
+//         c,t3_ab1,t3_ab2);
 
         t1bi += ( t3_ab1*voe_jk[INDX(a,c,0,nu)] 
-	     +    t3_ab2*voe_kj[INDX(a,c,0,nu)] ) * denom * om;
+             +    t3_ab2*voe_kj[INDX(a,c,0,nu)] ) * denom * om;
 
         t1bj += ( t3_ab3*voe_ik[INDX(a,c,0,nu)] 
-	     +    t3_ab5*voe_ki[INDX(a,c,0,nu)] ) * denom * om;
+             +    t3_ab5*voe_ki[INDX(a,c,0,nu)] ) * denom * om;
 
         t1bk += ( t3_ab4*voe_ij[INDX(a,c,0,nu)] 
-	     +    t3_ab6*voe_ji[INDX(a,c,0,nu)] ) * denom * om;
+             +    t3_ab6*voe_ji[INDX(a,c,0,nu)] ) * denom * om;
 
-      } /* end if */
-
-loop_end1:
-
-    } /* end idx loop */
-
-  } /* end a loop */
+      } /* end c loop */
+    } /* end if */
+  } /* end idx loop */
 
 
   __syncthreads();
@@ -423,3 +430,4 @@ __global__ void reduce_etd_kernel( const long int size, const double *a,
 } /* end kernel */
 
 } /* end extern C */
+
