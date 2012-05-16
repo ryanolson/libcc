@@ -4,6 +4,7 @@ implicit none
 call test_4d_from_2d()
 call test_2d_from_4d()
 call test_increment_4d()
+call test_swap()
 
 end program unit_tests
 
@@ -103,7 +104,7 @@ write(6,*) 'pass: increment_4d'
 end subroutine test_increment_4d
 
 subroutine test_swap
-use cc_transforamtions
+use cc_transformations
 implicit none
 integer :: i, j
 
@@ -112,6 +113,7 @@ j=46
 call swap(i,j)
 if(i.eq.46 .and. j.eq.32) then
    write(6,*) 'pass: swap'
+   return
 endif
 
 write(6,*) 'fail: swap'
