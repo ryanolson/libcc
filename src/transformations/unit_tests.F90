@@ -88,20 +88,31 @@ do l = 1,TEST_LL-1
 do k = 1,TEST_KK
 do j = 1,TEST_JJ
 do i = 1,TEST_II
-
    if(i.ne.it .or. j.ne.jt .or. k.ne.kt .or. l.ne.lt) then
       write(6,9000) i,j,k,l,it,jt,kt,lt
  9000 format(' fail : ',8I4)
       return
    endif
-
    call increment_4d(it,jt,kt,lt,TEST_II,TEST_JJ,TEST_KK,TEST_LL,1)
-
 end do
 end do
 end do
 end do
 
 write(6,*) 'pass: increment_4d'
-
 end subroutine test_increment_4d
+
+subroutine test_swap
+use cc_transforamtions
+implicit none
+integer :: i, j
+
+i=32
+j=46
+call swap(i,j)
+if(i.eq.46 .and. j.eq.32) then
+   write(6,*) 'pass: swap'
+endif
+
+write(6,*) 'fail: swap'
+end subroutine test_swap
