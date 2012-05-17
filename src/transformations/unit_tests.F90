@@ -103,7 +103,7 @@ write(6,*) 'pass: increment_4d'
 end subroutine test_increment_4d
 
 subroutine test_swap
-use cc_transforamtions
+use cc_transformations
 implicit none
 integer :: i, j
 

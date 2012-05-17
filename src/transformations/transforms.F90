@@ -6,6 +6,12 @@ implicit none
 
 contains
 
+subroutine translate_2d_to_4d(ii,jj,nr,nc,i,j,k,l,n1,n2,n3,n4)
+implicit none
+integer :: ii, jj, nr, nc, n1, n2, n3, n4
+integer :: i, j, k, l
+call translate_4d_from_2d(ii,jj,nr,nc,i,j,k,l,n1,n2,n3,n4)
+end subroutine translate_2d_to_4d
 
 subroutine translate_4d_from_2d(ii,jj,nr,nc,i,j,k,l,n1,n2,n3,n4)
 implicit none
@@ -48,6 +54,12 @@ DEBUG_ASSERT(l.gt.0 .and. l.le.n4)
 end subroutine translate_4d_from_2d
 
 
+subroutine translate_4d_to_2d(i,j,k,l,n1,n2,n3,n4,ii,jj,nr,nc)
+implicit none
+integer :: i, j, k, l, nr, nc, n1, n2, n3, n4
+integer :: ii, jj
+call translate_2d_from_4d(i,j,k,l,n1,n2,n3,n4,ii,jj,nr,nc)
+subroutine translate_4d_to_2d
 
 subroutine translate_2d_from_4d(i,j,k,l,n1,n2,n3,n4,ii,jj,nr,nc)
 implicit none
