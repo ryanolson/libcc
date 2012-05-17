@@ -2,8 +2,6 @@
 
 module cc_transformations
 implicit none
-
-
 contains
 
 subroutine translate_2d_to_4d(ii,jj,nr,nc,i,j,k,l,n1,n2,n3,n4)
@@ -50,7 +48,6 @@ DEBUG_ASSERT(i.gt.0 .and. i.le.n1)
 DEBUG_ASSERT(j.gt.0 .and. j.le.n2)
 DEBUG_ASSERT(k.gt.0 .and. k.le.n3)
 DEBUG_ASSERT(l.gt.0 .and. l.le.n4)
-
 end subroutine translate_4d_from_2d
 
 
@@ -89,7 +86,6 @@ jj = jj+1
 
 DEBUG_ASSERT(ii.gt.0 .and. ii.le.nr)
 DEBUG_ASSERT(jj.gt.0 .and. jj.le.nc)
-
 end subroutine translate_2d_from_4d
 
 
@@ -101,7 +97,6 @@ integer :: i, j, k, l
 integer, intent(in) :: n1, n2, n3, n4, incr
 
 DEBUG_ASSERT(incr .gt. 0)
-
 DEBUG_ASSERT(i.gt.0 .and. i.le.n1)
 DEBUG_ASSERT(j.gt.0 .and. j.le.n2)
 DEBUG_ASSERT(k.gt.0 .and. k.le.n3)
@@ -128,10 +123,7 @@ DEBUG_ASSERT(i.gt.0 .and. i.le.n1)
 DEBUG_ASSERT(j.gt.0 .and. j.le.n2)
 DEBUG_ASSERT(k.gt.0 .and. k.le.n3)
 DEBUG_ASSERT(l.gt.0 .and. l.le.n4)
-
 end subroutine increment_4d
-
-
 
 
 #if 0
