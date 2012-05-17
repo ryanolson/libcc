@@ -2,10 +2,14 @@
 
 module cc_transformations
 implicit none
-
-
 contains
 
+subroutine translate_2d_to_4d(ii,jj,nr,nc,i,j,k,l,n1,n2,n3,n4)
+implicit none
+integer :: ii, jj, nr, nc, n1, n2, n3, n4
+integer :: i, j, k, l
+call translate_4d_from_2d(ii,jj,nr,nc,i,j,k,l,n1,n2,n3,n4)
+end subroutine translate_2d_to_4d
 
 subroutine translate_4d_from_2d(ii,jj,nr,nc,i,j,k,l,n1,n2,n3,n4)
 implicit none
@@ -44,10 +48,15 @@ DEBUG_ASSERT(i.gt.0 .and. i.le.n1)
 DEBUG_ASSERT(j.gt.0 .and. j.le.n2)
 DEBUG_ASSERT(k.gt.0 .and. k.le.n3)
 DEBUG_ASSERT(l.gt.0 .and. l.le.n4)
-
 end subroutine translate_4d_from_2d
 
 
+subroutine translate_4d_to_2d(i,j,k,l,n1,n2,n3,n4,ii,jj,nr,nc)
+implicit none
+integer :: i, j, k, l, nr, nc, n1, n2, n3, n4
+integer :: ii, jj
+call translate_2d_from_4d(i,j,k,l,n1,n2,n3,n4,ii,jj,nr,nc)
+subroutine translate_4d_to_2d
 
 subroutine translate_2d_from_4d(i,j,k,l,n1,n2,n3,n4,ii,jj,nr,nc)
 implicit none
@@ -77,7 +86,6 @@ jj = jj+1
 
 DEBUG_ASSERT(ii.gt.0 .and. ii.le.nr)
 DEBUG_ASSERT(jj.gt.0 .and. jj.le.nc)
-
 end subroutine translate_2d_from_4d
 
 
@@ -89,7 +97,6 @@ integer :: i, j, k, l
 integer, intent(in) :: n1, n2, n3, n4, incr
 
 DEBUG_ASSERT(incr .gt. 0)
-
 DEBUG_ASSERT(i.gt.0 .and. i.le.n1)
 DEBUG_ASSERT(j.gt.0 .and. j.le.n2)
 DEBUG_ASSERT(k.gt.0 .and. k.le.n3)
@@ -116,10 +123,7 @@ DEBUG_ASSERT(i.gt.0 .and. i.le.n1)
 DEBUG_ASSERT(j.gt.0 .and. j.le.n2)
 DEBUG_ASSERT(k.gt.0 .and. k.le.n3)
 DEBUG_ASSERT(l.gt.0 .and. l.le.n4)
-
 end subroutine increment_4d
-
-
 
 
 #if 0
