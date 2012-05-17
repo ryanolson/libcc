@@ -1,9 +1,13 @@
+#define TEST_NO  5
+#define TEST_NU 11
+
 program unit_tests
 implicit none
 
 call test_4d_from_2d()
 call test_2d_from_4d()
 call test_increment_4d()
+call test_swap()
 
 end program unit_tests
 
@@ -112,7 +116,77 @@ j=46
 call swap(i,j)
 if(i.eq.46 .and. j.eq.32) then
    write(6,*) 'pass: swap'
+   return
 endif
 
 write(6,*) 'fail: swap'
 end subroutine test_swap
+
+
+subroutine test_indexed_swap12
+use cc_transformations
+implicit none
+
+integer :: no, nu
+integer :: tmp(TEST_NU,TEST_NU,TEST_NU)
+integer :: a_src(TEST_NO,TEST_NU,TEST_NU,TEST_NO)
+integer :: a_dst(TEST_NU,TEST_NO,TEST_NU,TEST_NO)
+integer :: cntr, length
+integer :: i, a, b, j
+integer :: i1, i2, i3, i4
+integer :: n1, n2, n3, n4
+
+no = TEST_NO
+nu = TEST_NU
+cntr = 0
+length = no*no*nu*nu
+
+do j = 1, no
+do b = 1, nu
+do a = 1, nu
+do i = 1, no
+   cntr = cntr+1
+   a_src(i,a,b,j) = cntr
+end do
+end do
+end do
+end do
+
+! copy src ==> dst
+call dcopy(length, a_src, 1, a_dst, 1)
+
+! reorder dst
+call insi12(no,nu,nu,tmp,a_dst)
+
+do j = 1, no
+do b = 1, nu
+do i = 1, no
+do a = 1, nu
+   cntr = a_dst(a,i,b,j)
+
+   i1 = a
+   n1 = no
+
+   i2 = i
+   n2 = no
+
+   i3 = b
+   n3 = nu
+
+   i4 = j
+   n4 = no
+
+   call transform_4d_by_swap12(i1, i2, i3, i4, n1, n2, n3, n4)
+
+   if(a_src(i1,i2,i3,i4).ne.cntr) then
+      write(6,9000) a, i, b, j, i1, i2, i3, i4
+ 9000 format(' fail : ',8I4)
+      stop
+   endif
+
+end do
+end do
+end do
+end do
+
+end subroutine test_indexed_swap12
