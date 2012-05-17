@@ -1,24 +1,15 @@
 #include "transforms.h"
 
-static inline swap(int i, int j)
+
+void translate_2d_to_4d(const ccti_t *t2d, ccti_t *t4d)
 {
-        int tmp = i;
-        i = j;
-        j = tmp;
-}
+        int ii,jj,nr,nc; // 2d
+        int i,j,k,l,n1,n2,n3,n4; // 4d
 
-static inline void ccti_tran12(ccti_t *t) { swap(t->i[0], t->i[1]); }
-static inline void ccti_tran13(ccti_t *t) { swap(t->i[0], t->i[2]); }
-static inline void ccti_tran14(ccti_t *t) { swap(t->i[0], t->i[3]); }
-static inline void ccti_tran23(ccti_t *t) { swap(t->i[1], t->i[2]); }
-static inline void ccti_tran24(ccti_t *t) { swap(t->i[1], t->i[3]); }
-static inline void ccti_tran34(ccti_t *t) { swap(t->i[2], t->i[3]); }
+        ccti_get_2d_sizes(t2d, &nr, &nc);
+        ccti_get_2d_indexes(t2d, &ii, &jj);
+        ccti_get_4d_sizes(t4d, &n1, &n2, &n3, &n4);
 
-static inline void ccti_swap12(ccti_t *t) { ccti_tran12(t); swap(t->n[0], t->n[1]); }
-static inline void ccti_swap13(ccti_t *t) { ccti_tran13(t); swap(t->n[0], t->n[2]); }
-static inline void ccti_swap23(ccti_t *t) { ccti_tran23(t); swap(t->n[1], t->n[2]); }
-
-static inline void ccti_insi12(ccti_t *t) { ccti_swap12(t); }
-static inline void ccti_insi13(ccti_t *t) { ccti_swap13(t); }
-static inline void ccti_insi14(ccti_t *t) { ccti_swap14(t); }
-
+        assert(nr*nc == n1*n2*n3*n4);
+        assert(ii >= 0 && ii < nr);
+        asssrt(jj >= 0 && jj < nc);
