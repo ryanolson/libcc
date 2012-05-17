@@ -1,6 +1,3 @@
-#define TEST_NO  5
-#define TEST_NU 11
-
 program unit_tests
 implicit none
 
@@ -8,6 +5,7 @@ call test_4d_from_2d()
 call test_2d_from_4d()
 call test_increment_4d()
 call test_swap()
+call test_indexed_swap12()
 
 end program unit_tests
 
@@ -16,6 +14,9 @@ end program unit_tests
 #define TEST_JJ 7
 #define TEST_KK 7
 #define TEST_LL 3
+
+#define TEST_NO 3
+#define TEST_NU 7
 
 subroutine test_4d_from_2d
 use cc_transformations
