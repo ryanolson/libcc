@@ -255,17 +255,15 @@ void streaming_dgemm(int m, int n, int k, double alpha, const sd_t *a, const sd_
                if(ip > 0)
                {
                    cudaStreamSynchronize( *stream );
-                   /*
-                   if(++dgemms_completed == k_patch_count) {
-                      cudaMemcpyAsync( h_c, d_c, c_size, cudaMemcpyDeviceToHost, stream );
+                   if( ip > 1 && ((ip-3) % k_patch_count) ) {
+                      cudaStreamSynchronize( c_stream );
+                      cudaMemcpyAsync( h_c, d_c, tc_size, cudaMemcpyDeviceToHost, c_stream );
                       if(h_c == h_c_tail) h_c = h_c_head;
                       else                h_c += tc_count;
                       if(d_c == d_c_tail) d_c = d_c_head;
                       else                d_c += tc_count;
-                      // zero out new d_c
-                      dgemms_completed = 0;
+                      CUDA_RC_CHECK( cudaMemsetAsync( d_c, 0, tc_size, *stream ) );
                    }
-                   */
                    CUDA_RC_CHECK( cudaMemcpyAsync( d_a, h_a, ta_size, cudaMemcpyHostToDevice, *stream ) );
                    CUDA_RC_CHECK( cudaMemcpyAsync( d_b, h_b, tb_size, cudaMemcpyHostToDevice, *stream ) );
                    if(h_a == h_a_tail) h_a = h_a_head;
@@ -301,38 +299,32 @@ void streaming_dgemm(int m, int n, int k, double alpha, const sd_t *a, const sd_
             else                d_b += tb_count;
         }
   
-        if(ip > 0)
-        {
-            cudaStreamSynchronize( *stream );
-            /*
-            if(++dgemms_completed == k_patch_count) {
-               cudaMemcpyAsync( h_c, d_c, c_size, cudaMemcpyDeviceToHost, stream );
-               if(h_c == h_c_tail) h_c = h_c_head;
-               else                h_c += tc_count;
-               if(d_c == d_c_tail) d_c = d_c_head;
-               else                d_c += tc_count;
-               // zero out new d_c
-               dgemms_completed = 0;
-            }
-            */
-            CUDA_RC_CHECK( cudaMemcpyAsync( d_a, h_a, ta_size, cudaMemcpyHostToDevice, *stream ) );
-            CUDA_RC_CHECK( cudaMemcpyAsync( d_b, h_b, tb_size, cudaMemcpyHostToDevice, *stream ) );
-            if(h_a == h_a_tail) h_a = h_a_head;
-            else                h_a += ta_count;
-            if(h_b == h_b_tail) h_b = h_b_head;
-            else                h_b += tb_count;
+        cudaStreamSynchronize( *stream );
+        /*
+        if(++dgemms_completed == k_patch_count) {
+           cudaMemcpyAsync( h_c, d_c, c_size, cudaMemcpyDeviceToHost, stream );
+           if(h_c == h_c_tail) h_c = h_c_head;
+           else                h_c += tc_count;
+           if(d_c == d_c_tail) d_c = d_c_head;
+           else                d_c += tc_count;
+           // zero out new d_c
+           dgemms_completed = 0;
         }
+        */
+        CUDA_RC_CHECK( cudaMemcpyAsync( d_a, h_a, ta_size, cudaMemcpyHostToDevice, *stream ) );
+        CUDA_RC_CHECK( cudaMemcpyAsync( d_b, h_b, tb_size, cudaMemcpyHostToDevice, *stream ) );
+        if(h_a == h_a_tail) h_a = h_a_head;
+        else                h_a += ta_count;
+        if(h_b == h_b_tail) h_b = h_b_head;
+        else                h_b += tb_count;
 
         // finished loops ==> drain buffers - step 2 of 2
         ++ip;
+        CUBLAS_RC_CHECK( cublasSetStream( cublas_hnd, *stream ) );
+        CUBLAS_RC_CHECK( cublasDgemm( cublas_hnd, CUBLAS_OP_N, CUBLAS_OP_N,
+                                      tn, tm, tk, palpha, d_a, tn, d_b, tk, pbeta, d_c, tn ) );
 
-        if(ip > 1)
-        {
-            CUBLAS_RC_CHECK( cublasSetStream( cublas_hnd, *stream ) );
-            CUBLAS_RC_CHECK( cublasDgemm( cublas_hnd, CUBLAS_OP_N, CUBLAS_OP_N,
-                                          tn, tm, tk, palpha, d_a, tn, d_b, tk, pbeta, d_c, tn ) );
-        }
-
+        // move last patch of c off the device
         CUDA_RC_CHECK( cudaMemcpyAsync( h_c, d_c, tc_size, cudaMemcpyDeviceToHost, *stream ) );
         CUDA_RC_CHECK( cudaStreamSynchronize( *stream ) );
 
