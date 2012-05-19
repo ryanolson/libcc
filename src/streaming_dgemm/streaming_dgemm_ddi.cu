@@ -26,45 +26,35 @@ extern double MPI_Wtime();
 
 #define CUBLAS_RC_CHECK(a) do { a; } while(0)
 
+static  cublasStatus_t stat;
+static  cublasHandle_t cublas_hnd;
+static  cudaError_t cudaStat;
+
+typedef struct {
+        int * ddi_handle;
+} sd_t;
+
+void streaming_dgemm(int m, int n, int k, double alpha, const sd_t *a, const sd_t *b,
+                     double beta, const sd_t *c, int tm, int tn, int tk);
+
 int main(int argc, char *argv[])
 {
         int me, np, my, nn;
         int ddi_a, ddi_b, ddi_c;
-        double start_time, stop_time;
-        cublasStatus_t stat;
-        cublasHandle_t cublas_hnd;
-        cudaError_t cudaStat;
-
-     // load cublas
-        stat = cublasCreate( &cublas_hnd );
 
      // read in m, n, k
-        printf("argc=%d\n",argc);
-        fflush(stdout);
         int m = atoi(argv[1]);
         int n = atoi(argv[2]);
         int k = atoi(argv[3]);
 
      // read in tile dimensions
-        int tm = atoi(argv[4]);
+        int tm = atoi(argv[4]); 
         int tn = atoi(argv[5]);
         int tk = atoi(argv[6]);
 
-     // determine the number of patches
-        int m_patch_count = (m + tm - 1) / tm;
-        int n_patch_count = (n + tn - 1) / tn;
-        int k_patch_count = (k + tk - 1) / tk;
-        int tiled_dgemm_count = m_patch_count * n_patch_count * k_patch_count;
-
      // determine distriubted matrix requirements
-        printf("m,n,k = %d, %d, %d\n",m,n,k);
-        fflush(stdout);
-        size_t dm = ( (long)m*k + (long)k*n + (long)m*n ) * 3;
-        printf("dm = %ld\n",dm);
-        fflush(stdout);
+        size_t dm = ( (long)m*k + (long)k*n + (long)m*n ) * 1.5;
         dm /= 1000000;
-        printf("dm = %ld\n",dm);
-        fflush(stdout);
 
      // initialized ddi / mpi
         DDI_Init(argc,argv);
@@ -76,6 +66,54 @@ int main(int argc, char *argv[])
         DDI_Create(m, k, &ddi_a);
         DDI_Create(k, n, &ddi_b);
         DDI_Create(m, n, &ddi_c);
+
+        sd_t a, b, c;
+        a.ddi_handle = &ddi_a;
+        b.ddi_handle = &ddi_b;
+        c.ddi_handle = &ddi_c;
+
+     // load cublas
+        stat = cublasCreate( &cublas_hnd );
+
+     // call streaming dgemm
+        streaming_dgemm( m, n, k, 1.0, &a, &b, 1.0, &c, tm, tn, tk );
+
+     // Clean up memory - distributed
+        DDI_Destroy( ddi_c );
+        DDI_Destroy( ddi_b );
+        DDI_Destroy( ddi_a );
+
+     // Destory cublas handle
+        stat = cublasDestroy( cublas_hnd );
+
+     // Finalize
+        DDI_Finalize();
+        return 0;
+}
+
+void streaming_dgemm(int m, int n, int k, double alpha, const sd_t *a, const sd_t *b, 
+                     double beta, const sd_t *c, int tm, int tn, int tk)
+{
+     // id
+        int me, np, my, nn;
+
+     // timing
+        double start_time, stop_time;
+
+     // ddi handles
+        int ddi_a = *(a->ddi_handle);
+        int ddi_b = *(b->ddi_handle);
+        int ddi_c = *(c->ddi_handle);
+
+     // id
+        DDI_NProc(&np, &me);
+        DDI_NNode(&nn, &my);
+
+     // determine the number of patches
+        int m_patch_count = (m + tm - 1) / tm;
+        int n_patch_count = (n + tn - 1) / tn;
+        int k_patch_count = (k + tk - 1) / tk;
+        int tiled_dgemm_count = m_patch_count * n_patch_count * k_patch_count;
 
      // Host Memory - define
         size_t ta_count = tm * tk;
@@ -105,7 +143,6 @@ int main(int argc, char *argv[])
         CUDA_RC_CHECK( cudaHostRegister( h_b, h_b_size, 0 ) );
         CUDA_RC_CHECK( cudaHostRegister( h_c, h_c_size, 0 ) );
 
-
      // Device Memory - define
         size_t d_a_size = ta_count * sizeof(double) * 2;
         size_t d_b_size = tb_count * sizeof(double) * 2;
@@ -123,10 +160,14 @@ int main(int argc, char *argv[])
         CUDA_RC_CHECK( cudaMalloc( (void **) &d_a, d_a_size ) );
         CUDA_RC_CHECK( cudaMalloc( (void **) &d_b, d_b_size ) );
         CUDA_RC_CHECK( cudaMalloc( (void **) &d_c, d_c_size ) );
-
+        CUDA_RC_CHECK( cudaMemset( d_c, 0, d_c_size ) );
 
      // Create CUDA Streams
+        cudaStream_t c_stream;
         cudaStream_t * stream = (cudaStream_t *) malloc( sizeof(cudaStream_t) * 2 );
+
+     // Initialize Streams
+        CUDA_RC_CHECK( cudaStreamCreate( &c_stream ) );
         for(int i=0; i<2; i++) CUDA_RC_CHECK( cudaStreamCreate( &stream[i] ) );
 
      // Prepare buffering pointers
@@ -147,9 +188,6 @@ int main(int argc, char *argv[])
         cudaStream_t * stream_head = stream;
         cudaStream_t * stream_tail = stream + 1;
 
-        long ip = 0;            // number of patches streamed from the network
-        size_t dlb_counter;       // dynamic load balancer
-
         if(me == 0) 
         {
            printf("\n");
@@ -168,20 +206,17 @@ int main(int argc, char *argv[])
         DDI_Sync(1234);
 
      // DDOT Algorithm - Start Up
-     // Dynamically load-balance patches of C
-     // Stream A & B from Distributed Memory 
-     // C remains device resident
+     // Dynamically load-balance all incoming patches
+     // Stream patches of A & B from distributed memory 
+     // C remains device resident over the summing index
 
-     // Start Up
-     // Get load-balance counter
-     // Convert counter to determine patch of C
         DDI_Patch a_patch, b_patch;
         size_t patch_count = m_patch_count * n_patch_count;
-       
-        double _alpha = 1.0;
-        double _beta  = 1.0;
-        double *alpha = &_alpha;
-        double *beta  = &_beta;
+        long ip = 0;            // number of patches streamed from the network
+        size_t dlb_counter;     // dynamic load balancer
+
+        double *palpha = &alpha;
+        double *pbeta  = &beta;
 
         DDI_DLBNext(&dlb_counter);
 
@@ -208,7 +243,7 @@ int main(int argc, char *argv[])
                {
                    CUBLAS_RC_CHECK( cublasSetStream( cublas_hnd, *stream ) );
                    CUBLAS_RC_CHECK( cublasDgemm( cublas_hnd, CUBLAS_OP_N, CUBLAS_OP_N,
-                                                 tn, tm, tk, alpha, d_a, tn, d_b, tk, beta, d_c, tn ) );
+                                                 tn, tm, tk, palpha, d_a, tn, d_b, tk, pbeta, d_c, tn ) );
                    if(stream == stream_tail) stream = stream_head;
                    else                      stream++;
                    if(d_a == d_a_tail) d_a = d_a_head;
@@ -257,7 +292,7 @@ int main(int argc, char *argv[])
         {
             CUBLAS_RC_CHECK( cublasSetStream( cublas_hnd, *stream ) );
             CUBLAS_RC_CHECK( cublasDgemm( cublas_hnd, CUBLAS_OP_N, CUBLAS_OP_N,
-                                          tn, tm, tk, alpha, d_a, tn, d_b, tk, beta, d_c, tn ) );
+                                          tn, tm, tk, palpha, d_a, tn, d_b, tk, pbeta, d_c, tn ) );
             if(stream == stream_tail) stream = stream_head;
             else                      stream++;
             if(d_a == d_a_tail) d_a = d_a_head;
@@ -295,11 +330,11 @@ int main(int argc, char *argv[])
         {
             CUBLAS_RC_CHECK( cublasSetStream( cublas_hnd, *stream ) );
             CUBLAS_RC_CHECK( cublasDgemm( cublas_hnd, CUBLAS_OP_N, CUBLAS_OP_N,
-                                          tn, tm, tk, alpha, d_a, tn, d_b, tk, beta, d_c, tn ) );
+                                          tn, tm, tk, palpha, d_a, tn, d_b, tk, pbeta, d_c, tn ) );
         }
 
         CUDA_RC_CHECK( cudaMemcpyAsync( h_c, d_c, tc_size, cudaMemcpyDeviceToHost, *stream ) );
-        cudaStreamSynchronize( *stream );
+        CUDA_RC_CHECK( cudaStreamSynchronize( *stream ) );
 
         DDI_Sync(1234);
         stop_time = MPI_Wtime();
@@ -309,11 +344,22 @@ int main(int argc, char *argv[])
            fflush(stdout);
         }
 
-     // Clean up memory
-        DDI_Destroy(ddi_c);
-        DDI_Destroy(ddi_b);
-        DDI_Destroy(ddi_a);
-        DDI_Finalize();
-        return 0;
+     // Destroy Streams
+        CUDA_RC_CHECK( cudaStreamSynchronize( c_stream ) );
+        CUDA_RC_CHECK( cudaStreamDestroy( c_stream ) );
+        // for(int i=0; i<2; i++) {
+        //    CUDA_RC_CHECK( cudaStreamSynchronize( stream[i] ) );
+        //    CUDA_RC_CHECK( cudaStreamDestroy( stream[i] ) );
+       //  }
+
+     // Clean up memory - host
+        free( h_a_head );
+        free( h_b_head );
+        free( h_c_head );
+
+     // Clean up memory - device
+        CUDA_RC_CHECK( cudaFree( d_a_head ) );
+        CUDA_RC_CHECK( cudaFree( d_b_head ) );
+        CUDA_RC_CHECK( cudaFree( d_c_head ) );
 }
 }
