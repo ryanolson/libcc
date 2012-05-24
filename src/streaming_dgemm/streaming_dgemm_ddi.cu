@@ -30,6 +30,9 @@ extern double MPI_Wtime();
         if(ptr == ptr ## _tail) ptr = ptr ## _head; \
         else                    ptr += shift;
 
+#define CUDA_EVENT_COUNT        2
+#define CUDA_D2H_EVENT_COUNT    3
+
 static  cublasStatus_t stat;
 static  cublasHandle_t cublas_hnd;
 static  cudaError_t cudaStat;
@@ -167,12 +170,19 @@ void streaming_dgemm(int m, int n, int k, double alpha, const sd_t *a, const sd_
         CUDA_RC_CHECK( cudaMemset( d_c, 0, d_c_size ) );
 
      // Create CUDA Streams
-        cudaStream_t c_stream;
-        cudaStream_t * stream = (cudaStream_t *) malloc( sizeof(cudaStream_t) * 2 );
+        cudaStream_t * stream = (cudaStream_t *) malloc( sizeof(cudaStream_t) * CUDA_STREAM_COUNT );
 
-     // Initialize Streams
-        CUDA_RC_CHECK( cudaStreamCreate( &c_stream ) );
-        for(int i=0; i<2; i++) CUDA_RC_CHECK( cudaStreamCreate( &stream[i] ) );
+     // Initialize Streams & Record Initial events
+        for(int i=0; i<CUDA_STREAM_COUNT; i++)  CUDA_RC_CHECK( cudaStreamCreate( &stream[i] ) );
+
+     // Create CUDA Events
+        cudaEvent_t * event     = (cudaEvent_t *) malloc( sizeof(cudaEvent_t) * CUDA_EVENT_COUNT );
+        cudaEvent_t * d2h_event = (cudaEvent_t *) malloc( sizeof(cudaEvent_t) * CUDA_D2H_EVENT_COUNT );
+        
+     // Initialzie Cuda Events
+        for(int i=0; i<CUDA_EVENT_COUNT; i++)     CUDA_RC_CHECK( cudaEventCreate( &event[i] ) );
+        for(int i=0; i<CUDA_D2H_EVENT_COUNT; i++) CUDA_RC_CHECK( cudaEventCreate( &d2h_event[i] ) );
+     
 
      // Prepare buffering pointers
         double * h_a_head = h_a;
@@ -219,85 +229,100 @@ void streaming_dgemm(int m, int n, int k, double alpha, const sd_t *a, const sd_
 
         size_t patch_count = m_patch_count * n_patch_count;
         DDI_Patch a_patch, b_patch;
-        DDI_Patch *c_patch = (DDI_Patch *) malloc(patch_count * sizeof(DDI_Patch));
-        int ic = 0;
+        DDI_Patch * c_patch = (DDI_Patch *) malloc( sizeof(DDI_Patch) * H_C_PATCH_COUNT );
+        DDI_Patch * c_patch_head = c_patch;
+        DDI_Patch * c_patch_tail = c_patch + H_C_PATCH_COUNT - 1;
+        DDI_Patch * put_patch = c_patch;
+        DDI_Patch * put_patch_head = c_patch_head;
+        DDI_Patch * put_patch_tail = c_patch_tail;
+        
+        int * remaining_iterations = (int *) malloc( sizeof(int) * H_C_PATCH_COUNT );
+        int * remaining_iterations_head = remaining_iterations;
+        int * remaining_iterations_tail = remaining_iterations + H_C_PATCH_COUNT - 1; 
+
+        double * hc_put   = hc;
+
         long ip = 0;            // number of patches streamed from the network
         size_t dlb_counter;     // dynamic load balancer
+
+        double _one  = 1.0;
+        double _zero = 0.0;
+        const double *one = &_one;
+        const double *zero = &_zero;
 
         double *palpha = &alpha;
         double *pbeta  = &beta;
 
         DDI_DLBNext(&dlb_counter);
 
-        CUDA_RC_CHECK( cudaEventRecord( c_is_free_to_be_overwritten ) );
-
         start_time = MPI_Wtime();
         while(dlb_counter < patch_count)
         {
            int patch_coord_i = dlb_counter / m_patch_count;
            int patch_coord_j = dlb_counter % m_patch_count;
-
         // Constant over these patch coordinates (i,j)
            a_patch.ilo = tm * patch_coord_i;
            a_patch.ihi = a_patch.ilo + tm - 1;
            b_patch.jlo = tn * patch_coord_j;
            b_patch.jhi = b_patch.jlo + tn - 1;
-           c_patch[ic].ilo = a_patch.ilo;
-           c_patch[ic].ihi = a_patch.ihi;
-           c_patch[ic].jlo = b_patch.jlo;
-           c_patch[ic].jhi = b_patch.jhi;
-
            for(int ik=0; ik<k_patch_count; ik++,ip++)
            {
+               if( ip > k_patch_count ) {
+                   if( *remaining_iterations == 1) CUDA_RC_CHECK( cudaEventSynchronize( d2h_event ) ); // it has to be done this time
+                   cudaQuery = cudaEventQuery( d2h_event );  // does this return true every - i think yes (it is a value < the current event counter val)
+                   if( *remaining_iterations == 1) assert( cudaQuery == cudaSuccess );
+                   if(cudaQuery != cudaSuccess) break;
+                   ncols_remaining = put_patch->jhi - put_patch.jlo + 1; 
+                   if(*remaining_iterations > k_patch_count) *remaining_iterations = k_patch_count; // this allows use to finish early!
+                   cols_per_iteration = ncols_remaining / *remaining_iterations; // if remaining_iterations is > k_patch_count, then we are ahead of 
+                   memcpy(patch, put_patch, sizeof(DDI_Patch));                  // schedule and we are try to finish ahead of schedule
+                   patch.jhi = patch.jlo + cols_per_iteration;
+                   put_patch.jlo = patch.jhi + 1;
+                   DDI_Put(ddi_c, &patch, hc_put);
+                   hc_put += patch->size; // ensure ddi sets size
+                   (*remaining_iterations)--;
+                   if(*remaining_iterations == 0) {
+                      SD_SHIFT( put_patch, 1 );
+                      SD_SHIFT( d2h_event, 1 );
+                      SD_SHIFT( h_c, tc_count );
+                      SD_SHIFT( remaining_iterations, 1 );
+                      hc_put = h_c;
+               }   }
                a_patch.jlo = tk * ik;
                a_patch.jhi = a_patch.jlo + tk - 1;
                b_patch.ilo = a_patch.jlo;
                b_patch.ihi = a_patch.jhi;
-
-               if(ip > 1)
-               {
-                   pbeta = one;
-                   if(((ip-2) % k_patch_count) == 0) {
-                   // first update to c: ensure it is ready and overwrite existing data
-                      pbeta = zero;
-                      CUDA_RC_CHECK( cudaEventSynchronize( *c_can_be_overwritten ) ); 
-                      SD_SHIFT( c_can_be_overwritten, 1 );
-                   }
-                   CUBLAS_RC_CHECK( cublasSetStream( cublas_hnd, *stream ) );
-                   CUBLAS_RC_CHECK( cublasDgemm( cublas_hnd, CUBLAS_OP_N, CUBLAS_OP_N,
-                                                 tn, tm, tk, palpha, d_a, tn, d_b, tk, pbeta, d_c, tn ) );
-                   CUDA_RC_CHECK( cudaEventRecord( *dgemm_finished, stream ) );
-                   SD_SHIFT( d_a, ta_count );
-                   SD_SHIFT( d_b, tb_count );
-                   SD_SHIFT( dgemm_finish, 1 );
-                   if(((ip-1) % k_patch_count) == 0) {
-                   // last update to current c: d2h, shift d_c to next free buffer
-                      CUDA_RC_CHECK( cudaMemcpyAsync( h_c, d_c, tc_size, cudaMemcpyDeviceToHost, *stream ) );
-                      CUDA_RC_CHECK( cudaEventRecord( *c_can_be_overwritten, stream ) );
-                      SD_SHIFT( d_c, tc_count );
-                   }
-                   SD_SHIFT( stream, 1 );
-               }
-   
-               if(ip > 0)
-               {
-                   CUDA_RC_CHECK( cudaEventSynchronize( *dgemm_finished ) ); 
-                   CUDA_RC_CHECK( cudaMemcpyAsync( d_a, h_a, ta_size, cudaMemcpyHostToDevice, *stream ) );
-                   CUDA_RC_CHECK( cudaMemcpyAsync( d_b, h_b, tb_size, cudaMemcpyHostToDevice, *stream ) );
-                   SD_SHIFT( h_a, ta_count );
-                   SD_SHIFT( h_b, tb_count );
-               }
-
                DDI_GetP(ddi_a, &a_patch, h_a);
                DDI_GetP(ddi_b, &b_patch, h_b);
-
-           } // end loop on ik
-
+               if(ip > 1) CUDA_RC_CHECK( cudaEventSynchronize( *event ) );
+               CUDA_RC_CHECK( cudaMemcpyAsync( d_a, h_a, ta_size, cudaMemcpyHostToDevice, *stream ) );
+               CUDA_RC_CHECK( cudaMemcpyAsync( d_b, h_b, tb_size, cudaMemcpyHostToDevice, *stream ) );
+               CUBLAS_RC_CHECK( cublasSetStream( cublas_hnd, *stream ) );
+               CUBLAS_RC_CHECK( cublasDgemm( cublas_hnd, CUBLAS_OP_N, CUBLAS_OP_N,
+                                             tn, tm, tk, palpha, d_a, tn, d_b, tk, pbeta, d_c, tn ) );
+               CUDA_RC_CHECK( cudaEventRecord( *event, stream ) );
+               if(ik == patch_count-1) {
+                  CUDA_RC_CHECK( cudaMemcpyAsync( h_c, d_c, tc_size, cudaMemcpyDeviceToHost, *stream ) );
+                  CUDA_RC_CHECK( cudaEventRecord( d2h_event, stream ) );
+                  *remaining_iterations = 2 * k_patch_count;
+                  SD_SHIFT( d_c, tc_count );
+               }
+               SD_SHIFT( h_a, ta_count ); 
+               SD_SHIFT( h_b, tb_count );
+               SD_SHIFT( d_a, ta_count );
+               SD_SHIFT( d_b, tb_count );
+               SD_SHIFT( stream , 1 );
+               SD_SHIFT( event , 1 );
+           } // end ik loop over k_patch_count
+           c_patch->ilo = a_patch.ilo;
+           c_patch->ihi = a_patch.ihi;
+           c_patch->jlo = b_patch.jlo;
+           c_patch->jhi = b_patch.jhi;
+           SD_SHIFT( c_patch, 1 );
            DDI_DLBNext(&dlb_counter);
-           ic++;
-
         } // end while loop
 
+        // the only thing we need to do outside the loops is process putting hc back into ddi_c!
 
         // finished loops ==> drain buffers - step 1 of 2
         // moves last get on to the device & executes the dgemm for the data already there
