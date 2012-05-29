@@ -142,7 +142,7 @@ loop_end:
 } /* end kernel */
 
 
-__global__ void t1a_cuda_kernel( const int i, const int j, const int k, 
+__global__ void t1a_cuda_kernel_a( const int i, const int j, const int k, 
         const int no, const int nu,
         const double *v3, const double *voe_ij, const double *voe_ji, 
         const double *voe_ik, const double *voe_ki, 
@@ -155,10 +155,8 @@ __shared__ double etd_shared[SHARED_REDUCTION_SIZE];
   int a = blockIdx.x;
   int b;
   double dijk = eh[i-1] + eh[j-1] + eh[k-1];
-  double x3 = 0.0;
   const double two = 2.0, four = 4.0, eight = 8.0, om = -1.0;
-  double d1,d2,d3,f, t1ai = 0.0, t1aj = 0.0, t1ak = 0.0;
-  double t1bi = 0.0, t1bj = 0.0, t1bk = 0.0;
+  double t1ai = 0.0, t1aj = 0.0, t1ak = 0.0;
 
   for( int idx = 0; idx < nu; idx += blockDim.x )
   {
@@ -283,9 +281,25 @@ __shared__ double etd_shared[SHARED_REDUCTION_SIZE];
   warpReduce( etd_shared );
   __syncthreads();
   if( threadIdx.x == 0 ) t1[offk] += etd_shared[0];
+} /* end t1a_cuda_kernel_a */
 
-#if 1
-  b = blockIdx.x;
+
+__global__ void t1a_cuda_kernel_b( const int i, const int j, const int k, 
+        const int no, const int nu,
+        const double *v3, const double *voe_ij, const double *voe_ji, 
+        const double *voe_ik, const double *voe_ki, 
+        const double *voe_jk, const double *voe_kj,
+        double *t1, const double *eh, const double *ep, double *etd_reduce )
+{
+
+__shared__ double etd_shared[SHARED_REDUCTION_SIZE];
+
+  int a;
+  int b = blockIdx.x;
+  double dijk = eh[i-1] + eh[j-1] + eh[k-1];
+  const double two = 2.0, four = 4.0, eight = 8.0, om = -1.0;
+  double t1bi = 0.0, t1bj = 0.0, t1bk = 0.0;
+
 
   for( int idx = 0; idx < nu; idx += blockDim.x )
   {
@@ -355,9 +369,9 @@ __shared__ double etd_shared[SHARED_REDUCTION_SIZE];
 
   __syncthreads();
 
-  tempi = 0.0, tempj = 0.0, tempk = 0.0;
+  double tempi = 0.0, tempj = 0.0, tempk = 0.0;
 
-  offi = INDX(b,i-1,0,nu);
+  int offi = INDX(b,i-1,0,nu);
 #if 0
   if( threadIdx.x == 0 ) 
   {
@@ -378,7 +392,7 @@ __shared__ double etd_shared[SHARED_REDUCTION_SIZE];
 
   __syncthreads();
 
-  offj = INDX(b,j-1,0,nu);
+  int offj = INDX(b,j-1,0,nu);
 #if 0
   if( threadIdx.x == 0 ) 
   {
@@ -399,7 +413,7 @@ __shared__ double etd_shared[SHARED_REDUCTION_SIZE];
 
   __syncthreads();
 
-  offk = INDX(b,k-1,0,nu);
+  int offk = INDX(b,k-1,0,nu);
 #if 0
   if( threadIdx.x == 0 ) 
   {
@@ -413,8 +427,7 @@ __shared__ double etd_shared[SHARED_REDUCTION_SIZE];
   warpReduce( etd_shared );
   __syncthreads();
   if( threadIdx.x == 0 ) t1[offk] += etd_shared[0];
-#endif
-} /* end t1a_cuda_kernel */
+} /* end t1a_cuda_kernel_b */
 
 
 

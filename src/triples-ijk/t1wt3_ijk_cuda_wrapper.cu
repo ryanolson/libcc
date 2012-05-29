@@ -193,7 +193,12 @@ void t1wt3_ijk_cuda_wrapper_(
 //  printf("block x y z %d %d %d\n",block.x,block.y,block.z);
 //  printf("grid x y z %d %d %d\n",grid.x,grid.y,grid.z);
 
-  t1a_cuda_kernel<<< grid, block >>>( i, j, k, no, nu, d_v3,
+  t1a_cuda_kernel_a<<< grid, block >>>( i, j, k, no, nu, d_v3,
+       d_voe_ij, d_voe_ji, d_voe_ik, d_voe_ki, d_voe_jk, d_voe_kj, 
+       d_t1, d_eh, d_ep, d_etd_reduce );
+  CUDA_ERROR_CHECK();
+
+  t1a_cuda_kernel_b<<< grid, block >>>( i, j, k, no, nu, d_v3,
        d_voe_ij, d_voe_ji, d_voe_ik, d_voe_ki, d_voe_jk, d_voe_kj, 
        d_t1, d_eh, d_ep, d_etd_reduce );
   CUDA_ERROR_CHECK();

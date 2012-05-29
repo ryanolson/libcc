@@ -27,7 +27,14 @@ __global__ void etd_cuda_kernel( const int i, const int j, const int k,
         const double *voe_jk, const double *voe_kj,
         double *t1, const double *eh, const double *ep, double *etd_reduce );
 
-__global__ void t1a_cuda_kernel( const int i, const int j, const int k,
+__global__ void t1a_cuda_kernel_a( const int i, const int j, const int k,
+        const int no, const int nu,
+        const double *v3, const double *voe_ij, const double *voe_ji,
+        const double *voe_ik, const double *voe_ki,
+        const double *voe_jk, const double *voe_kj,
+        double *t1, const double *eh, const double *ep, double *etd_reduce );
+
+__global__ void t1a_cuda_kernel_b( const int i, const int j, const int k,
         const int no, const int nu,
         const double *v3, const double *voe_ij, const double *voe_ji,
         const double *voe_ik, const double *voe_ki,

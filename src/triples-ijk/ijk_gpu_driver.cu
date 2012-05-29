@@ -612,7 +612,12 @@ void ijk_gpu_driver_(
   grid.x = nu;
   grid.y = 1;
 
-  t1a_cuda_kernel<<< grid, block >>>( i, j, k, no, nu, d_v3,
+  t1a_cuda_kernel_a<<< grid, block >>>( i, j, k, no, nu, d_v3,
+       d_voe_ij, d_voe_ji, d_voe_ik, d_voe_ki, d_voe_jk, d_voe_kj, 
+       d_t1, d_eh, d_ep, d_etd_reduce );
+  CUDA_ERROR_CHECK();
+
+  t1a_cuda_kernel_b<<< grid, block >>>( i, j, k, no, nu, d_v3,
        d_voe_ij, d_voe_ji, d_voe_ik, d_voe_ki, d_voe_jk, d_voe_kj, 
        d_t1, d_eh, d_ep, d_etd_reduce );
   CUDA_ERROR_CHECK();
