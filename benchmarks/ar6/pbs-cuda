@@ -1,0 +1,15 @@
+#!/usr/bin/tcsh
+#PBS -N ar6-cuda
+#PBS -l mppwidth=128
+#PBS -l mppnppn=16
+#PBS -l walltime=04:00:00
+#PBS -j oe
+#PBS -S /usr/bin/tcsh
+#
+cd $PBS_O_WORKDIR
+
+aprun -n512 -N8 -d2 ../triples-cuda.x | tee ar6c-0512-N8-d2.out
+aprun -n256 -N8 -d2 ../triples-cuda.x | tee ar6c-0256-N8-d2.out
+aprun -n128 -N8 -d2 ../triples-cuda.x | tee ar6c-0128-N8-d2.out
+aprun -n64  -N8 -d2 ../triples-cuda.x | tee ar6c-0064-N8-d2.out
+aprun -n32  -N8 -d2 ../triples-cuda.x | tee ar6c-0032-N8-d2.out
