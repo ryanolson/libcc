@@ -16,6 +16,8 @@
 !   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ! =============================================================================
 
+#define TIME_IJK_SEPARATELY_TURNED_OFF
+
 program cc_triples_restart
 use common_cc
 implicit none
@@ -361,7 +363,7 @@ endif
 
 call ddi_sync(1234)
 
-! if(ddi_me.eq.0) ijk_start = mpi_wtime()
+if(ddi_me.eq.0) ijk_start = mpi_wtime()
 
 if(gpu_driver.eq.1) then
 
@@ -473,17 +475,17 @@ call ijk_gpu_finalize(no,nu,etd)
 
 end if ! gpu_driver == 1
 
-! call ddi_sync(1234)
-
+#ifdef TIME_IJK_SEPARATELY
 ! remote sync at this point in hybrid code
 ! this was used to measure the ijk tuple time
 !
-! call ddi_sync(1234)
-! if(ddi_me.eq.0) then
-!    ijk_stop = mpi_wtime()
-!    if(ddi_me.eq.0) write(6,9001) (ijk_stop-ijk_start)
-!  9001 format('ijk time=',F15.5)
-! end if
+call ddi_sync(1234)
+if(ddi_me.eq.0) then
+    ijk_stop = mpi_wtime()
+    if(ddi_me.eq.0) write(6,9001) (ijk_stop-ijk_start)
+  9001 format('ijk time=',F15.5)
+end if
+#endif
 
 if(gpu_driver .eq. 0) then
 
