@@ -2,5 +2,6 @@
 module load craype-accel-nvidia20
 module rm libsci_acc
 module load gcc/4.5.3
+module load onesided/1.5.0
 module list
 make triples-cuda.x
