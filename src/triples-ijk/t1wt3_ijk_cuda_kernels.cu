@@ -155,29 +155,35 @@ __shared__ double etd_shared[SHARED_REDUCTION_SIZE];
   int a = blockIdx.x;
   int b;
   double dijk = eh[i-1] + eh[j-1] + eh[k-1];
-  double x3 = 0.0;
   const double two = 2.0, four = 4.0, eight = 8.0, om = -1.0;
-  double d1,d2,d3,f, t1ai = 0.0, t1aj = 0.0, t1ak = 0.0;
-  double t1bi = 0.0, t1bj = 0.0, t1bk = 0.0;
+  double t1ai = 0.0, t1aj = 0.0, t1ak = 0.0;
+  int c_major, c_minor;
+  __shared__ double BUFFER_cab[16][128];		// BUFFER_cab[c_minor][threadIdx.x] <=> v3[INDX(c,a,b,nu)]
+  __shared__ double BUFFER_cba[16][128];		// BUFFER_cba[c_minor][threadIdx.x] <=> v3[INDX(c,b,a,nu)]
 
   for( int idx = 0; idx < nu; idx += blockDim.x )
   {
         b = idx + threadIdx.x;
-    if( b < nu && a <= b )
+	  int temp = threadIdx.x - (threadIdx.x%16);
+      for( c_major = 0; c_major < nu; c_major += 16 ) {
+         for( c_minor = 0; c_minor < 16; c_minor++ ) {
+	      BUFFER_cab[threadIdx.x%16][temp + c_minor] = v3[INDX(c_major + (threadIdx.x %16),a,idx + c_minor + temp,nu)];
+	      BUFFER_cba[threadIdx.x%16][temp + c_minor] = v3[INDX(c_major + (threadIdx.x %16),idx + c_minor + temp,a,nu)];
+         }
+		 __syncthreads();
+    if( b < nu && a < b )
     {
-/*
- * don't do the loop if my id is outside the bounds of nu
- */
-      for( int c = 0; c < nu; c++ )
+      for( c_minor = 0; c_minor < 16; c_minor++ )
       {
-        if( a == b && b == c ) continue;
+	    int c = c_major + c_minor;
+		if ( c >= nu ) break;						// Break to c_major loop, if syncthreads allow.
         double dabc = ep[a] + ep[b] + ep[c];
         double denom = 1.0 / ( dijk - dabc );
-        if( a == b ) continue;
 
                 double abcbac = v3[INDX(a,b,c,nu)] - v3[INDX(b,a,c,nu)];
                 double acbbca = v3[INDX(a,c,b,nu)] - v3[INDX(b,c,a,nu)];
-                double cabcba = v3[INDX(c,a,b,nu)] - v3[INDX(c,b,a,nu)];
+//              double cabcba = v3[INDX(c,a,b,nu)] - v3[INDX(c,b,a,nu)];
+              double cabcba = BUFFER_cab[c_minor][threadIdx.x] - BUFFER_cba[c_minor][threadIdx.x];
 
         double t3_ab1 = abcbac * two - acbbca;
         double t3_ab2 = acbbca * two - abcbac;
@@ -216,8 +222,9 @@ __shared__ double etd_shared[SHARED_REDUCTION_SIZE];
         t1ak += ( t3_ab4*voe_ij[INDX(b,c,0,nu)] 
              +    t3_ab6*voe_ji[INDX(b,c,0,nu)] ) * denom;
 
-      } /* end c loop */
+      } /* end c_minor loop */
     } /* end if */
+      } /* end c_major loop */
   } /* end idx loop */
 
 
@@ -284,28 +291,48 @@ __shared__ double etd_shared[SHARED_REDUCTION_SIZE];
   __syncthreads();
   if( threadIdx.x == 0 ) t1[offk] += etd_shared[0];
 
-#if 1
-  b = blockIdx.x;
+//    Next calculation:
 
+  double t1bi = 0.0, t1bj = 0.0, t1bk = 0.0;
+  dijk = eh[i-1] + eh[j-1] + eh[k-1];
+
+  b = blockIdx.x;
   for( int idx = 0; idx < nu; idx += blockDim.x )
   {
         a = idx + threadIdx.x;
 /*
  * don't do the loop if my id is outside the bounds of nu
  */
-    if( a < nu && a <= b )
+	  int temp = threadIdx.x - (threadIdx.x%16);
+      for( c_major = 0; c_major < nu; c_major += 16 ) {
+         for( c_minor = 0; c_minor < 16; c_minor++ ) {
+	      BUFFER_cab[threadIdx.x%16][temp + c_minor] = v3[INDX(c_major + (threadIdx.x %16),idx + c_minor + temp,b,nu)];
+	      BUFFER_cba[threadIdx.x%16][temp + c_minor] = v3[INDX(c_major + (threadIdx.x %16),b,idx + c_minor + temp,nu)];
+/*
+int c = c_major + c_minor;
+BUFFER_cab[c_minor][threadIdx.x] = v3[INDX(c,a,b,nu)];
+BUFFER_cba[c_minor][threadIdx.x] = v3[INDX(c,b,a,nu)];
+*/
+         }
+		 __syncthreads();
+    if( a < nu && a < b )
     {
-      for( int c = 0; c < nu; c++ )
+      for( c_minor = 0; c_minor < 16; c_minor++ )
       {
-        if( a == b && b == c ) continue;
+	    int c = c_major + c_minor;
+		if ( c >= nu ) break;						// Break to c_major loop, if syncthreads allow.
         double dabc = ep[a] + ep[b] + ep[c];
         double denom = 1.0 / ( dijk - dabc );
-        if( a == b ) continue;
 
                 double abcbac = v3[INDX(a,b,c,nu)] - v3[INDX(b,a,c,nu)];
                 double acbbca = v3[INDX(a,c,b,nu)] - v3[INDX(b,c,a,nu)];
-                double cabcba = v3[INDX(c,a,b,nu)] - v3[INDX(c,b,a,nu)];
-
+//                double cabcba = v3[INDX(c,a,b,nu)] - v3[INDX(c,b,a,nu)];
+              double cabcba = BUFFER_cab[c_minor][threadIdx.x] - BUFFER_cba[c_minor][threadIdx.x];
+/*
+if ( BUFFER_cab[c_minor][threadIdx.x] != v3[INDX(c,a,b,nu)] )
+	printf("ThreadIdx.x=%d c_minor=%d c_major=%d c=%d a=%d b=%d nu=%d BUFFER_cab[c_minor][threadIdx.x]=%g v3[INDX(c,a,b,nu)]=%g\n",
+	       threadIdx.x, c_minor, c_major, c, a, b, nu, BUFFER_cab[c_minor][threadIdx.x], v3[INDX(c,a,b,nu)] );
+*/
         double t3_ab1 = abcbac * two - acbbca;
         double t3_ab2 = acbbca * two - abcbac;
         double t3_ab3 = - ( abcbac * two + cabcba );
@@ -343,8 +370,9 @@ __shared__ double etd_shared[SHARED_REDUCTION_SIZE];
         t1bk += ( t3_ab4*voe_ij[INDX(a,c,0,nu)] 
              +    t3_ab6*voe_ji[INDX(a,c,0,nu)] ) * denom * om;
 
-      } /* end c loop */
+      } /* end c_minor loop */
     } /* end if */
+      } /* end c_major loop */
   } /* end idx loop */
 
 
@@ -413,8 +441,7 @@ __shared__ double etd_shared[SHARED_REDUCTION_SIZE];
   warpReduce( etd_shared );
   __syncthreads();
   if( threadIdx.x == 0 ) t1[offk] += etd_shared[0];
-#endif
-} /* end t1a_cuda_kernel */
+} /* end t1a_cuda_kernel_b */
 
 
 
