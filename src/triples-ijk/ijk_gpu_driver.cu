@@ -28,6 +28,8 @@
 
 extern "C" {
 
+#include "ddi.h"
+
 typedef long Integer;
 
 static long iold = -1;
@@ -50,13 +52,18 @@ static double *d_etd_reduce = NULL;
 
 static cudaStream_t d_stream1, d_stream2;
 static cudaEvent_t  d_event_vej_exp;
+static cudaEvent_t  d_event_v3_free;
 static cublasHandle_t d_cublas;
 
 static double *t1  = NULL;
 static double *t2  = NULL;
 static double *voe = NULL;
 
-void ijk_gpu_init_(
+static double *ve_i = NULL;
+static double *ve_j = NULL;
+static double *ve_k = NULL;
+
+void triples_cuda_init_(
         Integer *f_no,
         Integer *f_nu,
         double *f_eh,
@@ -64,7 +71,10 @@ void ijk_gpu_init_(
         double *f_t1,
         double *f_t2,
         double *f_vm,
-        double *f_voe)
+        double *f_voe,
+        double *f_ve_i,
+        double *f_ve_j,
+        double *f_ve_k)
 {
 
         long no = (long) *f_no;
@@ -166,6 +176,8 @@ void ijk_gpu_init_(
      // cuda events
         cudaEventCreate( &d_event_vej_exp );
         CUDA_ERROR_CHECK();
+        cudaEventCreate( &d_event_v3_free );
+        CUDA_ERROR_CHECK();
 
      // cublas
         stat = cublasCreate( &d_cublas );
@@ -183,9 +195,24 @@ void ijk_gpu_init_(
         cudaStat = cudaHostRegister( voe, no2u2, 0);
         if(cudaStat != cudaSuccess) printf("cudaHostRegister failed for voe array.\n");
         CUDA_ERROR_CHECK();
+
+     // ve_i, ve_j, ve_k
+        ve_i = f_ve_i;
+        ve_j = f_ve_j;
+        ve_k = f_ve_k;
+     /*
+        double * ve = NULL;
+        numbytes = sizeof(double) * nutr * nu * 3;
+        //cudaStat = cudaMallocHost( (void **)&ve, numbytes );
+        //CUDA_ERROR_CHECK();
+        ve = (double *) malloc( numbytes );
+        ve_i = ve;
+        ve_j = ve + (nutr * nu);
+        ve_j = ve + (nutr * nu)*2;
+     */
 }
 
-void ijk_gpu_finalize_(
+void triples_cuda_finalize_(
         Integer *f_no,
         Integer *f_nu,
         double *f_x3)
@@ -215,17 +242,19 @@ void ijk_gpu_finalize_(
         cudaFree( d_voe );
         CUDA_ERROR_CHECK();
 
-        cudaHostUnregister( t2 );
-        CUDA_ERROR_CHECK();
-        cudaHostUnregister( voe );
-        CUDA_ERROR_CHECK();
-
         cudaStreamDestroy( d_stream1 );
         CUDA_ERROR_CHECK();
         cudaStreamDestroy( d_stream2 );
         CUDA_ERROR_CHECK();
 
         cudaEventDestroy( d_event_vej_exp );
+        CUDA_ERROR_CHECK();
+        cudaEventDestroy( d_event_v3_free );
+        CUDA_ERROR_CHECK();
+
+        cudaHostUnregister( t2 );
+        CUDA_ERROR_CHECK();
+        cudaHostUnregister( voe );
         CUDA_ERROR_CHECK();
 
         numbytes = sizeof(double) * nu * no;
@@ -243,19 +272,25 @@ void ijk_gpu_finalize_(
         CUDA_ERROR_CHECK();
 }
 
-void ijk_gpu_driver_(
-    long int *p_nu, 
-    long int *p_no,
-    long int *p_i,
-    long int *p_j,
-    long int *p_k,
-    double *ve_i,
-    double *ve_j,
-    double *ve_k,
-    double *t1,
-    double *eh,
-    double *ep,
-    double *etd)
+
+static DDI_Patch * ve_patch(long i, long nu, DDI_Patch * patch)
+{
+        long nutr = (nu*nu+nu)/2;
+        patch->ilo = 0;
+        patch->ihi = nutr-1;
+        patch->jlo = nu*(i-1);
+        patch->jhi = patch->jlo + nu;
+        return patch;
+}
+
+
+void ijk_cuda_driver(
+    long no,
+    long nu, 
+    long i,
+    long j,
+    long k,
+    int d_vvvo)
 {
 
   cublasStatus_t stat;
@@ -263,16 +298,10 @@ void ijk_gpu_driver_(
 
   const double om = -1.0, zero = 0.0, one = 1.0;
 
-  long int i = (*p_i); //fortran pointer offset
-  long int j = (*p_j); //fortran pointer offset
-  long int k = (*p_k); //fortran pointer offset
-  long int no = *p_no;
-  long int nu = *p_nu;
   long int nu2 = nu * nu;
   long int nu3 = nu2 * nu;
   long int nou2 = no * nu2;
   long int nutr = (nu2 + nu) / 2;
-  long int ntuples = (no*(no-1)*(no-2)) / 6;
 
   double *t2_i, *t2_j, *t2_k;
   double *voe_ij, *voe_ji, *voe_ik, *voe_ki, *voe_jk, *voe_kj;
@@ -281,6 +310,7 @@ void ijk_gpu_driver_(
   double *d_voe_ij, *d_voe_ji, *d_voe_ik, *d_voe_ki, *d_voe_jk, *d_voe_kj;
 
   size_t numbytes;
+  DDI_Patch patch;
 
 /**
  * Determine VM offsets
@@ -350,16 +380,14 @@ void ijk_gpu_driver_(
  * Form V3
  */
 
-// Note: putting the first copy in the compute stream to avoid the need for an event
-  cudaStreamSynchronize( d_stream2 );
-  CUDA_ERROR_CHECK();
-
   if(j != jold) {
      numbytes = sizeof(double) * no * nu2;
      cudaMemcpyAsync( d_t2_j, t2_j, numbytes, cudaMemcpyHostToDevice, d_stream1 );
   }
 
   stat = cublasSetStream( d_cublas, d_stream1 );
+  cudaStreamWaitEvent( d_stream1, d_event_v3_free, 0 );
+  CUDA_ERROR_CHECK();
   stat = cublasDgemm( d_cublas,
            CUBLAS_OP_N, CUBLAS_OP_N,
 	   nu2, nu, no, &om,
@@ -375,6 +403,7 @@ void ijk_gpu_driver_(
 
   if(j != jold) {
    # if HAVE_VE_EXPANSION_KERNEL
+     DDI_GetP(d_vvvo, ve_patch(j,nu,&patch), ve_j);
      numbytes = sizeof(double) * nutr * nu;
      cudaMemcpyAsync( d_temp, ve_j, numbytes, cudaMemcpyHostToDevice, d_stream2 );
      CUDA_ERROR_CHECK();
@@ -412,6 +441,7 @@ void ijk_gpu_driver_(
   if(k != kold) {
    # if HAVE_VE_EXPANSION_KERNEL
   // d_ve_j must be expanded before d_temp can be reused
+     DDI_GetP(d_vvvo, ve_patch(k,nu,&patch), ve_k);
      cudaStreamWaitEvent( d_stream1, d_event_vej_exp, 0 ); 
      CUDA_ERROR_CHECK();
      numbytes = sizeof(double) * nutr * nu;
@@ -457,6 +487,7 @@ void ijk_gpu_driver_(
   if(i != iold) {
    # if HAVE_VE_EXPANSION_KERNEL
   // no need to wait on a vek expand event (event_vek_exp), because it was done in stream1
+     DDI_GetP(d_vvvo, ve_patch(i,nu,&patch), ve_i);
      numbytes = sizeof(double) * nutr * nu;
      cudaMemcpyAsync( d_temp, ve_i, numbytes, cudaMemcpyHostToDevice, d_stream1 );
      CUDA_ERROR_CHECK();
@@ -535,8 +566,6 @@ void ijk_gpu_driver_(
 
 //  cudaFree( d_v3 );
 //  CUDA_ERROR_CHECK();
-
-  double x3;
 
   numbytes = sizeof(double) * nu2;
   cudaMemcpyAsync( d_voe_ij, voe_ij, numbytes, cudaMemcpyHostToDevice, d_stream2 );
@@ -620,6 +649,9 @@ void ijk_gpu_driver_(
        d_t1, d_eh, d_ep, d_etd_reduce );
   CUDA_ERROR_CHECK();
 
+  cudaEventRecord( d_event_v3_free, d_stream2 );
+  CUDA_ERROR_CHECK();
+
 /**
  * Set iold, jold and kold
  */
@@ -630,4 +662,46 @@ void ijk_gpu_driver_(
   return;
    
 } /* end void */
+
+
+static void ijk_lookup(int no, int ijk, int *i, int *j, int *k)
+{
+        int icntr = 0;
+        for(int ii=0; ii<no; ii++)
+        for(int jj=0; jj<ii; jj++)
+        for(int kk=0; kk<jj; kk++) {
+           if(icntr++ == ijk) {
+              *i = ii+1;
+              *j = jj+1;
+              *k = kk+1;
+              return;
+           }
+        }
+}
+
+void triples_cuda_driver_(
+    long int *p_no,
+    long int *p_nu, 
+    long int *ijk_sr,
+    long int *ijk_nr,
+    long int *p_vvvo)
+{
+        int no = (int) *p_no;
+        int nu = (int) *p_nu;
+        int sr = (int) *ijk_sr;
+        int nr = (int) *ijk_nr;
+        int d_vvvo = (int) *p_vvvo;
+        int ijk, i, j, k;
+
+     // IJK Tuples
+        for(ijk=sr; ijk<(sr+nr); ijk++)
+        {
+           ijk_lookup( no, ijk, &i, &j, &k );
+           ijk_cuda_driver(no, nu, i, j, k, d_vvvo);
+        }
+
+     // Work Steal IIJ / IJJ Tuples from CPU
+     // This is a TODO
+}
+
 } /* end extern C */

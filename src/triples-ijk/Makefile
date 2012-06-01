@@ -10,7 +10,8 @@ FCFLAGS_CCE = -sdefault64 -target=linux -rm -rd -O2,ipa5 -Onoomp
 FCFLAGS_CCE = -sdefault64 -rm -rd -O2,ipa5 -Onoomp
 
 NVCC = nvcc
-NVFLAGS = -arch sm_20 -Xptxas=-v
+NVINCLUDE = -I../ddi-onesided/include
+NVFLAGS = -arch sm_20 -Xptxas=-v -O2
 CUDA_LIBS = -lcublas -lcudart
 
 FCFLAGS = $(FCFLAGS_CCE) -DGPU
@@ -45,7 +46,7 @@ $(PROGRAM).x-pat : triples.x
 	$(FC) $(FCFLAGS) -c $*.f
 
 %.o : %.cu cuda_kernels.h
-	$(NVCC) $(NVFLAGS) -c $*.cu
+	$(NVCC) $(NVINCLUDE) $(NVFLAGS) -c $*.cu
 
 # triples.o : triples.f90
 

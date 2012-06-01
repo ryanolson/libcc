@@ -357,17 +357,19 @@ call mpi_comm_rank(working_compute_comm, ddi_me, ierr)
 call mpi_comm_size(working_compute_comm, ddi_np, ierr)
 call ddi_sync(1234)
 
+
 if(gpu_driver.eq.1) then
-   call ijk_gpu_init(no,nu,eh,ep,v1,t2,vm,voe)
+   allocate( vei(nu3), vej(nu3) )
+   call triples_cuda_init(no,nu,eh,ep,v1,t2,vm,voe,vei,vej,ve_k)
+   call triples_cuda_driver(no,nu,sr,nr,d_vvvo)
+   call triples_cuda_finalize(no,nu,etd)
+   !free vei, vej
+   goto 1000
+else
+   sr = 0
+   nr = 0
 endif
 
-call ddi_sync(1234)
-
-if(ddi_me.eq.0) ijk_start = mpi_wtime()
-
-if(gpu_driver.eq.1) then
-
-allocate( vei(nu3), vej(nu3) )
 
 do iwrk = sr, sr+nr-1
   mytask = iwrk
@@ -375,79 +377,42 @@ do iwrk = sr, sr+nr-1
 
   comm_core = 0
 
-  if(gpu_driver.eq.0) then
-
    ! CPU CODE 
 
-     if(i.ne.iold) then
-       if(smp_me.eq.comm_core) call ddcc_t_getve(nu,i,tmp,vei)
-       comm_core = comm_core+1
-       if(comm_core.eq.smp_np) comm_core=0
-     end if
-   
-     if(j.ne.jold) then
-       if(smp_me.eq.comm_core) call ddcc_t_getve(nu,j,tmp,vej)
-       comm_core = comm_core+1
-       if(comm_core.eq.smp_np) comm_core=0
-     end if
-   
-     if(k.ne.kold) then
-       if(smp_me.eq.comm_core) call ddcc_t_getve(nu,k,tmp,ve_k)
-       comm_core = comm_core+1
-       if(comm_core.eq.smp_np) comm_core=0
-     end if
-   
-     if(i.ne.iold) then
-       call trant3_1(nu,vei)
-       iold = i
-     end if
-   
-     if(j.ne.jold) then
-       call trant3_1(nu,vej)
-       jold = j
-     end if
-   
-     if(k.ne.kold) then
-       call trant3_1(nu,ve_k)
-       kold = k
-     end if
-
-  else ! gpu_driver.eq.0
-
-   ! GPU CODE
-     if(i.ne.iold) then
-!      if(smp_me.eq.comm_core) call ddcc_t_getve(nu,i,tmp,vei)
-       ilo = nu*(i-1) + 1
-       ihi = ilo + nu
-       if(smp_me.eq.comm_core) call ddi_get(d_vvvo,1,nutr,ilo,ihi,vei)
-       comm_core = comm_core+1
-       if(comm_core.eq.smp_np) comm_core=0
-     end if
-!   
-     if(j.ne.jold) then
-       ilo = nu*(j-1) + 1
-       ihi = ilo + nu
-       if(smp_me.eq.comm_core) call ddi_get(d_vvvo,1,nutr,ilo,ihi,vej)
-       if(comm_core.eq.smp_np) comm_core=0
-     end if
-   
-     if(k.ne.kold) then
-       ilo = nu*(k-1) + 1
-       ihi = ilo + nu
-       if(smp_me.eq.comm_core) call ddi_get(d_vvvo,1,nutr,ilo,ihi,ve_k)
-       comm_core = comm_core+1
-       if(comm_core.eq.smp_np) comm_core=0
-     end if
-     ! NOTE: ddcc_t_ijk_gpu must expand and perfrom a trant3_1 operation
-     ! on vei, vej, vek prior to use!
-
-  end if ! gpu_driver.eq.0
-
-  if(gpu_driver.eq.0) then
-     call ddcc_t_ijk_big(no,nu,i,j,k,v1,t2,vm,v3,voe,eh,ep,ve_i,ve_j,ve_k)
-  else
-     call ddcc_t_ijk_gpu(no,nu,i,j,k,v1,t2,vm,voe,eh,ep,vei,vej,ve_k)
+  if(i.ne.iold) then
+    if(smp_me.eq.comm_core) call ddcc_t_getve(nu,i,tmp,ve_i)
+    comm_core = comm_core+1
+    if(comm_core.eq.smp_np) comm_core=0
   end if
+   
+  if(j.ne.jold) then
+    if(smp_me.eq.comm_core) call ddcc_t_getve(nu,j,tmp,ve_j)
+    comm_core = comm_core+1
+    if(comm_core.eq.smp_np) comm_core=0
+  end if
+
+  if(k.ne.kold) then
+    if(smp_me.eq.comm_core) call ddcc_t_getve(nu,k,tmp,ve_k)
+    comm_core = comm_core+1
+    if(comm_core.eq.smp_np) comm_core=0
+  end if
+
+  if(i.ne.iold) then
+    call trant3_1(nu,ve_i)
+    iold = i
+  end if
+
+  if(j.ne.jold) then
+    call trant3_1(nu,ve_j)
+    jold = j
+  end if
+
+  if(k.ne.kold) then
+    call trant3_1(nu,ve_k)
+    kold = k
+  end if
+
+  call ddcc_t_ijk_big(no,nu,i,j,k,v1,t2,vm,v3,voe,eh,ep,ve_i,ve_j,ve_k)
   call smp_sync()
 
   iold = i
@@ -471,23 +436,6 @@ do iwrk = sr, sr+nr-1
   end if
 end do
 
-call ijk_gpu_finalize(no,nu,etd)
-
-end if ! gpu_driver == 1
-
-#ifdef TIME_IJK_SEPARATELY
-! remote sync at this point in hybrid code
-! this was used to measure the ijk tuple time
-!
-call ddi_sync(1234)
-if(ddi_me.eq.0) then
-    ijk_stop = mpi_wtime()
-    if(ddi_me.eq.0) write(6,9001) (ijk_stop-ijk_start)
-  9001 format('ijk time=',F15.5)
-end if
-#endif
-
-if(gpu_driver .eq. 0) then
 
 ! counters and load-balancing for iij and ijj tuples
 icntr = 0
@@ -537,8 +485,7 @@ do i=1,no
   end do
 end do
 
-! if(smp_me.eq.0) write(6,*) 'cpu node ',ddi_my,' finshed iij/ijj'
-end if ! gpu_driver == 0
+1000 continue
 
 ! switch scopes
 call ddi_sync(1234)

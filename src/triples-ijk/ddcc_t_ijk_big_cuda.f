@@ -9,9 +9,9 @@ C
      &                 EH(NO),EP(NU),T2(NU*NU,NO,NO),
      &                 ve_i(*),ve_j(*),ve_k(*) 
 C
-      call ijk_gpu_driver(nu,no,i,j,k,
-     &               ve_i,ve_j,ve_k,
-     &               t1, eh, ep, etd )
+!     call ijk_gpu_driver(nu,no,i,j,k,
+!    &               ve_i,ve_j,ve_k,
+!    &               t1, eh, ep, etd )
       RETURN
       END
 
