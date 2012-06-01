@@ -272,7 +272,6 @@ void triples_cuda_finalize_(
         CUDA_ERROR_CHECK();
 }
 
-
 static DDI_Patch * ve_patch(long i, long nu, DDI_Patch * patch)
 {
         long nutr = (nu*nu+nu)/2;
@@ -284,13 +283,15 @@ static DDI_Patch * ve_patch(long i, long nu, DDI_Patch * patch)
 }
 
 
-void ijk_cuda_driver(
-    long no,
-    long nu, 
-    long i,
-    long j,
-    long k,
-    int d_vvvo)
+void ijk_gpu_driver_(
+    long int *p_nu, 
+    long int *p_no,
+    long int *p_i,
+    long int *p_j,
+    long int *p_k,
+    double *ve_i,
+    double *ve_j,
+    double *ve_k)
 {
 
   cublasStatus_t stat;
@@ -298,6 +299,12 @@ void ijk_cuda_driver(
 
   const double om = -1.0, zero = 0.0, one = 1.0;
 
+  long int i = *p_i;
+  long int j = *p_j;
+  long int k = *p_k;
+
+  long int no = *p_no;
+  long int nu = *p_nu;
   long int nu2 = nu * nu;
   long int nu3 = nu2 * nu;
   long int nou2 = no * nu2;
@@ -403,7 +410,7 @@ void ijk_cuda_driver(
 
   if(j != jold) {
    # if HAVE_VE_EXPANSION_KERNEL
-     DDI_GetP(d_vvvo, ve_patch(j,nu,&patch), ve_j);
+     //DDI_GetP(d_vvvo, ve_patch(j,nu,&patch), ve_j);
      numbytes = sizeof(double) * nutr * nu;
      cudaMemcpyAsync( d_temp, ve_j, numbytes, cudaMemcpyHostToDevice, d_stream2 );
      CUDA_ERROR_CHECK();
@@ -441,7 +448,7 @@ void ijk_cuda_driver(
   if(k != kold) {
    # if HAVE_VE_EXPANSION_KERNEL
   // d_ve_j must be expanded before d_temp can be reused
-     DDI_GetP(d_vvvo, ve_patch(k,nu,&patch), ve_k);
+     //DDI_GetP(d_vvvo, ve_patch(k,nu,&patch), ve_k);
      cudaStreamWaitEvent( d_stream1, d_event_vej_exp, 0 ); 
      CUDA_ERROR_CHECK();
      numbytes = sizeof(double) * nutr * nu;
@@ -487,7 +494,7 @@ void ijk_cuda_driver(
   if(i != iold) {
    # if HAVE_VE_EXPANSION_KERNEL
   // no need to wait on a vek expand event (event_vek_exp), because it was done in stream1
-     DDI_GetP(d_vvvo, ve_patch(i,nu,&patch), ve_i);
+     //DDI_GetP(d_vvvo, ve_patch(i,nu,&patch), ve_i);
      numbytes = sizeof(double) * nutr * nu;
      cudaMemcpyAsync( d_temp, ve_i, numbytes, cudaMemcpyHostToDevice, d_stream1 );
      CUDA_ERROR_CHECK();
@@ -679,7 +686,7 @@ static void ijk_lookup(int no, int ijk, int *i, int *j, int *k)
         }
 }
 
-void triples_cuda_driver_(
+void triples_cuda_cdriver_(
     long int *p_no,
     long int *p_nu, 
     long int *ijk_sr,
@@ -697,7 +704,7 @@ void triples_cuda_driver_(
         for(ijk=sr; ijk<(sr+nr); ijk++)
         {
            ijk_lookup( no, ijk, &i, &j, &k );
-           ijk_cuda_driver(no, nu, i, j, k, d_vvvo);
+           //ijk_cuda_driver(no, nu, i, j, k, d_vvvo);
         }
 
      // Work Steal IIJ / IJJ Tuples from CPU

@@ -3,7 +3,7 @@
 #PBS -l mppwidth=128
 #PBS -l mppnppn=16
 #PBS -l feature=xk
-#PBS -l walltime=04:00:00
+#PBS -l walltime=00:20:00
 #PBS -j oe
 #PBS -S /usr/bin/tcsh
 #

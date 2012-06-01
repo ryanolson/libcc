@@ -357,19 +357,16 @@ call mpi_comm_rank(working_compute_comm, ddi_me, ierr)
 call mpi_comm_size(working_compute_comm, ddi_np, ierr)
 call ddi_sync(1234)
 
+allocate( vei(nu3), vej(nu3) )
 
 if(gpu_driver.eq.1) then
-   allocate( vei(nu3), vej(nu3) )
-   call triples_cuda_init(no,nu,eh,ep,v1,t2,vm,voe,vei,vej,ve_k)
-   call triples_cuda_driver(no,nu,sr,nr,d_vvvo)
-   call triples_cuda_finalize(no,nu,etd)
-   !free vei, vej
+   call triples_cuda_init(no,nu,eh,ep,v1,t2,vm,voe)
+   call triples_cuda_driver(no,nu,sr,nr,vei,vej,ve_k,d_vvvo)
    goto 1000
 else
    sr = 0
    nr = 0
 endif
-
 
 do iwrk = sr, sr+nr-1
   mytask = iwrk
@@ -436,6 +433,17 @@ do iwrk = sr, sr+nr-1
   end if
 end do
 
+#ifdef TIME_IJK_SEPARATELY
+! remote sync at this point in hybrid code
+! this was used to measure the ijk tuple time
+!
+call ddi_sync(1234)
+if(ddi_me.eq.0) then
+    ijk_stop = mpi_wtime()
+    if(ddi_me.eq.0) write(6,9001) (ijk_stop-ijk_start)
+  9001 format('ijk time=',F15.5)
+end if
+#endif
 
 ! counters and load-balancing for iij and ijj tuples
 icntr = 0
@@ -486,6 +494,9 @@ do i=1,no
 end do
 
 1000 continue
+if(gpu_driver.eq.1) then
+  call triples_cuda_finalize(no,nu,etd)
+endif
 
 ! switch scopes
 call ddi_sync(1234)
@@ -529,107 +540,5 @@ return
 end subroutine cc_triples
 
 
-
-
-subroutine cc_convert_ijk_to_abc(vm,vm_tmp,v3)
-use common_cc
-implicit none
-
-integer :: i,j,k,a,b,c
-integer :: ilo,ihi,jlo,jhi
-double precision :: vm(no,nu,no,no), vm_tmp(no,no,no,nu), v3(nu,nu,nu)
-double precision, allocatable :: tmp(:,:)
-
-! ----------------------------
-! transform vm to look like ve
-! ----------------------------
-
-! vm(i,j,2,1) == vm(1,j,2,i)
-! vm(i,a,j,k) == vm(k,a,j,i) 
-! vm(h1,p?,h3,h2) == vm(h2,p?,h3,h1)
-! store as (h1,h2,h3,p?) to be equivalent in storage to v3
-! but note, ve requires a 23 sym operation prior to use
-! so that we can done on vm just once after the order is arranged.
-
-do k = 1,no       ! h3
-  do j = 1,no     ! h2
-    do a = 1,nu   ! p?
-      do i = 1,no ! h1
-        vm_tmp(i,j,k,a) = vm(i,a,k,j)
-      end do
-    end do
-  end do
-end do
-
-call dcopy(no3u,vm_tmp,1,vm,1)
-call tranmd_23(vm,no,no,no,nu)
-
-! vm is ready to be used like ve
-! vm_a = vm(1,1,1,a) and can be used like ve_i
-! no fetching or manipulating is required
-
-
-! ----------------------------
-! transform ve to look like vm
-! prepare d_vovv from d_vvvo
-! ----------------------------
-
-! ve is stored as ve(p4,p5,p6,h?) == ve(p5,p4,p6,h?)
-! needs to be transformed to ve(p4,h?,p6,p5)
-
-! d_vvvo is stored as ve(p4,p5,p6,h?) [p4 p5 | p6 h?]
-! d_vovv is stored as ve(p4,h?,p6,p5) [p4 h? | p6 p5] = [p4 h? | p5 p6] = <p4 p5 | h? p6>
-
-! d_vovv is not entirely needed; however the operation
-! to get a ve(p4,i,a,b) would require NO gets of size
-! NU from patch (nu*(a-1)+1:nu*a,b+no*(i-1)+b:b+no*i
-
-allocate( tmp(nu,nu) )
-
-do i = 1,no   ! h?
-  
-  call ddcc_t_getve(nu,1,tmp,v3) ! v3(p4,p5,p6)
-
-  ilo = (i-1)*nu + 1
-  ihi = ilo + nu
-
-  do b = 1, nu  ! p5
-
-    jlo = (b-1)*nu + 1
-    jhi = jlo + nu
-
-    do c = 1,nu   ! p6
-      do a = 1,nu ! p4
-         tmp(a,c) = v3(a,b,c)
-      end do
-    end do
-
-    call ddi_put(d_vovv,ilo,ihi,jlo,jhi,tmp)
-
-  end do ! end p5
-end do ! end h?
-
-
-deallocate( tmp )
-
-! this is the test loops to used to determine how vm was being used
-! test vm do i = 1, no
-! test vm   do j = 1, nu
-! test vm       write(6,9000) 1,vm(i,j,2,1), vm(2,j,i,1)
-! test vm       write(6,9000) 2,vm(i,j,2,1), vm(1,j,i,2)
-! test vm       write(6,9000) 3,vm(i,j,2,1), vm(1,j,2,i)
-! test vm       write(6,9000) 4,vm(i,j,2,1), vm(2,j,1,i)
-! test vm   end do
-! test vm end do
-
-return
-9000 format(I5,2F20.15)
-end subroutine cc_convert_ijk_to_abc
-
-! we can run tests on just the [t], i.e. we can simply calculate etd without doing
-! the (t) part or ets part.
-
-! we have to get the ijj and iij routines into shape, but that should not be hard,
-! because instead of 6 sets of dgemm transposes, we only have 3 sets.
 
 

@@ -23,7 +23,7 @@ OBJCPU = ijk_tuple.o ddcc_t_ijk_big.o
 OBJACC = ijk_tuple_acc.o ddcc_t_ijk_big.o
 OBJCUDA = ijk_tuple_cuda_kernels.o \
 	      t1wt3_ijk_cuda_kernels.o \
-	      ddcc_t_ijk_big_cuda.o ijk_gpu_driver.o \
+	      ddcc_t_ijk_big_cuda.o ijk_gpu_driver.o triples-cuda.o \
 	      $(OBJCPU)
 
 all: $(PROGRAM).x 
