@@ -21,9 +21,10 @@ OBJ = ddcc_aux.o t1wt3.o t3squa.o triples.o ddcc_t_ijj_iij_big.o
 OBJ90 = ijj_tuple.o iij_tuple.o 
 OBJCPU = ijk_tuple.o ddcc_t_ijk_big.o
 OBJACC = ijk_tuple_acc.o ddcc_t_ijk_big.o
-OBJCUDA = ijk_tuple_cuda_kernels.o \
-	      t1wt3_ijk_cuda_kernels.o \
-	      ddcc_t_ijk_big_cuda.o ijk_gpu_driver.o triples-cuda.o \
+OBJCUDA = cuda_ijk_kernels.o \
+	      cuda_t1wt3_kernels.o \
+	      cuda_ijk_driver.o \
+		  cuda_triples_driver.o \
 	      $(OBJCPU)
 
 all: $(PROGRAM).x 
