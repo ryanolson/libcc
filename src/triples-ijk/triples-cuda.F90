@@ -46,7 +46,6 @@ do ijk = sr, sr+nr-1
    iold = i
    jold = j
    kold = k
-   write(6,*) ijk
 
 end do
 
