@@ -41,17 +41,46 @@ call div_even(ntuples, ddi_nn, ddi_my, nr, sr)
        call triples_cuda_finalize( ... )
        return
     end if
+#else
+    ! sync with ranks compiled with cuda
+    call ddi_gsumi(ngpus)
 #endif
 
-! sync with ranks compiled with cuda
-call ddi_gsumi(ngpus)
 if(ngpus.gt.0) then
    sr = 0 ! adjust ijk distribution
    nr = 0 ! for now, we assign all ijk work to the gpu
 endif
 
-call triples_driver(no, nu, sr, nr)
+call triples_cpu_driver(no, nu, sr, nr)
 end subroutine triples_calc()
+
+
+subroutine ijk_task(ijk,no,i,j,k)
+implicit none
+integer, intent(in)  :: ijk, no
+integer, intent(out) :: i, j, k
+
+integer :: icntr
+integer :: II,JJ,KK,I1,J1,ICNTR
+      ICNTR=0
+      DO II=1,NO
+         I1=II-1
+         DO JJ=1,I1
+            J1=JJ-1
+            DO KK=1,J1
+               IF(ICNTR.EQ.MYTASK) THEN
+                  I=II
+                  J=JJ
+                  K=KK
+                  GO TO 10
+               END IF
+               ICNTR=ICNTR+1
+            END DO
+         END DO
+      END DO
+   10 CONTINUE
+      RETURN
+end subroutine ijk_task
 
 
 end module cc_triples

@@ -283,7 +283,7 @@ static DDI_Patch * ve_patch(long i, long nu, DDI_Patch * patch)
 }
 
 
-void ijk_gpu_driver_(
+void ijk_cuda_driver_(
     long int *p_nu, 
     long int *p_no,
     long int *p_i,

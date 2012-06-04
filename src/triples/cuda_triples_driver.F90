@@ -7,6 +7,7 @@
 ! =====================================================================
 
 subroutine triples_cuda_driver(no, nu, sr, nr, vei, vej, vek, d_vvvo)
+use cc_triples, only ijk_task
 implicit none
 
 integer :: no, nu, sr, nr, d_vvvo
@@ -21,7 +22,7 @@ nutr = (nu*nu+nu)/2
 
 do ijk = sr, sr+nr-1
    
-   call ddcc_t_task(ijk,no,i,j,k)
+   call ijk_task(ijk,no,i,j,k)
 
    if(i.ne.iold) then
      ilo = nu*(i-1) + 1
@@ -41,7 +42,7 @@ do ijk = sr, sr+nr-1
      call ddi_get(d_vvvo,1,nutr,ilo,ihi,vek)
    end if
 
-   call ijk_gpu_driver(nu,no,i,j,k,vei,vej,vek)
+   call ijk_cuda_driver(nu,no,i,j,k,vei,vej,vek)
 
    iold = i
    jold = j
