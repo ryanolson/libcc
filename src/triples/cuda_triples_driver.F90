@@ -7,7 +7,6 @@
 ! =====================================================================
 
 subroutine triples_cuda_driver(no, nu, sr, nr, vei, vej, vek, d_vvvo)
-use cc_triples, only ijk_task
 implicit none
 
 integer :: no, nu, sr, nr, d_vvvo

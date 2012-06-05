@@ -1,1 +1,1 @@
-../src/triples-ijk/triples.x
+../src/triples/triples.x

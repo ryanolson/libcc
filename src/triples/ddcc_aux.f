@@ -15,6 +15,13 @@ C   You should have received a copy of the GNU General Public License
 C   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 C =============================================================================
 C
+      subroutine ijk_task(mytask, no, i, j, k)
+      implicit none
+      integer :: mytask, no, i, j, k
+      call ddcc_t_task(mytask,no,i,j,k)
+      return
+      end
+c
       SUBROUTINE DDCC_T_TASK(MYTASK,NO,I,J,K)
       IMPLICIT NONE
 C

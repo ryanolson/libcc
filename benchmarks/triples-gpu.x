@@ -1,1 +1,0 @@
-../src/triples-ijk/triples-gpu.x
