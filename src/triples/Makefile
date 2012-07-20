@@ -26,11 +26,12 @@ OBJCUDA = cuda_ijk_kernels.o \
 	      cuda_ijk_driver.o \
 		  cuda_triples_driver.o \
 	      $(OBJCPU)
+OBJGHOST = triples_cuda_ghost.o
 
 all: $(PROGRAM).x 
 
-$(PROGRAM).x : $(MOD) $(OBJ) $(OBJ90) $(OBJCPU) Makefile
-	$(FC) $(FCFLAGS) -Onoacc -o $(PROGRAM).x $(MOD) $(OBJ) $(OBJ90) $(OBJCPU) -L../ddi-onesided -lddi
+$(PROGRAM).x : $(MOD) $(OBJ) $(OBJ90) $(OBJCPU) $(OBJGHOST) Makefile
+	$(FC) $(FCFLAGS) -Onoacc -o $(PROGRAM).x $(MOD) $(OBJ) $(OBJ90) $(OBJCPU) $(OBJGHOST) -L../ddi-onesided -lddi
 
 $(PROGRAM_ACC).x : $(MOD) $(OBJ) $(OBJ90) $(OBJACC) Makefile
 	$(FC) $(FCFLAGS) -o $(PROGRAM_ACC).x $(MOD) $(OBJ) $(OBJ90) $(OBJACC) -L../ddi-onesided -lddi
