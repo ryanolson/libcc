@@ -49,66 +49,68 @@ nr = nu2
 ! note: the syncs between dgemms are required because each dgemm is updating a 
 ! different disjoint portion of v3.
 
-!$acc data copyout(v3), copyin(t2_i,t2_j,t2_k,ve_i,ve_j,ve_k,vm_ij,vm_ji,vm_ik,vm_ki,vm_jk,vm_kj)
-!$acc host_data use_device(t2_i,t2_j,t2_k,ve_i,ve_j,ve_k,vm_ij,vm_ji,vm_ik,vm_ki,vm_jk,vm_kj)
+!$acc data present(v3,t2_i,t2_j,t2_k,ve_i,ve_j,ve_k,vm_ij,vm_ji,vm_ik,vm_ki,vm_jk,vm_kj)
 
+
+!$acc host_data use_device(t2_i,t2_j,t2_k,ve_i,ve_j,ve_k,vm_ij,vm_ji,vm_ik,vm_ki,vm_jk,vm_kj)
 ! #2 & #9
 !$acc host_data use_device(v3)
-call dgemm_acc('n','n',nr,nu,no,om,t2_j,nu2,vm_ki,no,zero,v3,nu2)       ! #2: Type A
-call dgemm_acc('t','t',nr,nu,nu,one,ve_j,nu,t2_k(1,i),nu,one,v3,nu2)    ! #9: Type BT
+call dgemm('n','n',nr,nu,no,om,t2_j,nu2,vm_ki,no,zero,v3,nu2)       ! #2: Type A
+
+!$acc wait  ! for ve_j
+
+call dgemm('t','t',nr,nu,nu,one,ve_j,nu,t2_k(1,i),nu,one,v3,nu2)    ! #9: Type BT
 !$acc end host_data
 
 ! transform v3
-call trant3_1_acc(nu,v3) 
+call trant3_1(nu,v3) 
 
 ! #4 & #7
 !$acc host_data use_device(v3)
-call dgemm_acc('t','t',nu,nr,no,om,vm_ji,no,t2_k,nu2,one,v3,nu)         ! #4: Type AT
-call dgemm_acc('n','n',nu,nr,nu,one,t2_j(1,i),nu,ve_k,nu,one,v3,nu)     ! #7: Type B
+call dgemm('t','t',nu,nr,no,om,vm_ji,no,t2_k,nu2,one,v3,nu)         ! #4: Type AT
+call dgemm('n','n',nu,nr,nu,one,t2_j(1,i),nu,ve_k,nu,one,v3,nu)     ! #7: Type B
 !$acc end host_data
 
 ! transform v3
-!$acc update host(v3)
-call trant3_4_acc(nu,v3)
-!$acc update device(v3)
+call trant3_4(nu,v3)
 
 ! #0 & #11
 !$acc host_data use_device(v3)
-call dgemm_acc('n','n',nr,nu,no,om,t2_i,nu2,vm_kj,no,one,v3,nu2)        ! #0: Type A
-call dgemm_acc('t','t',nr,nu,nu,one,ve_i,nu,t2_k(1,j),nu,one,v3,nu2)    ! #11: Type BT
+call dgemm('n','n',nr,nu,no,om,t2_i,nu2,vm_kj,no,one,v3,nu2)        ! #0: Type A
+call dgemm('t','t',nr,nu,nu,one,ve_i,nu,t2_k(1,j),nu,one,v3,nu2)    ! #11: Type BT
 ! #8 & #3
-call dgemm_acc('n','n',nu,nr,nu,one,t2_i(1,k),nu,ve_j,nu,one,v3,nu)     ! #8: Type B
-call dgemm_acc('t','t',nu,nr,no,om,vm_ik,no,t2_j,nu2,one,v3,nu)         ! #3: Type AT
+call dgemm('n','n',nu,nr,nu,one,t2_i(1,k),nu,ve_j,nu,one,v3,nu)     ! #8: Type B
+call dgemm('t','t',nu,nr,no,om,vm_ik,no,t2_j,nu2,one,v3,nu)         ! #3: Type AT
 !$acc end host_data
 
 ! transform v3
-call trant3_1_acc(nu,v3)
+call trant3_1(nu,v3)
 
 ! #1 & #10
 !$acc host_data use_device(v3)
-call dgemm_acc('n','n',nr,nu,no,om,t2_i,nu2,vm_jk,no,one,v3,nu2)        ! #1: Type A
-call dgemm_acc('t','t',nr,nu,nu,one,ve_i,nu,t2_j(1,k),nu,one,v3,nu2)    ! #10: Type BT
+call dgemm('n','n',nr,nu,no,om,t2_i,nu2,vm_jk,no,one,v3,nu2)        ! #1: Type A
+call dgemm('t','t',nr,nu,nu,one,ve_i,nu,t2_j(1,k),nu,one,v3,nu2)    ! #10: Type BT
 ! #6 & #5
-call dgemm_acc('n','n',nu,nr,nu,one,t2_i(1,j),nu,ve_k,nu,one,v3,nu)     ! #6: Type B
-call dgemm_acc('t','t',nu,nr,no,om,vm_ij,no,t2_k,nu2,one,v3,nu)         ! #5: Type AT
+call dgemm('n','n',nu,nr,nu,one,t2_i(1,j),nu,ve_k,nu,one,v3,nu)     ! #6: Type B
+call dgemm('t','t',nu,nr,no,om,vm_ij,no,t2_k,nu2,one,v3,nu)         ! #5: Type AT
 !$acc end host_data
 
 ! transform v3
-call trant3_1_acc(nu,v3)
+call trant3_1(nu,v3)
 
 !$acc end host_data
 !$acc end data
 
-return
 end subroutine ijk_tuple
 
-  subroutine trant3_1_acc(n,v)
+!-------------------------------------
+
+  subroutine trant3_1_async(acc_sync,n,v)
   implicit none
-  integer :: n, a, b, c
+  integer :: n, a, b, c, acc_sync
   double precision :: v(n,n,n), x
 
-!$acc data present(v)
-!$acc parallel private(x)
+!$acc parallel loop private(x) async(acc_sync)
   DO B=1,N
   DO C=1,B-1
   DO A=1,N
@@ -118,32 +120,6 @@ end subroutine ijk_tuple
   end do
   end do
   end do
-!$acc end parallel
-!$acc end data
+!$acc end parallel loop
 
-  return
-  end subroutine trant3_1_acc
-
-  subroutine trant3_4_acc(n,v)
-  implicit none
-  integer :: n, a, b, c
-  double precision :: v(n,n,n), x
-
-      DO 401 B=1,N
-      DO 400 C=1,B
-      DO 400 A=1,C
-      X=V(A,B,C)
-      V(A,B,C)=V(B,C,A)
-      V(B,C,A)=V(C,A,B)
-      V(C,A,B)=X
-      IF(B.EQ.C.OR.C.EQ.A) GO TO 400
-      X=V(B,A,C)
-      V(B,A,C)=V(A,C,B)
-      V(A,C,B)=V(C,B,A)
-      V(C,B,A)=X
-  400 CONTINUE
-  401 CONTINUE
-
-  return
-  end subroutine trant3_4_acc
-
+  end subroutine trant3_1_async

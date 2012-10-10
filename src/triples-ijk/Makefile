@@ -6,24 +6,34 @@ PROGRAM_ACC=triples-acc
 
 FC = ftn
 FCFLAGS_PGI = -i8 -fastsse -Munroll -tp shanghai-64 -Mfpmisalign
-FCFLAGS_CCE = -sdefault64 -target=linux -rm -rd -O2,ipa5 -Onoomp
-FCFLAGS_CCE = -sdefault64 -rm -rd -O2,ipa5 -Onoomp
+#FCFLAGS_CCE = -sdefault64 -target=linux -rm -Oipa5 -Onoomp
+FCFLAGS_CCE = -sdefault64 -rm -Onoomp
 
 NVCC = nvcc
 NVFLAGS = -arch sm_20 -Xptxas=-v
 CUDA_LIBS = -lcublas -lcudart
 
-FCFLAGS = $(FCFLAGS_CCE) -DGPU
+# use for CUDA version
+#FCFLAGS = $(FCFLAGS_CCE) -DGPU -DUSE_CUDA -F
+
+# use for OpenACC version
+FCFLAGS = $(FCFLAGS_CCE) -DGPU  -DUSE_OPEN_ACC -F
+
+# use for CPU version
+#FCFLAGS = $(FCFLAGS_CCE) -F
 
 MOD = common_cc.o
-OBJ = ddcc_aux.o t1wt3.o t3squa.o triples.o ddcc_t_ijj_iij_big.o
-OBJ90 = ijj_tuple.o iij_tuple.o 
-OBJCPU = ijk_tuple.o ddcc_t_ijk_big.o
-OBJACC = ijk_tuple_acc.o ddcc_t_ijk_big.o
-OBJCUDA = ijk_tuple_cuda_kernels.o \
+#OBJ = ddcc_aux.o t3squa.o triples.o ddcc_t_ijj_iij_big.o
+OBJ = ddcc_aux.o ddcc_t_ijj_iij_big.o
+#OBJ90 = ijj_tuple.o iij_tuple.o
+OBJ90 = 
+OBJCPU = ijk_tuple.o ddcc_t_ijk_big.o t1wt3.o triples_cpu.o t3squa.o ijj_tuple.o iij_tuple.o
+OBJACC = ijk_tuple_acc.o ddcc_t_ijk_big.o t1wt3_acc.o triples.o iij_tuple_acc.o ijj_tuple_acc.o t3squa_acc.o
+#OBJACC = ijk_tuple_acc.o ddcc_t_ijk_big.o t1wt3_acc.o triples.o
+OBJCUDA = ijk_tuple_cuda_kernels.o triples.o \
 	      t1wt3_ijk_cuda_kernels.o \
 	      ddcc_t_ijk_big_cuda.o ijk_gpu_driver.o \
-	      $(OBJCPU)
+	      ijk_tuple.o ddcc_t_ijk_big.o t1wt3.o t3squa.o ijj_tuple.o iij_tuple.o
 
 all: $(PROGRAM).x 
 
@@ -31,7 +41,7 @@ $(PROGRAM).x : $(MOD) $(OBJ) $(OBJ90) $(OBJCPU) Makefile
 	$(FC) $(FCFLAGS) -Onoacc -o $(PROGRAM).x $(MOD) $(OBJ) $(OBJ90) $(OBJCPU) -L../ddi-onesided -lddi
 
 $(PROGRAM_ACC).x : $(MOD) $(OBJ) $(OBJ90) $(OBJACC) Makefile
-	$(FC) $(FCFLAGS) -o $(PROGRAM_ACC).x $(MOD) $(OBJ) $(OBJ90) $(OBJACC) -L../ddi-onesided -lddi
+	$(FC) $(FCFLAGS) -o $(PROGRAM_ACC).x $(MOD) $(OBJ) $(OBJ90) $(OBJACC) -L../ddi-onesided -lddi $(usemylib)
 
 $(PROGRAM_CUDA).x : $(MOD) $(OBJ) $(OBJ90) $(OBJCUDA) Makefile
 	$(FC) $(FCFLAGS) -Onoacc -o $(PROGRAM_CUDA).x $(MOD) $(OBJ) $(OBJ90) $(OBJCUDA) -L../ddi-onesided -lddi $(CUDA_LIBS)

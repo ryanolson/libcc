@@ -17,7 +17,7 @@ C =============================================================================
 C
       SUBROUTINE DDCC_T_IJJ_BIG(NO,NU,I,J,T1,T2,VM,
      *                      V3,T3,VOE,O1,EH,EP,TEMP,ve_i,ve_j)
-      use common_cc, only: smp_np, smp_me
+      use common_cc, only: smp_np, smp_me, ddi_me, nu3
       IMPLICIT NONE
 C
       INTEGER I,J,NO,NU
@@ -39,7 +39,9 @@ C
 C
       call ijj_tuple_formv3(i,j,t2(1,1,i),t2(1,1,j),
      &                      vm(1,1,i,j),vm(1,1,j,i),vm(1,1,j,j),
-     &                      ve_i,ve_j,v3)
+     &                      ve_i,ve_j,V3)
+
+
 C
 C-IJJ-      CALL DIV_EVEN(NU2,SMP_NP,SMP_ME,NR,SR)
 C-IJJ-C
@@ -98,24 +100,24 @@ C-IJJ-C
 C-IJJ-      CALL TRANT3_SMP(V3,NU,2)
 C-IJJ-
       IF(SMP_ME.EQ.0) THEN
-      CALL SYMT311(V3,NU,23)
-      CALL ZEROT3(V3,NU)
+      CALL SYMT311(V3,NU,23)      ! modifies V3
+      CALL ZEROT3(V3,NU)          ! modifies V3
       END IF
-      CALL T3SQUA_SMP(I,J,J,NO,NU,O1,T2,V3,EH,EP)
+      CALL T3SQUA_SMP(I,J,J,NO,NU,O1,T2,V3,EH,EP)  ! no array change
       DEH=EH(I)+EH(J)+EH(J)
-      CALL ADT3DEN_SMP(NU,DEH,V3,EP)
+      CALL ADT3DEN_SMP(NU,DEH,V3,EP)  ! modifies V3
       ITMP=I
       JTMP=J
 C
-      CALL DRT1WT3IJ_SMP(ITMP,JTMP,NO,NU,T1,VOE,V3,T3)
-      CALL smp_sync()
+      CALL DRT1WT3IJ_SMP(ITMP,JTMP,NO,NU,T1,VOE,V3,T3) ! modifies V3, T1
+      if(smp_np.gt.1) CALL smp_sync()
       RETURN
       END
 C
 C*MODULE DDICC   *DECK DDCC_T_IIJ
       SUBROUTINE DDCC_T_IIJ_BIG(NO,NU,I,J,T1,T2,VM,
      *                      V3,T3,VOE,O1,EH,EP,TEMP,ve_i,ve_j)
-      use common_cc, only: smp_np, smp_me
+      use common_cc, only: smp_np, smp_me, ddi_me, nu3, no2u2
       IMPLICIT NONE
 C
 C
@@ -139,7 +141,6 @@ C
       call iij_tuple_formv3(i,j,t2(1,1,i),t2(1,1,j),
      &                      vm(1,1,i,j),vm(1,1,j,i),vm(1,1,i,i),
      &                      ve_i,ve_j,v3)
-
 
 C-IIJ-      CALL DIV_EVEN(NU2,SMP_NP,SMP_ME,NR,SR)
 C-IIJ-C
@@ -199,22 +200,22 @@ C-IIJ-C
 C-IIJ-      CALL TRANT3_SMP(V3,NU,3)
 
       IF(SMP_ME.EQ.0) THEN
-      CALL SYMT311(V3,NU,12)
-      CALL ZEROT3(V3,NU)
+      CALL SYMT311(V3,NU,12)  ! modifies V3
+      CALL ZEROT3(V3,NU)      ! modifies V3
 C     IF(IDISC.EQ.0.AND.MET.GT.4) THEN
 C       CALL WRT3(KK,NU,V3)
 C     END IF
       END IF
 
-      CALL T3SQUA_SMP(I,I,J,NO,NU,O1,T2,V3,EH,EP)
+      CALL T3SQUA_SMP(I,I,J,NO,NU,O1,T2,V3,EH,EP)  ! no array mods
 
       DEH=EH(I)+EH(I)+EH(J)
-      CALL ADT3DEN_SMP(NU,DEH,V3,EP)
+      CALL ADT3DEN_SMP(NU,DEH,V3,EP)  ! modifies V3
 
       ITMP=I
       JTMP=J
-      CALL DRT1WT3JK_SMP(ITMP,JTMP,NO,NU,T1,VOE,V3,T3)
-      CALL smp_sync()
+
+      CALL DRT1WT3JK_SMP(ITMP,JTMP,NO,NU,T1,VOE,V3,T3) ! modifies V3, T1, T3
+      if(smp_np.gt.1) CALL smp_sync()
       RETURN
       END
-C

@@ -1,4 +1,4 @@
-#!/bin/csh
+#!/bin/csh -f
 #
 #   5 Nov 08 - script to compile the Distributed Data Interface (DDI)
 #
@@ -1015,7 +1015,7 @@ finishOK:
 
   echo "DDI compilation ended successfully."
   date
-  time
+# time
   exit
 
 bombout:

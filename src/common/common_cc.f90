@@ -94,16 +94,21 @@ end module
   double precision :: v(n,n,n), x
   integer :: icntr,nr,sr,ltr
 
+#ifndef USE_OPEN_ACC
   icntr = 0
   ltr = (n*n-n)/2
   call div_even(ltr,smp_np,smp_me,nr,sr)
   if(smp_np.gt.1) call smp_sync()
+#endif
 
+!$acc parallel loop private(x)
       DO B=1,N
       DO C=1,B-1
+#ifndef USE_OPEN_ACC
          icntr = icntr+1
          if(icntr.lt.sr) cycle
          if(icntr.ge.sr+nr) cycle
+#endif
       DO A=1,N
          X=V(A,B,C)
          V(A,B,C)=V(A,C,B)
@@ -111,6 +116,7 @@ end module
       end do
       end do
       end do
+!$acc end parallel loop
 
   if(smp_np.gt.1) call smp_sync()
   return
@@ -123,8 +129,13 @@ end module
   double precision :: v(n,n,n), x
 
   if(smp_np.gt.1) call smp_sync()
+
+!$acc parallel loop private(x)
       DO 401 B=1,N
+#ifndef USE_OPEN_ACC
         IF(MOD(B,SMP_NP).NE.SMP_ME) GOTO 401
+#endif
+!$acc loop
       DO 400 C=1,B
       DO 400 A=1,C
       X=V(A,B,C)
@@ -138,6 +149,7 @@ end module
       V(C,B,A)=X
   400 CONTINUE
   401 CONTINUE
+!$acc end parallel loop
 
   if(smp_np.gt.1) call smp_sync()
   return
@@ -184,6 +196,7 @@ end module
   if(smp_np.gt.1) call smp_sync()
 
    23 CONTINUE
+
       DO J=1,N2
          J1=J-1
          N1J=N1*J1
@@ -213,6 +226,50 @@ end module
 
   return
   end subroutine tranmd_23
+
+  subroutine tranmd_23_acc(acc_sync,a,n1,n2,n3,n4)
+  use common_cc, only: smp_np, smp_me
+  implicit double precision(a-h,o-z)
+  integer :: n1,n2,n3,n4,n12,n123,icntr,acc_sync
+  double precision :: a(n1*n2*n3)
+
+  n12=n1*n2
+  n123=n12*n3
+  icntr=0
+
+  if(smp_np.gt.1) call smp_sync()
+
+!$acc parallel loop private(x) async(acc_sync)
+      DO J=1,N2
+         J1=J-1
+         N1J=N1*J1
+         N12J=N12*J1
+      DO K=1,J
+         K1=K-1
+         N1K=N1*K1
+         N12K=N12*K1
+!        icntr=icntr+1
+!        if(icntr.eq.smp_np) icntr=0
+!        if(icntr.ne.smp_me) cycle
+      DO L=1,N4
+         N123L=N123*(L-1)
+!$acc loop
+      DO I=1,N1
+         N123LI=N123L+I
+         IJKL=N123LI+N12K+N1J
+         IKJL=N123LI+N12J+N1K
+         X=A(IJKL)
+         A(IJKL)=A(IKJL)
+         A(IKJL)=X
+      end do
+      end do
+      end do
+      end do
+!$acc end parallel loop
+
+  if(smp_np.gt.1) call smp_sync()
+
+  end subroutine tranmd_23_acc
   
   SUBROUTINE TRANMD_SMP(A,N1,N2,N3,N4,IJ)
   use common_cc, only: smp_np, smp_me
@@ -507,8 +564,12 @@ end module
 
       GO TO (1,2,3,4,5),ID
     1 CONTINUE
+
+!$acc parallel loop private(x) present(v)
       DO 101 B=1,NU
+#ifndef USE_OPEN_ACC
         IF(MOD(B,SMP_NP).NE.SMP_ME) GOTO 101
+#endif
       DO 100 C=1,B
       DO 100 A=1,NU
       X=V(A,B,C)
@@ -516,10 +577,17 @@ end module
       V(A,C,B)=X
   100 CONTINUE
   101 CONTINUE
+!$acc end parallel loop
+
       GO TO 1000
     2 CONTINUE
+
+!$acc parallel loop private(x) present(v)
       DO 201 C=1,NU
+#ifndef USE_OPEN_ACC
         IF(MOD(C,SMP_NP).NE.SMP_ME) GOTO 201
+#endif
+!$acc loop
       DO 200 A=1,NU
       DO 200 B=1,A
       X=V(A,B,C)
@@ -527,10 +595,17 @@ end module
       V(B,A,C)=X
   200 CONTINUE
   201 CONTINUE
+!$acc end parallel loop
+
       GO TO 1000
     3 CONTINUE
+
+!$acc parallel loop private(x) present(v)
       DO 301 B=1,NU
+#ifndef USE_OPEN_ACC
         IF(MOD(B,SMP_NP).NE.SMP_ME) GOTO 301
+#endif
+!$acc loop
       DO 300 A=1,NU
       DO 300 C=1,A
       X=V(A,B,C)
@@ -538,10 +613,17 @@ end module
       V(C,B,A)=X
   300 CONTINUE
   301 CONTINUE
+!$acc end parallel loop
+
       GO TO 1000
     4 CONTINUE
+
+!$acc parallel loop private(x) present(v)
       DO 401 B=1,NU
+#ifndef USE_OPEN_ACC
         IF(MOD(B,SMP_NP).NE.SMP_ME) GOTO 401
+#endif
+!$acc loop
       DO 400 C=1,B
       DO 400 A=1,C
       X=V(A,B,C)
@@ -555,10 +637,16 @@ end module
       V(C,B,A)=X
   400 CONTINUE
   401 CONTINUE
+!$acc end parallel loop
+
       GO TO 1000
     5 CONTINUE
+
+!$acc parallel loop private(x) present(v)
       DO 501 A=1,NU
+#ifndef USE_OPEN_ACC
         IF(MOD(A,SMP_NP).NE.SMP_ME) GOTO 501
+#endif
       DO 500 C=1,A
       DO 500 D=1,C
       X=V(C,D,A)
@@ -572,6 +660,8 @@ end module
       V(D,C,A)=X
   500 CONTINUE
   501 CONTINUE
+!$acc end parallel loop
+
       GO TO 1000
  1000 CONTINUE
       if(smp_np.gt.1) CALL smp_sync()

@@ -1,4 +1,3 @@
-
 C =============================================================================
 C   Copyright (C) 2010.  Ryan M. Olson
 C
@@ -22,30 +21,20 @@ C =============================================================================
       LOGICAL IEJ,JEK
       INTEGER A,B,C
       DIMENSION T1(NO,NU),T2(NU,NU,NO,NO),T3(NU,NU,NU),EH(NO),EP(NU)
-      integer blocksize,aa,bb,cc
-      parameter(blocksize=16)
 C -RESTART-      common/lame  / my_first_time
 
       if(smp_np.gt.1) CALL smp_sync()
 
-      nblocks = nu/blocksize
       DIJK=EH(I)+EH(J)+EH(K)
-      X1=ZERO
-      X2=ZERO
       X3=ZERO
-      icntr=0
 
-      do cc = 1,nu,16
-         icntr = icntr+1
-         if(icntr.eq.smp_np) icntr=0
-         if(icntr.ne.smp_me) cycle
-      do bb = 1,nu,16
-      do aa = 1,nu,16
-         do c = cc,min(cc+15,nu)
+!$acc parallel loop private(dc,dbc,DABC,DENOM,d1,d2,d3,f) 
+!$acc&         reduction(+:x3)
+         do c = 1,nu
             dc = ep(c)
-         do b = bb,min(bb+15,nu)
+         do b = 1,nu
             dbc = ep(b) + dc
-         do a = aa,min(aa+15,nu)
+         do a = 1,nu
             if(a.eq.b .and. b.eq.c) cycle
             DABC = EP(A) + DBC
             DENOM=DIJK-DABC
@@ -58,9 +47,7 @@ C -RESTART-      common/lame  / my_first_time
          end do
          end do
          end do
-      end do
-      end do
-      end do
+!$acc end parallel loop
 
       CF=ONE
       IEJ=I.EQ.J
@@ -69,20 +56,4 @@ C -RESTART-      common/lame  / my_first_time
       ETD=ETD+CF*X3
       if(smp_np.gt.1) CALL smp_sync()
 
-C -RESTART-      if(ddi_me.eq.0 .and. my_first_time.eq.0) then
-C -RESTART-         ifile=80
-C -RESTART-         open(unit=ifile, file='t3squa.restart', status='new', 
-C -RESTART-     &   action='write', form='unformatted', access='sequential')
-C -RESTART-
-C -RESTART-         write(ifile) nu
-C -RESTART-         write(ifile) dijk
-C -RESTART-         write(ifile) ep
-C -RESTART-         write(ifile) t3
-C -RESTART-         write(ifile) x3
-C -RESTART-
-C -RESTART-         close(ifile)
-C -RESTART-         my_first_time = 1
-C -RESTART-      end if
-
-      RETURN
       END

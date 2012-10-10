@@ -65,6 +65,7 @@ C
 C
 C     TEMP SHOULD BE NU^2 AND VE SHOULD BE NU^3
       DOUBLE PRECISION TEMP(NU*NU),VE(NU,NU,NU)
+
       INTEGER LOOP
 C
       IOFF = 1
@@ -79,7 +80,37 @@ C
       RETURN
       END
 
+      SUBROUTINE DDCC_T_GETVE_acc(acc_sync,NUINP,INDX,TEMP,VE)
+      use common_cc
+      INTEGER INDX,I,IOFF,acc_sync
+C
+C     TEMP SHOULD BE NU^2 AND VE SHOULD BE NU^3
+
+      DOUBLE PRECISION TEMP(NUTR,NU),VE(NU,NU,NU)
+      INTEGER ij_1,ij_2
+
+!$acc parallel loop async(acc_sync)
+      DO IOFF = 1, NU
+        ij_1 = 1
+        ij_2 = 1
+        do i = 1,NU
+          do j = 1,i
+             VE(i,j,IOFF) = TEMP(ij_1,IOFF)
+             ij_1 = ij_1 + 1
+          end do
+          do j = 1,i
+             VE(j,i,IOFF) = TEMP(ij_2,IOFF)
+             ij_2 = ij_2 + 1
+          end do
+        end do
+
+      END DO
+!$acc end parallel loop
+
+      END
+
       SUBROUTINE CPYTSQ(A,B,NA,INCA)
+      use common_cc
       IMPLICIT DOUBLE PRECISION(A-H,O-Z)
       DIMENSION A(*),B(NA,NA)
 C
@@ -94,7 +125,7 @@ C
             IJ = IJ + INCA
   100    CONTINUE
   200 CONTINUE
-      RETURN
+
       END
 
 
@@ -103,11 +134,13 @@ C
       INTEGER A
       DIMENSION T3(NU,NU,NU)
       DATA ZERO/0.0D+00/
-C
+
+!$acc parallel loop 
       DO  A=1,NU
       T3(A,A,A)=ZERO
       ENDDO           
-      RETURN 
+!$acc end parallel loop
+
       END 
 
 
@@ -117,17 +150,23 @@ C
       INTEGER A,B,C,NU
       DOUBLE PRECISION T3(NU,NU,NU),EP(NU),DEH,DEN
 C
-      CALL smp_sync()
+      if(smp_np.gt.1) CALL smp_sync()
+
+!$acc parallel loop 
       DO 11 A=1,NU
+#ifndef USE_OPEN_ACC
         IF(MOD(A,SMP_NP).NE.SMP_ME) GOTO 11
+#endif
       DO 10 B=1,NU
       DO 10 C=1,NU
       DEN=DEH-EP(A)-EP(B)-EP(C)
       T3(C,B,A)=T3(C,B,A)/DEN
  10   CONTINUE
  11   CONTINUE
-      CALL smp_sync()
-      RETURN
+!$acc end parallel loop
+
+      if(smp_np.gt.1) CALL smp_sync()
+
       END
 
       SUBROUTINE DRT1WT3IJK_SMP(I,J,K,NO,NU,T1,VOE,TI,T3)
@@ -149,20 +188,25 @@ C
       END
 
       SUBROUTINE T1WT3IJK_SMP(I,J,K,NO,NU,T1,VOE,TI,T3)
-      use common_cc, only: smp_np, smp_me
+      use common_cc, only: smp_np, smp_me, no2u2, nu3
       IMPLICIT NONE
       INTEGER NR,SR,T3OFF,VOEOFF,I,J,K,NO,NU,NU2
-      DOUBLE PRECISION T1(NU,NO),VOE(*),T3(1),TI(1),ONE
+      DOUBLE PRECISION T1(NU,NO),VOE(no2u2),T3(nu3),TI(nu3),ONE
       DATA ONE/1.0D+00/
 C
       NU2 = NU*NU
       CALL SMT3FOUR_SMP(NU,T3,TI)
       CALL DIV_EVEN(NU2,SMP_NP,SMP_ME,NR,SR)
-      T3OFF = (SR - 1)*NU + 1
+      T3OFF = (SR - 1)*NU + 1 
       VOEOFF = (K - 1)*NU2*NO + (J - 1)*NU2  + SR
+
+!$acc data present(t3,voe,t1)
+!$acc host_data use_device(t3,voe,t1)
       CALL DGEMM('N','N',NU,1,NR,ONE,T3(T3OFF),NU,VOE(VOEOFF),NU2,ONE,
      *           T1(1,I),NU)
-      CALL smp_sync()
+!$acc end host_data
+!$acc end data
+      if(smp_np.gt.1) CALL smp_sync()
       RETURN
       END
 
@@ -175,13 +219,16 @@ C
       DATA ZERO/0.0D+00/
       DATA OM/-1.0D+00/
 C
-      CALL smp_sync()
+      if(smp_np.gt.1) CALL smp_sync()
 C
+!$acc parallel loop
       DO 2 C=1,NU
+#ifndef USE_OPEN_ACC
         IF(MOD(C,SMP_NP).NE.SMP_ME) GOTO 2
+#endif
 
       do b=1,nu
-         t3(b,b,c) = zero
+         T3(b,b,c) = zero
       end do
 
       DO B=2,NU
@@ -192,7 +239,9 @@ C
       END DO
 
  2    CONTINUE
-      CALL smp_sync()
+!$acc end parallel loop
+
+      if(smp_np.gt.1) CALL smp_sync()
       RETURN
       END
 
@@ -223,44 +272,102 @@ C     CALL TRANT3_SMP(TI,NU,1)
       RETURN
       END
 
-
       SUBROUTINE SYMT311(V,NU,ID)
       IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       INTEGER A,B,C
-      DIMENSION V(NU,NU,NU)
-C     
-      IF (ID.EQ.23) GO TO 23
-      IF (ID.EQ.12) GO TO 12
-      IF (ID.EQ.13) GO TO 13
+      double precision V(NU,NU,NU),x
+
+      IF (ID.EQ.23) go to 23
+      IF (ID.EQ.12) go to 12
+      IF (ID.EQ.13) go to 13
+
  23   CONTINUE
-      DO 100 B=1,NU
-      DO 100 C=1,B
-      DO 100 A=1,NU
-      X=V(A,B,C)+V(A,C,B)
-      V(A,B,C)=X
-      V(A,C,B)=X
-  100 CONTINUE
-      GO TO 1000
+
+!$acc parallel loop private(x)
+      DO B=1,NU
+      DO C=1,B
+      DO A=1,NU
+        X=V(A,B,C)+V(A,C,B)
+        V(A,B,C)=X
+        V(A,C,B)=X
+      end do
+      end do
+      end do
+!$acc end parallel loop
+      go to 1000
+
  12   CONTINUE
-      DO 101 C=1,NU
-      DO 101 A=1,NU
-      DO 101 B=1,A
-      X=V(A,B,C)+V(B,A,C)  
-      V(A,B,C)=X
-      V(B,A,C)=X
- 101  CONTINUE
-      GO TO 1000
+!$acc parallel loop private(x)
+      DO C=1,NU
+!$acc loop
+      DO A=1,NU
+      DO B=1,A
+        X=V(A,B,C)+V(B,A,C)
+        V(A,B,C)=X
+        V(B,A,C)=X
+      end do
+      end do
+      end do
+!$acc end parallel loop
+      go to 1000
+
  13   CONTINUE
-      DO 102 A=1,NU
-      DO 102 B=1,NU
-      DO 102 C=1,A
-      X=V(A,B,C)+V(C,B,A)
-      V(A,B,C)=X
-      V(C,B,A)=X
- 102  CONTINUE
-      GO TO 1000
+!$acc parallel loop private(x)
+      DO A=1,NU
+!$acc loop
+      DO B=1,NU
+      DO C=1,A
+        X=V(A,B,C)+V(C,B,A)
+        V(A,B,C)=X
+        V(C,B,A)=X
+      end do
+      end do
+      end do
+!$acc end parallel loop
+
  1000 CONTINUE
+
       END
+
+!     previous version:
+!
+!     SUBROUTINE SYMT311(V,NU,ID)
+!     IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+!     INTEGER A,B,C
+!     DIMENSION V(NU,NU,NU)
+!     
+!     IF (ID.EQ.23) GO TO 23
+!     IF (ID.EQ.12) GO TO 12
+!     IF (ID.EQ.13) GO TO 13
+!23   CONTINUE
+!     DO 100 B=1,NU
+!     DO 100 C=1,B
+!     DO 100 A=1,NU
+!     X=V(A,B,C)+V(A,C,B)
+!     V(A,B,C)=X
+!     V(A,C,B)=X
+! 100 CONTINUE
+!     GO TO 1000
+!12   CONTINUE
+!     DO 101 C=1,NU
+!     DO 101 A=1,NU
+!     DO 101 B=1,A
+!     X=V(A,B,C)+V(B,A,C)  
+!     V(A,B,C)=X
+!     V(B,A,C)=X
+!101  CONTINUE
+!     GO TO 1000
+!13   CONTINUE
+!     DO 102 A=1,NU
+!     DO 102 B=1,NU
+!     DO 102 C=1,A
+!     X=V(A,B,C)+V(C,B,A)
+!     V(A,B,C)=X
+!     V(C,B,A)=X
+!102  CONTINUE
+!     GO TO 1000
+!1000 CONTINUE
+!     END
 
       SUBROUTINE DD_T3SQUA_GSUM
       use common_cc

@@ -25,27 +25,23 @@ double precision :: voe_ij(nu,nu), voe_ji(nu,nu), voe_ik(nu,nu), voe_ki(nu,nu), 
 double precision :: eh(no), ep(nu)
 
 double precision :: t3_ab1, t3_ab2, t3_ab3, t3_ab4, t3_ab5, t3_ab6, denom, dijk, dabc, x3, f, d1, d2, d3
+double precision :: t1ai, t1bi, t1aj, t1bj, t1ak, t1bk
 
 integer :: a,b,c,aa,bb,cc,icntr
 
 if(smp_np.gt.1) call smp_sync()
 
-icntr = 0
 x3 = zero
 denom = one
 dijk = eh(i) + eh(j) + eh(k)
 
-do cc = 1,nu,16
-   icntr = icntr+1
-   if(icntr.eq.smp_np) icntr=0
-   if(icntr.ne.smp_me) cycle
-
-   do bb = 1,nu,16
-   do aa = 1,nu,16
-
-   do c = cc, min(cc+15,nu)
-   do b = bb, min(bb+15,nu)
-   do a = aa, min(aa+15,nu)
+!$acc parallel loop private(t1ai,t1aj,t1ak) reduction(+:x3) private(dabc,denom,d1,d2,d3,f,t3_ab1,t3_ab2,t3_ab3,t3_ab4,t3_ab5,t3_ab6)
+   do a = 1, nu
+    t1ai = t1(a,i)
+    t1aj = t1(a,j)
+    t1ak = t1(a,k)
+   do b = 1, nu
+   do c = 1, nu
 
       if(a.gt.b) cycle
       if(a.eq.b .and. b.eq.c) cycle
@@ -69,31 +65,63 @@ do cc = 1,nu,16
       x3      = x3 + f*d1*denom
 
 ! ets
-      t3_ab1  = (V3(A,B,C)-V3(B,A,C))*TWO-V3(A,C,B)+V3(B,C,A) ! ijk; abc => abc
+      t3_ab1  = (v3(a,b,c)-v3(b,a,c))*two-v3(a,c,b)+v3(b,c,a) ! ijk; abc => abc
       t3_ab2  = (v3(a,c,b)-v3(b,c,a))*two-v3(a,b,c)+v3(b,a,c) ! ikj; abc -> acb _1? ==> acb
       t3_ab3  = (v3(b,a,c)-v3(a,b,c))*two-v3(c,a,b)+v3(c,b,a) ! jik; abc -> cab _4? ==> bac
       t3_ab4  = (v3(b,c,a)-v3(a,c,b))*two-v3(c,b,a)+v3(c,a,b) ! jki; abc -> acb _1? ==> bca
       t3_ab5  = (v3(c,a,b)-v3(c,b,a))*two-v3(b,a,c)+v3(a,b,c) ! kij; abc -> bca _5? ==> cab
       t3_ab6  = (v3(c,b,a)-v3(c,a,b))*two-v3(b,c,a)+v3(a,c,b) ! kji; abc -> acb _1? ==> cba
 
-
-      t1(a,i) = t1(a,i) + ( t3_ab1*voe_jk(b,c) + t3_ab2*voe_kj(b,c) )*denom
-      t1(b,i) = t1(b,i) + ( t3_ab1*voe_jk(a,c) + t3_ab2*voe_kj(a,c) )*denom*om
-
-      t1(a,j) = t1(a,j) + ( t3_ab3*voe_ik(b,c) + t3_ab5*voe_ki(b,c) )*denom
-      t1(b,j) = t1(b,j) + ( t3_ab3*voe_ik(a,c) + t3_ab5*voe_ki(a,c) )*denom*om
-
-      t1(a,k) = t1(a,k) + ( t3_ab4*voe_ij(b,c) + t3_ab6*voe_ji(b,c) )*denom
-      t1(b,k) = t1(b,k) + ( t3_ab4*voe_ij(a,c) + t3_ab6*voe_ji(a,c) )*denom*om
+      t1ai = t1ai + ( t3_ab1*voe_jk(b,c) + t3_ab2*voe_kj(b,c) )*denom
+      t1aj = t1aj + ( t3_ab3*voe_ik(b,c) + t3_ab5*voe_ki(b,c) )*denom
+      t1ak = t1ak + ( t3_ab4*voe_ij(b,c) + t3_ab6*voe_ji(b,c) )*denom
 
    end do
    end do
+      t1(a,i) = t1ai
+      t1(a,j) = t1aj
+      t1(a,k) = t1ak
    end do
+!$acc end parallel loop
+
+
+!$acc parallel loop private(t1bi,t1bj,t1bk) private(dabc,denom,t3_ab1,t3_ab2,t3_ab3,t3_ab4,t3_ab5,t3_ab6) 
+   do b = 1, nu
+    t1bi = t1(b,i)
+    t1bj = t1(b,j)
+    t1bk = t1(b,k)
+   do c = 1, nu
+
+   do a = 1, nu
+
+      if(a.gt.b) cycle
+      if(a.eq.b .and. b.eq.c) cycle
+
+      dabc    = ep(a) + ep(b) + ep(c)
+      denom   = 1/(dijk-dabc)
+
+      if(a.eq.b) cycle
+
+! ets
+      t3_ab1  = (v3(a,b,c)-v3(b,a,c))*two-v3(a,c,b)+v3(b,c,a) ! ijk; abc => abc
+      t3_ab2  = (v3(a,c,b)-v3(b,c,a))*two-v3(a,b,c)+v3(b,a,c) ! ikj; abc -> acb _1? ==> acb
+      t3_ab3  = (v3(b,a,c)-v3(a,b,c))*two-v3(c,a,b)+v3(c,b,a) ! jik; abc -> cab _4? ==> bac
+      t3_ab4  = (v3(b,c,a)-v3(a,c,b))*two-v3(c,b,a)+v3(c,a,b) ! jki; abc -> acb _1? ==> bca
+      t3_ab5  = (v3(c,a,b)-v3(c,b,a))*two-v3(b,a,c)+v3(a,b,c) ! kij; abc -> bca _5? ==> cab
+      t3_ab6  = (v3(c,b,a)-v3(c,a,b))*two-v3(b,c,a)+v3(a,c,b) ! kji; abc -> acb _1? ==> cba
+
+      t1bi = t1bi + ( t3_ab1*voe_jk(a,c) + t3_ab2*voe_kj(a,c) )*denom*om
+      t1bj = t1bj + ( t3_ab3*voe_ik(a,c) + t3_ab5*voe_ki(a,c) )*denom*om
+      t1bk = t1bk + ( t3_ab4*voe_ij(a,c) + t3_ab6*voe_ji(a,c) )*denom*om
+
+   end do
+   end do
+      t1(b,i) = t1bi
+      t1(b,j) = t1bj
+      t1(b,k) = t1bk
+   end do
+!$acc end parallel loop
    
-   end do
-   end do
-
-end do
 
 if(i.eq.j .or. j.eq.k) then
   etd = etd + x3*half
@@ -101,8 +129,7 @@ else
   etd = etd + x3
 end if
 
-
-if(smp_np.gt.1) call smp_sync()
+call smp_sync()
 
 return
 9000 format(3I5,1F20.15)
@@ -121,7 +148,7 @@ double precision :: t3_ab1, t3_ab2, t3_ab3, t3_ab4, t3_ab5, t3_ab6, denom, dijk,
 
 integer :: a,b,c,aa,bb,cc,icntr
 
-if(smp_np.gt.1) call smp_sync()
+call smp_sync()
 
 icntr = 0
 x3 = zero
@@ -248,7 +275,7 @@ dijk = eh(i) + eh(j) + eh(k)
 !   etd = etd + x3
 ! end if
 
-if(smp_np.gt.1) call smp_sync()
+call smp_sync()
 
 return
 9000 format(3I5,1F20.15)

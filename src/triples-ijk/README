@@ -1,0 +1,57 @@
+This kernel can be build for CPU, CUDA, or OpenACC.   There is a build script for each:
+
+--------------------------------------------------------------
+
+To build:
+
+module load onesided
+module switch cce cce/81.newest
+
+cd ../ddi-onesided
+./compddi
+
+You will see the message below:
+
+DDI compilation ended successfully.
+Wed Jun  6 09:00:06 CDT 2012
+
+Then to continue building:
+
+cd ../triples-ijk/
+
+Then to build one of the 3 versions:
+
+build-cpu       ! builds executable triples.x
+build-cuda      ! builds executable triples-cuda.x
+build-openacc   ! builds executable triples-acc.x
+
+--------------------------------------------------------------
+
+To run on vista:
+
+
+cd runs
+
+CPU:
+
+aprun -L `cnselect "label0.eq.'BAX_IL'"` -n512 -N8 ../triples.x
+
+
+CUDA:
+
+aprun -L `cnselect "label0.eq.'BAX_IL'"` -n64 -N1 ../triples-cuda.x
+
+
+OpenACC:
+
+aprun -L `cnselect "label0.eq.'BAX_IL'"` -n64 -N1 ../triples-acc.x
+
+
+
+The output will include the IJK-tuples time and value of ETD, followed
+by the values of ETS / ETD / ETS+ETD
+
+ IJK-tuples time= 36.082802057266235   etd= -4.62789696453290089E-5
+
+ ets/etd/ets+etd=   0.0000956274  -0.0483425109  -0.0482468835
+

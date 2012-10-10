@@ -187,8 +187,6 @@ endif
   call ddi_finalize
 end program cc_triples_restart
 
-!----------------------------------------------------------
-
 subroutine cc_test(eh,ep,t1,t2,vm,voe)
 use common_cc
 implicit none
@@ -210,7 +208,6 @@ double precision :: eh(no), ep(nu), t1(nou), t2(no2u2), vm(no3u), voe(no2u2)
 return
 end subroutine cc_test
 
-!----------------------------------------------------------
 
 subroutine cc_triples_readinp(input,eh,ep,t1,t2,vm,voe,tmp)
 use common_cc
@@ -242,19 +239,14 @@ return
 stop
 end subroutine cc_triples_readinp
 
-!----------------------------------------------------------
 
 subroutine cc_triples(eh,ep,v1,t1,t2,v3,t3,vm,voe,ve_i,ve_j,ve_k)
 use common_cc
 implicit none
 
-double precision, allocatable :: tmp_i(:), tmp_j(:), tmp_k(:)
 double precision, allocatable :: tmp(:), vei(:), vej(:)
 double precision :: eh(no),ep(nu),v1(nou),t1(*),t2(*),v3(*),t3(*)
 double precision :: vm(*),voe(*),ve_i(*),ve_j(*),ve_k(*)
-
-integer iii
-
 integer :: nr, sr, iwrk, i, j, k, mytask, divisor, partial, icntr
 integer :: iold, jold, kold, comm_core
 integer :: ilo,ihi
@@ -262,7 +254,6 @@ integer :: ilo,ihi
 #ifdef USE_CUDA
 integer :: gpu_driver
 #endif
-
 integer :: n_ijk_tuples, n_iij_tuples, n_ijj_tuples
 integer :: ierr
 
@@ -272,12 +263,7 @@ double precision :: ijk_start, ijk_stop
 
 integer ioff, joff, koff, iloop, jloop, kloop, ij
 
-#ifdef USE_OPEN_ACC
-  allocate(tmp(nutr*nu),tmp_i(nutr*nu),tmp_j(nutr*nu),tmp_k(nutr*nu))
-#else
-  allocate(tmp(nutr*nu),tmp_i(nutr*nu),tmp_j(nutr*nu),tmp_k(nutr*nu))
-! allocate( tmp(nu2) )
-#endif
+allocate( tmp(nu2) )
 
 ! gpu
 #ifdef USE_CUDA
@@ -287,7 +273,8 @@ if(smp_me.lt.gpu_nd) gpu_driver=1
 
 ! load-balancing strategy
 ! =======================
-
+!
+! 
 
 n_ijk_tuples = (no*(no-1)*(no-2))/6
 n_ijj_tuples = (no*(no-1))/2
@@ -342,7 +329,6 @@ endif
 call div_even(n_ijk_tuples,ddi_nn,ddi_my,nr,sr)
 sr = sr-1
 
-
 divisor = 10
 if(nr.lt.10) divisor = nr
 partial = nr/divisor
@@ -354,15 +340,13 @@ iold = -1
 jold = -1
 kold = -1
 
-if(smp_np.gt.1) call smp_sync()
+call smp_sync()
 call ddi_dlbreset()
 
-#ifndef USE_OPEN_ACC
 v1(1:nou) = 0.0D+00
 if(smp_me.eq.0) then
    v3(1:nu3) = 0.0D+00
 endif
-#endif
 
 ! switch scopes
 #ifdef USE_CUDA
@@ -380,18 +364,7 @@ if(gpu_driver.eq.1) then
 endif
 #endif // ifdef USE_CUDA
 
-
 call ddi_sync(1234)
-
-!$acc data copyout(v1(1:nou))  &
-!$acc& copyin(eh,ep,t2(1:nu2*no*no),vm(1:no*nu*no*no),voe(1:no2u2),t3(1:nu3))  &
-!$acc& create(ve_i(1:nu3),ve_j(1:nu3),ve_k(1:nu3),v3(1:nu3),tmp_i,tmp_j,tmp_k)
-
-#ifdef USE_OPEN_ACC
-!$acc kernels
-  v1(1:nou) = 0.0D+00   ! initialize on GPU only
-!$acc end kernels
-#endif // end USE_OPEN_ACC
 
 if(ddi_me.eq.0) ijk_start = mpi_wtime()
 
@@ -400,9 +373,7 @@ if(gpu_driver.eq.1) then
 allocate( vei(nu3), vej(nu3) )
 #endif
 
-
-! ---------- ijk-tuples loop ---------------
-
+! ----------- ijk tuples -------------
 do iwrk = sr, sr+nr-1
   mytask = iwrk
   call ddcc_t_task(mytask,no,i,j,k)
@@ -413,59 +384,51 @@ do iwrk = sr, sr+nr-1
   if(gpu_driver.eq.0) then
 # endif
 
-   ! OpenACC CODE ----------------------------
+   ! CPU CODE 
 
-#ifdef USE_OPEN_ACC
      if(i.ne.iold) then
-       if(smp_me.eq.comm_core) then
-          ilo = nu*(i-1) + 1
-          ihi = ilo + nu - 1
-          call ddi_get(d_vvvo,1,nutr,ilo,ihi,tmp_i)
-!$acc update device(tmp_i(1:nutr*nu)) async(1)
-          call ddcc_t_getve_acc(1,nu,i,tmp_i,ve_i)
-          call trant3_1_async(1,nu,ve_i)
-       end if
+       if(smp_me.eq.comm_core) call ddcc_t_getve(nu,i,tmp,ve_i)
        comm_core = comm_core+1
        if(comm_core.eq.smp_np) comm_core=0
      end if
-
+   
      if(j.ne.jold) then
-       if(smp_me.eq.comm_core) then
-          ilo = nu*(j-1) + 1
-          ihi = ilo + nu - 1
-          call ddi_get(d_vvvo,1,nutr,ilo,ihi,tmp_j)
-!$acc update device(tmp_j(1:nutr*nu)) async(2)
-          call ddcc_t_getve_acc(2,nu,j,tmp_j,ve_j)
-          call trant3_1_async(2,nu,ve_j)
-       end if
+       if(smp_me.eq.comm_core) call ddcc_t_getve(nu,j,tmp,ve_j)
        comm_core = comm_core+1
        if(comm_core.eq.smp_np) comm_core=0
      end if
-
+   
      if(k.ne.kold) then
-       if(smp_me.eq.comm_core) then
-          ilo = nu*(k-1) + 1
-          ihi = ilo + nu - 1
-          call ddi_get(d_vvvo,1,nutr,ilo,ihi,tmp_k)
-!$acc update device(tmp_k(1:nutr*nu)) async(3)
-          call ddcc_t_getve_acc(3,nu,k,tmp_k,ve_k)
-          call trant3_1_async(3,nu,ve_k)
-       end if
+       if(smp_me.eq.comm_core) call ddcc_t_getve(nu,k,tmp,ve_k)
        comm_core = comm_core+1
        if(comm_core.eq.smp_np) comm_core=0
      end if
+   
+     if(i.ne.iold) then
+       call trant3_1(nu,ve_i)
+       iold = i
+     end if
+   
+     if(j.ne.jold) then
+       call trant3_1(nu,ve_j)
+       jold = j
+     end if
+   
+     if(k.ne.kold) then
+       call trant3_1(nu,ve_k)
+       kold = k
+     end if
 
-     if(smp_np.gt.1) call smp_sync()
-#endif
+     call smp_sync()
 
 # ifdef USE_CUDA
-  else ! gpu_driver.eq.1
+  else ! gpu_driver.eq.0
 
-   ! CUDA CODE ------------------------------
+   ! GPU CODE
      if(i.ne.iold) then
 !      if(smp_me.eq.comm_core) call ddcc_t_getve(nu,i,tmp,vei)
        ilo = nu*(i-1) + 1
-       ihi = ilo + nu       ! should one be subtracted?
+       ihi = ilo + nu
        if(smp_me.eq.comm_core) call ddi_get(d_vvvo,1,nutr,ilo,ihi,vei)
        comm_core = comm_core+1
        if(comm_core.eq.smp_np) comm_core=0
@@ -473,14 +436,14 @@ do iwrk = sr, sr+nr-1
 !   
      if(j.ne.jold) then
        ilo = nu*(j-1) + 1
-       ihi = ilo + nu       ! should one be subtracted?
+       ihi = ilo + nu
        if(smp_me.eq.comm_core) call ddi_get(d_vvvo,1,nutr,ilo,ihi,vej)
        if(comm_core.eq.smp_np) comm_core=0
      end if
    
      if(k.ne.kold) then
        ilo = nu*(k-1) + 1
-       ihi = ilo + nu       ! should one be subtracted?
+       ihi = ilo + nu
        if(smp_me.eq.comm_core) call ddi_get(d_vvvo,1,nutr,ilo,ihi,ve_k)
        comm_core = comm_core+1
        if(comm_core.eq.smp_np) comm_core=0
@@ -488,7 +451,7 @@ do iwrk = sr, sr+nr-1
      ! NOTE: ddcc_t_ijk_gpu must expand and perfrom a trant3_1 operation
      ! on vei, vej, vek prior to use!
 
-  end if ! gpu_driver.eq.1
+  end if ! gpu_driver.eq.0
 # endif
 
 # ifdef USE_CUDA
@@ -499,14 +462,22 @@ do iwrk = sr, sr+nr-1
 
 # ifdef USE_CUDA
   else
-     call ddcc_t_ijk_gpu(no,nu,i,j,k,v1,t2,vm,voe,eh,ep,vei,vej,ve_k) !  call ijk_gpu_driver
+     call ddcc_t_ijk_gpu(no,nu,i,j,k,v1,t2,vm,voe,eh,ep,vei,vej,ve_k)
   end if
 # endif
-  if(smp_np.gt.1) call smp_sync()
+  call smp_sync()
 
   iold = i
   jold = j
   kold = k
+
+! if(ddi_my.eq.0) then
+!    print *,"ddi_me=",ddi_me," iwrk=",iwrk," ets=",ets," etd=",etd
+! end if
+
+! if(ddi_my.eq.0) then
+!    write(6,*) ddi_me, etd
+! end if
 
   if(ddi_me.eq.0) then
 !    write(6,*) 'mytask',mytask
@@ -520,13 +491,10 @@ do iwrk = sr, sr+nr-1
      end if
   end if
 end do
-
-! ---------- end of ijk-tuples loop ---------------
-
+! ----------- end of ijk tuples -------------
 
 #ifdef USE_CUDA
-call ijk_gpu_finalize(no,nu,etd)   ! deallocate device-arrays, copy back "v1, etd"
-deallocate(vei,vej)
+call ijk_gpu_finalize(no,nu,etd)
 end if ! gpu_driver == 1
 #endif
 
@@ -538,12 +506,14 @@ end if ! gpu_driver == 1
 call ddi_sync(1234)
 if(ddi_me.eq.0) then
    ijk_stop = mpi_wtime()
+!  if(ddi_me.eq.0) write(6,9001) (ijk_stop-ijk_start)
    print *,"IJK-tuples time=",(ijk_stop-ijk_start),"  etd=",etd
+ 9001 format('ijk time=',F15.5)
 end if
 
 
 #ifdef USE_CUDA
-!if(gpu_driver .eq. 0) then    ! <--- vjg commented out so iij/ijj tuples would run
+if(gpu_driver .eq. 0) then
 #endif
 
 ! counters and load-balancing for iij and ijj tuples
@@ -559,25 +529,13 @@ do i=1,no
     if(mytask.eq.icntr) then
        ! if(smp_me.eq.0) write(6,*) ddi_me,' tasked with ',mytask,' iij/ijj tuple'
        if(i.ne.iold) then
-         if(smp_me.eq.0) then
-           ilo = nu*(i-1) + 1
-           ihi = ilo + nu - 1
-           call ddi_get(d_vvvo,1,nutr,ilo,ihi,tmp_i)
-!$acc update device(tmp_i(1:nutr*nu)) async(1)
-           call ddcc_t_getve_acc(1,nu,i,tmp_i,ve_i)
-         end if
-         call tranmd_23_acc(1,ve_i,nu,nu,nu,1)
+         if(smp_me.eq.0) call ddcc_t_getve(nu,i,tmp,ve_i)
+         call tranmd_23(ve_i,nu,nu,nu,1)
          iold = i
        end if
        if(j.ne.jold) then
-         if(smp_me.eq.0) then
-           ilo = nu*(j-1) + 1
-           ihi = ilo + nu - 1
-           call ddi_get(d_vvvo,1,nutr,ilo,ihi,tmp_j)
-!$acc update device(tmp_j(1:nutr*nu)) async(2)
-           call ddcc_t_getve_acc(2,nu,j,tmp_j,ve_j)
-         end if
-         call tranmd_23_acc(2,ve_j,nu,nu,nu,1)
+         if(smp_me.eq.0) call ddcc_t_getve(nu,j,tmp,ve_j)
+         call tranmd_23(ve_j,nu,nu,nu,1)
          jold = j
        end if
        call ddcc_t_ijj_big(no,nu,i,j,v1,t2,vm,v3,t3,voe,t1,eh,ep,tmp,ve_i,ve_j)
@@ -589,25 +547,13 @@ do i=1,no
     if(mytask.eq.icntr) then
        ! if(smp_me.eq.0) write(6,*) ddi_me,' tasked with ',mytask,' iij/ijj tuple'
        if(i.ne.iold) then
-         if(smp_me.eq.0) then
-           ilo = nu*(i-1) + 1
-           ihi = ilo + nu - 1
-           call ddi_get(d_vvvo,1,nutr,ilo,ihi,tmp_i)
-!$acc update device(tmp_i(1:nutr*nu)) async(1)
-           call ddcc_t_getve_acc(1,nu,i,tmp_i,ve_i)
-         end if
-         call tranmd_23_acc(1,ve_i,nu,nu,nu,1)
+         if(smp_me.eq.0) call ddcc_t_getve(nu,i,tmp,ve_i)
+         call tranmd_23(ve_i,nu,nu,nu,1)
          iold = i
        end if
        if(j.ne.jold) then
-         if(smp_me.eq.0) then
-           ilo = nu*(j-1) + 1
-           ihi = ilo + nu - 1
-           call ddi_get(d_vvvo,1,nutr,ilo,ihi,tmp_j)
-!$acc update device(tmp_j(1:nutr*nu)) async(2)
-           call ddcc_t_getve_acc(2,nu,j,tmp_j,ve_j)
-         end if
-         call tranmd_23_acc(2,ve_j,nu,nu,nu,1)
+         if(smp_me.eq.0) call ddcc_t_getve(nu,j,tmp,ve_j)
+         call tranmd_23(ve_j,nu,nu,nu,1)
          jold = j
        end if
        call ddcc_t_iij_big(no,nu,i,j,v1,t2,vm,v3,t3,voe,t1,eh,ep,tmp,ve_i,ve_j)
@@ -619,11 +565,9 @@ do i=1,no
 end do
 ! ----------- end of iij and ijj tuples -------------
 
-!$acc end data       
-
 ! if(smp_me.eq.0) write(6,*) 'cpu node ',ddi_my,' finshed iij/ijj'
 #ifdef USE_CUDA
-!end if  ! gpu_driver == 0   ! vjg commented out 
+end if ! gpu_driver == 0
 #endif
 
 ! switch scopes
@@ -638,14 +582,16 @@ call mpi_comm_size(working_compute_comm, ddi_np, ierr)
 call ddi_sync(1234)
 #endif
 
-
 call ddi_gsumf(123,eh,no)
 call ddi_gsumf(124,ep,nu)
 call ddi_gsumf(125,v1,nou)
-call dd_t3squa_gsum    !  global sum of ETD
+call dd_t3squa_gsum
 
 call ddi_sync(1)
 
+
+! there is a problem calculating ets
+! etd is correct; ets is wrong - compared against triples-nersc
 if(ddi_me.eq.0) then
   call trpose(t1,tmp,no,nu,1)
   ets = 2.0D+00*ddot(nou,t1,1,v1,1)
@@ -668,7 +614,8 @@ return
 9000 format(1x,'ets/etd/ets+etd=',3F15.10)
 end subroutine cc_triples
 
-!----------------------------------------------------------
+
+
 
 subroutine cc_convert_ijk_to_abc(vm,vm_tmp,v3)
 use common_cc
