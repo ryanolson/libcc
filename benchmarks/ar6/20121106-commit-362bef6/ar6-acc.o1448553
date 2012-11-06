@@ -1,0 +1,53 @@
+Warning: no access to tty (Bad file descriptor).
+Thus no job control in this shell.
+libonesided using gni version: 4980900
+libonesided: blocking waits
+[ds 0]: set_affinity mask=0x2
+0 [cp] get_affinity mask = 0x1
+ no= 24
+ nu= 336
+ nu3   = 37933056
+ nu3gpu= 37933056
+ DDI: Creating Array [0] - 56616x8064=456551424.
+ check ve_ia(1)= -4.56181393255057101E-4
+ check ve_ia(1)= 3.33774306470904441E-13
+ restarting triples
+ ijk tuples =  2024
+ iij tuples =  276
+ ijj tuples =  276
+ % complete =  10
+ % complete =  20
+ % complete =  30
+ % complete =  40
+ % complete =  50
+ % complete =  60
+ % complete =  70
+ % complete =  80
+ % complete =  90
+ % complete =  100
+ IJK-tuples time= 79.909811019897461   etd= -8.31206269083489347E-4
+ ets/etd/ets+etd=   0.0000956274  -0.0483425116  -0.0482468843
+walltime=      110.56405
+ DDI: 228540200 bytes (218.0 MB / 27 MWords) used by master data server.
+
+ ----------------------------------------
+ CPU timing information for all processes
+ ========================================
+ 0: 122.391649 + 18.521157 = 140.912806
+ 1: 152.541533 + 11.848740 = 164.390273
+ 2: 148.673291 + 11.336708 = 160.009999
+ 3: 147.241202 + 10.624664 = 157.865866
+ 4: 142.796924 + 10.144634 = 152.941558
+ 5: 141.704856 + 9.920620 = 151.625476
+ 6: 139.592724 + 9.268579 = 148.861303
+ 7: 137.632601 + 8.824551 = 146.457152
+ 8: 135.952496 + 8.132508 = 144.085004
+ 9: 133.436339 + 8.052503 = 141.488842
+ 10: 131.316206 + 7.368460 = 138.684666
+ 11: 132.072254 + 7.204450 = 139.276704
+ 12: 129.380085 + 7.032439 = 136.412524
+ 13: 129.616100 + 6.680417 = 136.296517
+ 14: 127.899993 + 6.640415 = 134.540408
+ 15: 127.835989 + 6.432402 = 134.268391
+ ----------------------------------------
+Application 5813367 resources: utime ~2211s, stime ~167s
