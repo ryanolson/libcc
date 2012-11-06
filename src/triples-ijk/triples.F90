@@ -530,7 +530,7 @@ end if
 icntr = 0
 
 if(smp_me.eq.0) call ddi_dlbnext(mytask)
-call ddi_bcast(1237,'I',mytask,1,0)
+call ddi_smp_bcast(1237,'I',mytask,1,0)
 
 ! ----------- iij and ijj tuples -------------
 do i=1,no
@@ -562,7 +562,7 @@ do i=1,no
        end if
        call ddcc_t_ijj_big(no,nu,i,j,v1,t2,vm,v3,t3,voe,t1,eh,ep,tmp,ve_i,ve_j)
        if(smp_me.eq.0) call ddi_dlbnext(mytask)
-       call ddi_bcast(1235,'I',mytask,1,0)
+       call ddi_smp_bcast(1235,'I',mytask,1,0)
     end if
     icntr = icntr + 1
   ! iij tuple
@@ -592,7 +592,7 @@ do i=1,no
        end if
        call ddcc_t_iij_big(no,nu,i,j,v1,t2,vm,v3,t3,voe,t1,eh,ep,tmp,ve_i,ve_j)
        if(smp_me.eq.0) call ddi_dlbnext(mytask)
-       call ddi_bcast(1234,'I',mytask,1,0)
+       call ddi_smp_bcast(1234,'I',mytask,1,0)
     end if
     icntr = icntr + 1
   end do
