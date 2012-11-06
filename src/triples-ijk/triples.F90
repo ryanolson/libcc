@@ -37,17 +37,6 @@ implicit none
   call ddi_nproc(ddi_np,ddi_me)
   call ddi_nnode(ddi_nn,ddi_my)
   call ddi_smp_nproc(smp_np,smp_me)
-
-! call ddi_gpu_ndevices(gpu_nd)
-! this call should wrap the functionality of the following
-  call ddi_get_workingcomm( global_comm )
-#if defined GPU && defined USE_CUDA
-  gpu_nd = 1
-  call ddi_gpu_createcomm( global_comm, hybrid_comm )
-#else
-  gpu_nd = 0
-  hybrid_comm = global_comm
-#endif
   
 ! read in the restart file
   if(ddi_me.eq.0) then
@@ -64,15 +53,6 @@ implicit none
   call ddi_sync(1)
 
   call common_cc_init(no,nu)
-  call ddi_get_working_smp_comm( global_smp_comm )
-  call ddi_get_working_compute_comm( global_compute_comm )
-  working_smp_comm = global_smp_comm
-  working_compute_comm = global_compute_comm
-
-  call ddi_scope( hybrid_comm )
-  call ddi_get_working_smp_comm( hybrid_smp_comm )
-  call ddi_get_working_compute_comm( hybrid_compute_comm )
-  call ddi_scope( global_comm )
 
 ! allocation replicated storage
   allocate( eh(no) )
@@ -550,7 +530,7 @@ end if
 icntr = 0
 
 if(smp_me.eq.0) call ddi_dlbnext(mytask)
-call ddi_comm_bcast(working_smp_comm,'I',mytask,1,0)
+call ddi_bcast(1237,'I',mytask,1,0)
 
 ! ----------- iij and ijj tuples -------------
 do i=1,no
@@ -582,7 +562,7 @@ do i=1,no
        end if
        call ddcc_t_ijj_big(no,nu,i,j,v1,t2,vm,v3,t3,voe,t1,eh,ep,tmp,ve_i,ve_j)
        if(smp_me.eq.0) call ddi_dlbnext(mytask)
-       call ddi_comm_bcast(working_smp_comm,'I',mytask,1,0)
+       call ddi_bcast(1235,'I',mytask,1,0)
     end if
     icntr = icntr + 1
   ! iij tuple
@@ -612,7 +592,7 @@ do i=1,no
        end if
        call ddcc_t_iij_big(no,nu,i,j,v1,t2,vm,v3,t3,voe,t1,eh,ep,tmp,ve_i,ve_j)
        if(smp_me.eq.0) call ddi_dlbnext(mytask)
-       call ddi_comm_bcast(working_smp_comm,'I',mytask,1,0)
+       call ddi_bcast(1234,'I',mytask,1,0)
     end if
     icntr = icntr + 1
   end do

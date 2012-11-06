@@ -35,7 +35,7 @@ OBJCUDA = ijk_tuple_cuda_kernels.o triples.o \
 	      ddcc_t_ijk_big_cuda.o ijk_gpu_driver.o \
 	      ijk_tuple.o ddcc_t_ijk_big.o t1wt3.o t3squa.o ijj_tuple.o iij_tuple.o
 
-all: $(PROGRAM).x 
+all: $(PROGRAM_ACC).x 
 
 $(PROGRAM).x : $(MOD) $(OBJ) $(OBJ90) $(OBJCPU) Makefile
 	$(FC) $(FCFLAGS) -Onoacc -o $(PROGRAM).x $(MOD) $(OBJ) $(OBJ90) $(OBJCPU) -L../ddi-onesided -lddi

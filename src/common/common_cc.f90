@@ -672,6 +672,7 @@ end module
 subroutine smp_sync()
 use common_cc
 implicit none
-call sync(working_smp_comm)
+!call sync(working_smp_comm)
+call ddi_smp_sync()
 return
 end subroutine smp_sync
