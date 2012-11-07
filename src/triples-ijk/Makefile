@@ -24,7 +24,7 @@ FCFLAGS = $(FCFLAGS_CCE) -DGPU  -DUSE_OPEN_ACC -F
 
 MOD = common_cc.o
 #OBJ = ddcc_aux.o t3squa.o triples.o ddcc_t_ijj_iij_big.o
-OBJ = ddcc_aux.o ddcc_t_ijj_iij_big.o common_functions.o
+OBJ = ddcc_aux.o ddcc_t_ijj_iij_big.o common_functions.o program.o
 #OBJ90 = ijj_tuple.o iij_tuple.o
 OBJ90 = 
 OBJCPU = ijk_tuple.o ddcc_t_ijk_big.o t1wt3.o triples_cpu.o t3squa.o ijj_tuple.o iij_tuple.o
