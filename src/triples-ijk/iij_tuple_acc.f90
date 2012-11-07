@@ -47,7 +47,7 @@ call dgemm('n','n',nu,nr,nu,one,t2_i(1,i),nu,ve_j(t3off),nu,one,v3(t3off),nu)   
 !$acc end host_data
 
 ! transform
-call trant3_smp(v3,nu,2)
+call trant3_acc(v3,nu,2)
 
 ! #2 - 15263748 
 !$acc host_data use_device(v3)
@@ -63,7 +63,7 @@ call dgemm('n','n',nu,nr,nu,one,t2_j(1,i),nu,ve_i(t3off),nu,one,v3(t3off),nu)   
 !$acc end host_data
 
 ! transform
-call trant3_smp(v3,nu,3)
+call trant3_acc(v3,nu,3)
 
 ! #0, #4 - 12345678
 !$acc host_data use_device(v3)

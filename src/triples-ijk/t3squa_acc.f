@@ -15,7 +15,7 @@ C   You should have received a copy of the GNU General Public License
 C   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 C =============================================================================
 
-      SUBROUTINE T3SQUA_SMP(I,J,K,NORM,NURM,T1,T2,T3,EH,EP)
+      SUBROUTINE T3SQUA_ACC(I,J,K,NORM,NURM,T1,T2,T3,EH,EP)
       use common_cc
       IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       LOGICAL IEJ,JEK

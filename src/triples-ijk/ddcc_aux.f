@@ -129,7 +129,7 @@ C
       END
 
 
-      SUBROUTINE ZEROT3(T3,NU)
+      SUBROUTINE ZEROT3_ACC(T3,NU)
       IMPLICIT DOUBLE PRECISION(A-H,O-Z)
       INTEGER A
       DIMENSION T3(NU,NU,NU)
@@ -144,7 +144,7 @@ C
       END 
 
 
-      SUBROUTINE ADT3DEN_SMP(NU,DEH,T3,EP)
+      SUBROUTINE ADT3DEN_ACC(NU,DEH,T3,EP)
       use common_cc, only: smp_np, smp_me
       IMPLICIT NONE
       INTEGER A,B,C,NU
@@ -169,25 +169,25 @@ C
 
       END
 
-      SUBROUTINE DRT1WT3IJK_SMP(I,J,K,NO,NU,T1,VOE,TI,T3)
+      SUBROUTINE DRT1WT3IJK_ACC(I,J,K,NO,NU,T1,VOE,TI,T3)
       IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       DIMENSION T1(1),VOE(1),T3(1),TI(1)
 C
-      CALL T1WT3IJK_SMP(I,J,K,NO,NU,T1,VOE,TI,T3)
+      CALL T1WT3IJK_ACC(I,J,K,NO,NU,T1,VOE,TI,T3)
       call trant3_1(nu,ti)
-      CALL T1WT3IJK_SMP(I,K,J,NO,NU,T1,VOE,TI,T3)
+      CALL T1WT3IJK_ACC(I,K,J,NO,NU,T1,VOE,TI,T3)
       call trant3_4(nu,ti)
-      CALL T1WT3IJK_SMP(J,I,K,NO,NU,T1,VOE,TI,T3)
+      CALL T1WT3IJK_ACC(J,I,K,NO,NU,T1,VOE,TI,T3)
       call trant3_1(nu,ti)
-      CALL T1WT3IJK_SMP(J,K,I,NO,NU,T1,VOE,TI,T3)
+      CALL T1WT3IJK_ACC(J,K,I,NO,NU,T1,VOE,TI,T3)
       call trant3_5(nu,ti)
-      CALL T1WT3IJK_SMP(K,I,J,NO,NU,T1,VOE,TI,T3)
+      CALL T1WT3IJK_ACC(K,I,J,NO,NU,T1,VOE,TI,T3)
       call trant3_1(nu,ti)
-      CALL T1WT3IJK_SMP(K,J,I,NO,NU,T1,VOE,TI,T3)
+      CALL T1WT3IJK_ACC(K,J,I,NO,NU,T1,VOE,TI,T3)
       RETURN
       END
 
-      SUBROUTINE T1WT3IJK_SMP(I,J,K,NO,NU,T1,VOE,TI,T3)
+      SUBROUTINE T1WT3IJK_ACC(I,J,K,NO,NU,T1,VOE,TI,T3)
       use common_cc, only: smp_np, smp_me, no2u2, nu3
       IMPLICIT NONE
       INTEGER NR,SR,T3OFF,VOEOFF,I,J,K,NO,NU,NU2
@@ -195,7 +195,7 @@ C
       DATA ONE/1.0D+00/
 C
       NU2 = NU*NU
-      CALL SMT3FOUR_SMP(NU,T3,TI)
+      CALL SMT3FOUR_ACC(NU,T3,TI)
       CALL DIV_EVEN(NU2,SMP_NP,SMP_ME,NR,SR)
       T3OFF = (SR - 1)*NU + 1 
       VOEOFF = (K - 1)*NU2*NO + (J - 1)*NU2  + SR
@@ -206,11 +206,10 @@ C
      *           T1(1,I),NU)
 !$acc end host_data
 !$acc end data
-      if(smp_np.gt.1) CALL smp_sync()
       RETURN
       END
 
-      SUBROUTINE SMT3FOUR_SMP(NU,T3,V3)
+      SUBROUTINE SMT3FOUR_ACC(NU,T3,V3)
       use common_cc, only: smp_np, smp_me
       IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       INTEGER A,B,C
@@ -219,14 +218,8 @@ C
       DATA ZERO/0.0D+00/
       DATA OM/-1.0D+00/
 C
-      if(smp_np.gt.1) CALL smp_sync()
-C
 !$acc parallel loop
       DO 2 C=1,NU
-#ifndef USE_OPEN_ACC
-        IF(MOD(C,SMP_NP).NE.SMP_ME) GOTO 2
-#endif
-
       do b=1,nu
          T3(b,b,c) = zero
       end do
@@ -240,39 +233,36 @@ C
 
  2    CONTINUE
 !$acc end parallel loop
-
-      if(smp_np.gt.1) CALL smp_sync()
       RETURN
       END
 
-C*MODULE CCDDI   *DECK DRT1WT3IJ_SMP
-      SUBROUTINE DRT1WT3IJ_SMP(I,J,NO,NU,T1,VOE,TI,T3)
+      SUBROUTINE DRT1WT3IJ_ACC(I,J,NO,NU,T1,VOE,TI,T3)
       IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       DIMENSION T1(1),VOE(1),T3(1),TI(1)
 C
-      CALL T1WT3IJK_SMP(I,J,J,NO,NU,T1,VOE,TI,T3)
-      CALL TRANT3_SMP(TI,NU,2)
-      CALL T1WT3IJK_SMP(J,I,J,NO,NU,T1,VOE,TI,T3)
-c     CALL TRANT3_SMP(TI,NU,1)
+      CALL T1WT3IJK_ACC(I,J,J,NO,NU,T1,VOE,TI,T3)
+      CALL TRANT3_ACC(TI,NU,2)
+      CALL T1WT3IJK_ACC(J,I,J,NO,NU,T1,VOE,TI,T3)
+c     CALL TRANT3_ACC(TI,NU,1)
       call trant3_1(nu,ti)
-      CALL T1WT3IJK_SMP(J,J,I,NO,NU,T1,VOE,TI,T3)
+      CALL T1WT3IJK_ACC(J,J,I,NO,NU,T1,VOE,TI,T3)
       RETURN
       END
 
-      SUBROUTINE DRT1WT3JK_SMP(J,K,NO,NU,T1,VOE,TI,T3)
+      SUBROUTINE DRT1WT3JK_ACC(J,K,NO,NU,T1,VOE,TI,T3)
       IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       DIMENSION T1(1),VOE(1),T3(1),TI(1)
 C
-      CALL T1WT3IJK_SMP(J,J,K,NO,NU,T1,VOE,TI,T3)
-C     CALL TRANT3_SMP(TI,NU,1)
+      CALL T1WT3IJK_ACC(J,J,K,NO,NU,T1,VOE,TI,T3)
+C     CALL TRANT3_ACC(TI,NU,1)
       call trant3_1(nu,ti)
-      CALL T1WT3IJK_SMP(J,K,J,NO,NU,T1,VOE,TI,T3)
-      CALL TRANT3_SMP(TI,NU,2)
-      CALL T1WT3IJK_SMP(K,J,J,NO,NU,T1,VOE,TI,T3)
+      CALL T1WT3IJK_ACC(J,K,J,NO,NU,T1,VOE,TI,T3)
+      CALL TRANT3_ACC(TI,NU,2)
+      CALL T1WT3IJK_ACC(K,J,J,NO,NU,T1,VOE,TI,T3)
       RETURN
       END
 
-      SUBROUTINE SYMT311(V,NU,ID)
+      SUBROUTINE SYMT311_ACC(V,NU,ID)
       IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       INTEGER A,B,C
       double precision V(NU,NU,NU),x

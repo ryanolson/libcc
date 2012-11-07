@@ -622,7 +622,7 @@ call ddi_sync(1234)
 call ddi_gsumf(123,eh,no)
 call ddi_gsumf(124,ep,nu)
 call ddi_gsumf(125,v1,nou)
-call dd_t3squa_gsum    !  global sum of ETD
+call ddi_gsumf(126,etd,1)
 
 call ddi_sync(1)
 

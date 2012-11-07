@@ -39,34 +39,6 @@ parameter(zero=0.0D+00,one=1.0D+00,two=2.0D+00,four=4.0D+00,eight=8.0D+00,om=-1.
 ! --------------------------------------------------------------------------------------------------
   contains
 
-  subroutine common_cc_init(nocc,nvir)
-  implicit none
-  integer :: nocc, nvir
-  no = nocc
-  nu = nvir
-  nou = no*nu
-  no2 = no*no
-  no3 = no*no2
-  no4 = no*no3
-  nu2 = nu*nu
-  nu3 = nu*nu2
-  nu4 = nu*nu3
-  no2u = no2*nu
-  no3u = no3*nu
-  nou2 = no*nu2
-  nou3 = no*nu3
-  no2u2 = no2*nu2
-  notr = (no2+no)/2
-  nutr = (nu2+nu)/2
-  ets = zero
-  etd = zero
-  flops = 0
-  call ddi_nproc(ddi_np,ddi_me)
-  call ddi_nnode(ddi_nn,ddi_my)
-  call ddi_smp_nproc(smp_np,smp_me)
-  return
-  end subroutine common_cc_init
-
 
   subroutine sync(comm)
   implicit none
@@ -554,22 +526,17 @@ end module
       END SUBROUTINE TRANMD_SMP
 
 
-      SUBROUTINE TRANT3_SMP(V,NU,ID)
+      SUBROUTINE TRANT3_ACC(V,NU,ID)
       use common_cc, only: smp_np, smp_me
       IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       INTEGER A,B,C,D
       DIMENSION V(NU,NU,NU)
-
-      if(smp_np.gt.1) CALL smp_sync()
 
       GO TO (1,2,3,4,5),ID
     1 CONTINUE
 
 !$acc parallel loop private(x) present(v)
       DO 101 B=1,NU
-#ifndef USE_OPEN_ACC
-        IF(MOD(B,SMP_NP).NE.SMP_ME) GOTO 101
-#endif
       DO 100 C=1,B
       DO 100 A=1,NU
       X=V(A,B,C)
@@ -584,9 +551,6 @@ end module
 
 !$acc parallel loop private(x) present(v)
       DO 201 C=1,NU
-#ifndef USE_OPEN_ACC
-        IF(MOD(C,SMP_NP).NE.SMP_ME) GOTO 201
-#endif
 !$acc loop
       DO 200 A=1,NU
       DO 200 B=1,A
@@ -602,9 +566,6 @@ end module
 
 !$acc parallel loop private(x) present(v)
       DO 301 B=1,NU
-#ifndef USE_OPEN_ACC
-        IF(MOD(B,SMP_NP).NE.SMP_ME) GOTO 301
-#endif
 !$acc loop
       DO 300 A=1,NU
       DO 300 C=1,A
@@ -620,9 +581,6 @@ end module
 
 !$acc parallel loop private(x) present(v)
       DO 401 B=1,NU
-#ifndef USE_OPEN_ACC
-        IF(MOD(B,SMP_NP).NE.SMP_ME) GOTO 401
-#endif
 !$acc loop
       DO 400 C=1,B
       DO 400 A=1,C
@@ -644,9 +602,6 @@ end module
 
 !$acc parallel loop private(x) present(v)
       DO 501 A=1,NU
-#ifndef USE_OPEN_ACC
-        IF(MOD(A,SMP_NP).NE.SMP_ME) GOTO 501
-#endif
       DO 500 C=1,A
       DO 500 D=1,C
       X=V(C,D,A)
@@ -664,15 +619,42 @@ end module
 
       GO TO 1000
  1000 CONTINUE
-      if(smp_np.gt.1) CALL smp_sync()
       RETURN
       END
 
 
 subroutine smp_sync()
-use common_cc
 implicit none
-!call sync(working_smp_comm)
 call ddi_smp_sync()
 return
 end subroutine smp_sync
+
+  subroutine common_cc_init(nocc,nvir)
+  use common_cc
+  implicit none
+  integer :: nocc, nvir
+  no = nocc
+  nu = nvir
+  nou = no*nu
+  no2 = no*no
+  no3 = no*no2
+  no4 = no*no3
+  nu2 = nu*nu
+  nu3 = nu*nu2
+  nu4 = nu*nu3
+  no2u = no2*nu
+  no3u = no3*nu
+  nou2 = no*nu2
+  nou3 = no*nu3
+  no2u2 = no2*nu2
+  notr = (no2+no)/2
+  nutr = (nu2+nu)/2
+  ets = zero
+  etd = zero
+  flops = 0
+  call ddi_nproc(ddi_np,ddi_me)
+  call ddi_nnode(ddi_nn,ddi_my)
+  call ddi_smp_nproc(smp_np,smp_me)
+  return
+  end subroutine common_cc_init
+
