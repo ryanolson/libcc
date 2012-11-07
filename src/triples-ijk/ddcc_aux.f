@@ -15,71 +15,6 @@ C   You should have received a copy of the GNU General Public License
 C   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 C =============================================================================
 C
-      SUBROUTINE DDCC_T_TASK(MYTASK,NO,I,J,K)
-      IMPLICIT NONE
-C
-      INTEGER MYTASK,NO,I,J,K
-      INTEGER II,JJ,KK,I1,J1,ICNTR
-C
-      ICNTR=0
-      DO II=1,NO
-         I1=II-1
-         DO JJ=1,I1
-            J1=JJ-1
-            DO KK=1,J1
-               IF(ICNTR.EQ.MYTASK) THEN
-                  I=II
-                  J=JJ
-                  K=KK
-                  GO TO 10
-               END IF
-               ICNTR=ICNTR+1
-            END DO
-         END DO
-      END DO
-   10 CONTINUE
-      RETURN
-      END
-
-      SUBROUTINE DIV_EVEN(N,NP,ME,NR,SR)
-      IMPLICIT NONE
-      INTEGER N,NP,ME,NR,SR
-      INTEGER NE
-C
-      NR = N / NP
-      NE = MOD(N,NP)
-C
-      IF(ME.LT.NE) THEN
-         NR = NR + 1
-         SR = NR*ME + 1
-      ELSE
-         SR = (NR+1)*NE + NR*(ME-NE) + 1
-      END IF
-C
-      RETURN
-      END
-
-      SUBROUTINE DDCC_T_GETVE(NUINP,INDX,TEMP,VE)
-      use common_cc
-      INTEGER INDX,I,IOFF
-C
-C     TEMP SHOULD BE NU^2 AND VE SHOULD BE NU^3
-      DOUBLE PRECISION TEMP(NU*NU),VE(NU,NU,NU)
-
-      INTEGER LOOP
-C
-      IOFF = 1
-      LOOP = INDX - 1
-C
-      DO I = LOOP*NU, (LOOP*NU+NU-1)
-        CALL DDI_GET(D_VVVO,1,NUTR,I+1,I+1,TEMP)
-        CALL CPYTSQ(TEMP,VE(1,1,IOFF),NU,1)
-        IOFF = IOFF + 1
-      END DO
-C
-      RETURN
-      END
-
       SUBROUTINE DDCC_T_GETVE_acc(acc_sync,NUINP,INDX,TEMP,VE)
       use common_cc
       INTEGER INDX,I,IOFF,acc_sync
@@ -106,25 +41,6 @@ C     TEMP SHOULD BE NU^2 AND VE SHOULD BE NU^3
 
       END DO
 !$acc end parallel loop
-
-      END
-
-      SUBROUTINE CPYTSQ(A,B,NA,INCA)
-      use common_cc
-      IMPLICIT DOUBLE PRECISION(A-H,O-Z)
-      DIMENSION A(*),B(NA,NA)
-C
-C     ---- COPY TRIANGULAR A TO SQUARE B (NA BY NA) ----
-C     THE INCREMENT BETWEEN ELEMENTS OF A WILL USUALLY BE 1.
-C
-      IJ=1
-      DO 200 I=1,NA
-         DO 100 J=1,I
-            B(I,J) = A(IJ)
-            B(J,I) = A(IJ)
-            IJ = IJ + INCA
-  100    CONTINUE
-  200 CONTINUE
 
       END
 
@@ -358,58 +274,3 @@ C     CALL TRANT3_ACC(TI,NU,1)
 !     GO TO 1000
 !1000 CONTINUE
 !     END
-
-      SUBROUTINE DD_T3SQUA_GSUM
-      use common_cc
-      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-c     COMMON /CCRENO/ OSS,ODS,ODD,OTS,OTD,OTT,ODS_S,ODS_D,ODS_T,
-c    *                OQS,OQDS,OQDD,OQTS,ESD,ETD,ETS,ETTM,ESD_TM
-C
-c     CALL DDI_GSUMF(1234,OTS,1)
-c     CALL DDI_GSUMF(1234,OTD,1)
-      CALL DDI_GSUMF(1234,ETD,1)
-      RETURN
-      end
-
-
-C*MODULE MTHLIB  *DECK TRPOSE
-      SUBROUTINE TRPOSE(A,B,N,M,KIND)
-C
-      IMPLICIT DOUBLE PRECISION(A-H,O-Z)
-C
-      DIMENSION A(N,M), B(M,N)
-C
-C* 14 JAN 1983 - STE * 8 MAR 1980
-C*
-C*    AUTHOR: S. T. ELBERT (AMES LABORATORY-USDOE)
-C*
-C*    PURPOSE -
-C*       STORE TRANSPOSE OF N BY M MATRIX A IN MATRIX B OR A
-C*             **   ****
-C*
-C*    ON ENTRY -
-C*       A     - W.P. REAL (N,M)
-C*               MATRIX TO BE TRANSPOSED
-C*       N      - INTEGER
-C*                ROWS OF INPUT MATRIX, COLUMNS OF OUTPUT MATRIX
-C*       M      - INTEGER
-C*                COLUMNS OF INPUT MATRIX, ROWS OF OUTPUT MATRIX
-C*       KIND   - INTEGER
-C*                IF NOT ZERO, TRANSPOSED MATRIX IS COPYIED BACK INTO A
-C*
-C*    ON EXIT -
-C*       B      - W.P. REAL (M,N)
-C*                TRANSPOSED COPY OF INPUT MATRIX
-C*       A (OPTIONAL) - W.P. REAL (M,N)
-C*                TRANSPOSED COPY OF INPUT MATRIX
-C
-      IF(N.LE.0 .OR. M.LE.0) RETURN
-      DO 120 J=1,M
-         DO 110 I=1,N
-            B(J,I) = A(I,J)
-  110    CONTINUE
-  120 CONTINUE
-      IF(KIND.NE.0) CALL DCOPY(M*N,B,1,A,1)
-      RETURN
-      END
-

@@ -15,7 +15,7 @@ C   You should have received a copy of the GNU General Public License
 C   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 C =============================================================================
 C
-      SUBROUTINE DDCC_T_IJJ_BIG(NO,NU,I,J,T1,T2,VM,
+      SUBROUTINE DDCC_T_IJJ_ACC(NO,NU,I,J,T1,T2,VM,
      *                      V3,T3,VOE,O1,EH,EP,TEMP,ve_i,ve_j)
       use common_cc, only: smp_np, smp_me, ddi_me, nu3
       IMPLICIT NONE
@@ -42,23 +42,19 @@ C
      &                      ve_i,ve_j,V3)
 
 
-      IF(SMP_ME.EQ.0) THEN
       CALL SYMT311_ACC(V3,NU,23)      ! modifies V3
       CALL ZEROT3_ACC(V3,NU)          ! modifies V3
-      END IF
       CALL T3SQUA_ACC(I,J,J,NO,NU,O1,T2,V3,EH,EP)  ! no array change
       DEH=EH(I)+EH(J)+EH(J)
       CALL ADT3DEN_ACC(NU,DEH,V3,EP)  ! modifies V3
       ITMP=I
       JTMP=J
-C
       CALL DRT1WT3IJ_ACC(ITMP,JTMP,NO,NU,T1,VOE,V3,T3) ! modifies V3, T1
-      if(smp_np.gt.1) CALL smp_sync()
       RETURN
       END
 C
 C*MODULE DDICC   *DECK DDCC_T_IIJ
-      SUBROUTINE DDCC_T_IIJ_BIG(NO,NU,I,J,T1,T2,VM,
+      SUBROUTINE DDCC_T_IIJ_ACC(NO,NU,I,J,T1,T2,VM,
      *                      V3,T3,VOE,O1,EH,EP,TEMP,ve_i,ve_j)
       use common_cc, only: smp_np, smp_me, ddi_me, nu3, no2u2
       IMPLICIT NONE
@@ -86,23 +82,13 @@ C
      &                      ve_i,ve_j,v3)
 
 
-      IF(SMP_ME.EQ.0) THEN
       CALL SYMT311_ACC(V3,NU,12)  ! modifies V3
       CALL ZEROT3_ACC(V3,NU)      ! modifies V3
-C     IF(IDISC.EQ.0.AND.MET.GT.4) THEN
-C       CALL WRT3(KK,NU,V3)
-C     END IF
-      END IF
-
       CALL T3SQUA_ACC(I,I,J,NO,NU,O1,T2,V3,EH,EP)  ! no array mods
-
       DEH=EH(I)+EH(I)+EH(J)
       CALL ADT3DEN_ACC(NU,DEH,V3,EP)  ! modifies V3
-
       ITMP=I
       JTMP=J
-
       CALL DRT1WT3JK_ACC(ITMP,JTMP,NO,NU,T1,VOE,V3,T3) ! modifies V3, T1, T3
-      if(smp_np.gt.1) CALL smp_sync()
       RETURN
       END

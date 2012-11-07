@@ -475,7 +475,7 @@ do iwrk = sr, sr+nr-1
   if(gpu_driver.eq.0) then
 # endif
 
-     call ddcc_t_ijk_big(no,nu,i,j,k,v1,t2,vm,v3,voe,eh,ep,ve_i,ve_j,ve_k)
+     call ddcc_t_ijk_acc(no,nu,i,j,k,v1,t2,vm,v3,voe,eh,ep,ve_i,ve_j,ve_k)
 
 # ifdef USE_CUDA
   else
@@ -560,7 +560,7 @@ do i=1,no
          call tranmd_23_acc(2,ve_j,nu,nu,nu,1)
          jold = j
        end if
-       call ddcc_t_ijj_big(no,nu,i,j,v1,t2,vm,v3,t3,voe,t1,eh,ep,tmp,ve_i,ve_j)
+       call ddcc_t_ijj_acc(no,nu,i,j,v1,t2,vm,v3,t3,voe,t1,eh,ep,tmp,ve_i,ve_j)
        if(smp_me.eq.0) call ddi_dlbnext(mytask)
        call ddi_smp_bcast(1235,'I',mytask,1,0)
     end if
@@ -590,7 +590,7 @@ do i=1,no
          call tranmd_23_acc(2,ve_j,nu,nu,nu,1)
          jold = j
        end if
-       call ddcc_t_iij_big(no,nu,i,j,v1,t2,vm,v3,t3,voe,t1,eh,ep,tmp,ve_i,ve_j)
+       call ddcc_t_iij_acc(no,nu,i,j,v1,t2,vm,v3,t3,voe,t1,eh,ep,tmp,ve_i,ve_j)
        if(smp_me.eq.0) call ddi_dlbnext(mytask)
        call ddi_smp_bcast(1234,'I',mytask,1,0)
     end if
