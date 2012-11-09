@@ -1,4 +1,4 @@
-subroutine cc_triples_acc(eh,ep,v1,t1,t2,v3,t3,vm,voe)
+subroutine cc_triples_acc(eh,ep,v1,t1,t2,v3,t3,vm,voe,vvvo_hnd)
 use common_cc
 implicit none
 
@@ -7,6 +7,7 @@ double precision, allocatable :: tmp_i(:), tmp_j(:), tmp_k(:)
 double precision, allocatable :: tmp(:), vei(:), vej(:)
 double precision :: eh(no),ep(nu),v1(nou),t1(*),t2(*),v3(*),t3(*)
 double precision :: vm(*),voe(*)
+integer :: vvvo_hnd
 
 integer iii
 
@@ -26,6 +27,8 @@ double precision :: mpi_wtime
 double precision :: ijk_start, ijk_stop
 
 integer ioff, joff, koff, iloop, jloop, kloop, ij
+
+d_vvvo = vvvo_hnd
 
 #ifdef USE_OPEN_ACC
   allocate(ve_i(nu3),ve_j(nu3),ve_k(nu3))
@@ -291,11 +294,11 @@ end if ! gpu_driver == 1
 ! remote sync at this point in hybrid code
 ! this was used to measure the ijk tuple time
 !
-call ddi_sync(1234)
-if(ddi_me.eq.0) then
-   ijk_stop = mpi_wtime()
-   print *,"IJK-tuples time=",(ijk_stop-ijk_start),"  etd=",etd
-end if
+! call ddi_sync(1234)
+! if(ddi_me.eq.0) then
+!    ijk_stop = mpi_wtime()
+!    print *,"IJK-tuples time=",(ijk_stop-ijk_start),"  etd=",etd
+! end if
 
 
 #ifdef USE_CUDA

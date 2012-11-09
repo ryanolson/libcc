@@ -144,7 +144,7 @@ endif
   call ddi_sync(4)
 
   call cc_triples_acc(eh,ep,v1,t1,addr(lt2),addr(lv3),addr(lt3), &
-               addr(lvm),addr(lvoe),addr(lvei),addr(lvej),addr(lvek))
+               addr(lvm),addr(lvoe),addr(lvei),addr(lvej),addr(lvek),d_vvvo)
       
 
   stop_wall = mpi_wtime()
