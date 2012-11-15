@@ -28,10 +28,9 @@ double precision :: v3(nu3)
 
 integer :: nr,sr,t3off
 
-call div_even(nu2,smp_np,smp_me,nr,sr)
+call div_even(nu2,1,0,nr,sr)
       T3OFF = (SR-1)*NU + 1
 
-if(smp_np.gt.1) call smp_sync()
 
 !$acc data present(t2_i,t2_j,vm_ij,vm_ji,vm_jj,ve_i,ve_j,v3)
 
@@ -75,6 +74,5 @@ call trant3_acc(v3,nu,2)
 !$acc end host_data 
 !$acc end data
 
-if(smp_np.gt.1) call smp_sync()
 
 end subroutine ijj_tuple_formv3

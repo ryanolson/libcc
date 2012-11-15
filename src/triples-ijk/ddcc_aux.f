@@ -61,18 +61,12 @@ C     TEMP SHOULD BE NU^2 AND VE SHOULD BE NU^3
 
 
       SUBROUTINE ADT3DEN_ACC(NU,DEH,T3,EP)
-      use common_cc, only: smp_np, smp_me
       IMPLICIT NONE
       INTEGER A,B,C,NU
       DOUBLE PRECISION T3(NU,NU,NU),EP(NU),DEH,DEN
-C
-      if(smp_np.gt.1) CALL smp_sync()
 
 !$acc parallel loop 
       DO 11 A=1,NU
-#ifndef USE_OPEN_ACC
-        IF(MOD(A,SMP_NP).NE.SMP_ME) GOTO 11
-#endif
       DO 10 B=1,NU
       DO 10 C=1,NU
       DEN=DEH-EP(A)-EP(B)-EP(C)
@@ -80,9 +74,6 @@ C
  10   CONTINUE
  11   CONTINUE
 !$acc end parallel loop
-
-      if(smp_np.gt.1) CALL smp_sync()
-
       END
 
       SUBROUTINE DRT1WT3IJK_ACC(I,J,K,NO,NU,T1,VOE,TI,T3)
@@ -104,7 +95,7 @@ C
       END
 
       SUBROUTINE T1WT3IJK_ACC(I,J,K,NO,NU,T1,VOE,TI,T3)
-      use common_cc, only: smp_np, smp_me, no2u2, nu3
+      use common_cc, only: no2u2, nu3
       IMPLICIT NONE
       INTEGER NR,SR,T3OFF,VOEOFF,I,J,K,NO,NU,NU2
       DOUBLE PRECISION T1(NU,NO),VOE(no2u2),T3(nu3),TI(nu3),ONE
@@ -112,7 +103,7 @@ C
 C
       NU2 = NU*NU
       CALL SMT3FOUR_ACC(NU,T3,TI)
-      CALL DIV_EVEN(NU2,SMP_NP,SMP_ME,NR,SR)
+      CALL DIV_EVEN(NU2,1,0,NR,SR)
       T3OFF = (SR - 1)*NU + 1 
       VOEOFF = (K - 1)*NU2*NO + (J - 1)*NU2  + SR
 
@@ -126,7 +117,6 @@ C
       END
 
       SUBROUTINE SMT3FOUR_ACC(NU,T3,V3)
-      use common_cc, only: smp_np, smp_me
       IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       INTEGER A,B,C
       DIMENSION T3(NU,NU,NU),V3(NU,NU,NU)

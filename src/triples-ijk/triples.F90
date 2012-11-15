@@ -30,6 +30,13 @@ integer ioff, joff, koff, iloop, jloop, kloop, ij
 
 d_vvvo = vvvo_hnd
 
+etd = zero
+v1(1:nou) = 0.0D+00
+call ddi_dlbreset()
+call ddi_sync(1234)
+
+if(smp_me.ne.0) goto 999
+
 #ifdef USE_OPEN_ACC
   allocate(ve_i(nu3),ve_j(nu3),ve_k(nu3))
   allocate(tmp(nutr*nu),tmp_i(nutr*nu),tmp_j(nutr*nu),tmp_k(nutr*nu))
@@ -107,17 +114,14 @@ if(nr.lt.10) divisor = nr
 partial = nr/divisor
 if(mod(nr,divisor).ne.0) partial = partial+1
 
-etd = zero
 
 iold = -1
 jold = -1
 kold = -1
 
-if(smp_np.gt.1) call smp_sync()
-call ddi_dlbreset()
+!if(smp_np.gt.1) call smp_sync()
 
 #ifndef USE_OPEN_ACC
-v1(1:nou) = 0.0D+00
 if(smp_me.eq.0) then
    v3(1:nu3) = 0.0D+00
 endif
@@ -139,8 +143,6 @@ if(gpu_driver.eq.1) then
 endif
 #endif // ifdef USE_CUDA
 
-
-call ddi_sync(1234)
 
 !$acc data copyout(v1(1:nou))  &
 !$acc& copyin(eh,ep,t2(1:nu2*no*no),vm(1:no*nu*no*no),voe(1:no2u2),t3(1:nu3))  &
@@ -176,45 +178,45 @@ do iwrk = sr, sr+nr-1
 
 #ifdef USE_OPEN_ACC
      if(i.ne.iold) then
-       if(smp_me.eq.comm_core) then
+!      if(smp_me.eq.comm_core) then
           ilo = nu*(i-1) + 1
           ihi = ilo + nu - 1
           call ddi_get(d_vvvo,1,nutr,ilo,ihi,tmp_i)
 !$acc update device(tmp_i(1:nutr*nu)) async(1)
           call ddcc_t_getve_acc(1,nu,i,tmp_i,ve_i)
           call trant3_1_async(1,nu,ve_i)
-       end if
-       comm_core = comm_core+1
-       if(comm_core.eq.smp_np) comm_core=0
+!      end if
+!      comm_core = comm_core+1
+!      if(comm_core.eq.smp_np) comm_core=0
      end if
 
      if(j.ne.jold) then
-       if(smp_me.eq.comm_core) then
+!      if(smp_me.eq.comm_core) then
           ilo = nu*(j-1) + 1
           ihi = ilo + nu - 1
           call ddi_get(d_vvvo,1,nutr,ilo,ihi,tmp_j)
 !$acc update device(tmp_j(1:nutr*nu)) async(2)
           call ddcc_t_getve_acc(2,nu,j,tmp_j,ve_j)
           call trant3_1_async(2,nu,ve_j)
-       end if
-       comm_core = comm_core+1
-       if(comm_core.eq.smp_np) comm_core=0
+!      end if
+!      comm_core = comm_core+1
+!      if(comm_core.eq.smp_np) comm_core=0
      end if
 
      if(k.ne.kold) then
-       if(smp_me.eq.comm_core) then
+!      if(smp_me.eq.comm_core) then
           ilo = nu*(k-1) + 1
           ihi = ilo + nu - 1
           call ddi_get(d_vvvo,1,nutr,ilo,ihi,tmp_k)
 !$acc update device(tmp_k(1:nutr*nu)) async(3)
           call ddcc_t_getve_acc(3,nu,k,tmp_k,ve_k)
           call trant3_1_async(3,nu,ve_k)
-       end if
-       comm_core = comm_core+1
-       if(comm_core.eq.smp_np) comm_core=0
+!      end if
+!      comm_core = comm_core+1
+!      if(comm_core.eq.smp_np) comm_core=0
      end if
 
-     if(smp_np.gt.1) call smp_sync()
+!    if(smp_np.gt.1) call smp_sync()
 #endif
 
 # ifdef USE_CUDA
@@ -261,7 +263,7 @@ do iwrk = sr, sr+nr-1
      call ddcc_t_ijk_gpu(no,nu,i,j,k,v1,t2,vm,voe,eh,ep,vei,vej,ve_k) !  call ijk_gpu_driver
   end if
 # endif
-  if(smp_np.gt.1) call smp_sync()
+! if(smp_np.gt.1) call smp_sync()
 
   iold = i
   jold = j
@@ -309,7 +311,7 @@ end if ! gpu_driver == 1
 icntr = 0
 
 if(smp_me.eq.0) call ddi_dlbnext(mytask)
-call ddi_smp_bcast(1237,'I',mytask,1,0)
+!call ddi_smp_bcast(1237,'I',mytask,1,0)
 
 ! ----------- iij and ijj tuples -------------
 do i=1,no
@@ -341,7 +343,7 @@ do i=1,no
        end if
        call ddcc_t_ijj_acc(no,nu,i,j,v1,t2,vm,v3,t3,voe,t1,eh,ep,tmp,ve_i,ve_j)
        if(smp_me.eq.0) call ddi_dlbnext(mytask)
-       call ddi_smp_bcast(1235,'I',mytask,1,0)
+!      call ddi_smp_bcast(1235,'I',mytask,1,0)
     end if
     icntr = icntr + 1
   ! iij tuple
@@ -371,7 +373,7 @@ do i=1,no
        end if
        call ddcc_t_iij_acc(no,nu,i,j,v1,t2,vm,v3,t3,voe,t1,eh,ep,tmp,ve_i,ve_j)
        if(smp_me.eq.0) call ddi_dlbnext(mytask)
-       call ddi_smp_bcast(1234,'I',mytask,1,0)
+!      call ddi_smp_bcast(1234,'I',mytask,1,0)
     end if
     icntr = icntr + 1
   end do
@@ -398,12 +400,14 @@ call ddi_sync(1234)
 #endif
 
 
-call ddi_gsumf(123,eh,no)
-call ddi_gsumf(124,ep,nu)
+!call ddi_gsumf(123,eh,no)
+!call ddi_gsumf(124,ep,nu)
+
+999 continue
+call ddi_sync(1235)
+
 call ddi_gsumf(125,v1,nou)
 call ddi_gsumf(126,etd,1)
-
-call ddi_sync(1)
 
 if(ddi_me.eq.0) then
   call trpose(t1,tmp,no,nu,1)

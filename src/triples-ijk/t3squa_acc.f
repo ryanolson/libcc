@@ -23,8 +23,6 @@ C =============================================================================
       DIMENSION T1(NO,NU),T2(NU,NU,NO,NO),T3(NU,NU,NU),EH(NO),EP(NU)
 C -RESTART-      common/lame  / my_first_time
 
-      if(smp_np.gt.1) CALL smp_sync()
-
       DIJK=EH(I)+EH(J)+EH(K)
       X3=ZERO
 
@@ -54,6 +52,5 @@ C -RESTART-      common/lame  / my_first_time
       JEK=J.EQ.K
       IF(IEJ.OR.JEK) CF=HALF
       ETD=ETD+CF*X3
-      if(smp_np.gt.1) CALL smp_sync()
 
       END

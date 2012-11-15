@@ -17,7 +17,7 @@ C =============================================================================
 C
       SUBROUTINE DDCC_T_IJJ_ACC(NO,NU,I,J,T1,T2,VM,
      *                      V3,T3,VOE,O1,EH,EP,TEMP,ve_i,ve_j)
-      use common_cc, only: smp_np, smp_me, ddi_me, nu3
+      use common_cc, only: ddi_me, nu3
       IMPLICIT NONE
 C
       INTEGER I,J,NO,NU
@@ -56,7 +56,7 @@ C
 C*MODULE DDICC   *DECK DDCC_T_IIJ
       SUBROUTINE DDCC_T_IIJ_ACC(NO,NU,I,J,T1,T2,VM,
      *                      V3,T3,VOE,O1,EH,EP,TEMP,ve_i,ve_j)
-      use common_cc, only: smp_np, smp_me, ddi_me, nu3, no2u2
+      use common_cc, only: ddi_me, nu3, no2u2
       IMPLICIT NONE
 C
 C
