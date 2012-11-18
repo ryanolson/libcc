@@ -1,4 +1,4 @@
-subroutine cc_triples_acc(eh,ep,v1,t1,t2,v3,t3,vm,voe,vvvo_hnd)
+subroutine cc_triples_acc(eh,ep,v1,t1,t2,v3,t3,vm,voe,vvvo_hnd,gms_ets,gms_etd)
 use common_cc
 implicit none
 
@@ -7,6 +7,7 @@ double precision, allocatable :: tmp_i(:), tmp_j(:), tmp_k(:)
 double precision, allocatable :: tmp(:), vei(:), vej(:)
 double precision :: eh(no),ep(nu),v1(nou),t1(*),t2(*),v3(*),t3(*)
 double precision :: vm(*),voe(*)
+double precision :: gms_ets, gms_etd
 integer :: vvvo_hnd
 
 integer iii
@@ -417,6 +418,9 @@ end if
 if(ddi_me.eq.0) then
   write(6,9000) ets,etd,ets+etd
 end if
+
+gms_ets = ets
+gms_etd = etd
 
 call ddi_sync(2)
 ! gsum the common block from call dd_t3squa_gsum
