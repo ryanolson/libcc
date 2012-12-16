@@ -66,7 +66,7 @@ $(PROGRAM).x-pat : triples.x
 	$(FC) $(FCFLAGS) -c $*.F90
 
 %.o : %.cpp Makefile
-	CC –hacc_model=fast_addr -c $*.cpp
+	CC -hacc_model=fast_addr -c $*.cpp
 
 remove_objects:
 	@echo Removing Object Files ...
