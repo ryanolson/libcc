@@ -16,7 +16,7 @@
 ! =============================================================================
 
 subroutine t1wt3_ijk(i,j,k,no,nu,v3,voe_ij,voe_ji,voe_ik,voe_ki,voe_jk,voe_kj,t1,eh,ep)
-use common_cc, only: smp_np, smp_me, nu3, nu2, no2, one, om, zero, two, ddi_me, etd, half, eight, four
+use common_cc, only: nu3, nu2, no2, one, om, zero, two, ddi_me, etd, half, eight, four
 implicit none
 
 integer,intent(in) :: i,j,k,no,nu
@@ -28,8 +28,6 @@ double precision :: t3_ab1, t3_ab2, t3_ab3, t3_ab4, t3_ab5, t3_ab6, denom, dijk,
 double precision :: t1ai, t1bi, t1aj, t1bj, t1ak, t1bk
 
 integer :: a,b,c,aa,bb,cc,icntr
-
-if(smp_np.gt.1) call smp_sync()
 
 x3 = zero
 denom = one
@@ -129,14 +127,12 @@ else
   etd = etd + x3
 end if
 
-call smp_sync()
-
 return
 9000 format(3I5,1F20.15)
 end subroutine t1wt3_ijk
 
 subroutine t1wt3_ijk_temp(i,j,k,no,nu,v3,voe_ij,voe_ji,voe_ik,voe_ki,voe_jk,voe_kj,t1,eh,ep)
-use common_cc, only: smp_np, smp_me, nu3, nu2, no2, one, om, zero, two, ddi_me, etd, half, eight, four
+use common_cc, only: nu3, nu2, no2, one, om, zero, two, ddi_me, etd, half, eight, four
 implicit none
 
 integer,intent(in) :: i,j,k,no,nu
@@ -148,7 +144,6 @@ double precision :: t3_ab1, t3_ab2, t3_ab3, t3_ab4, t3_ab5, t3_ab6, denom, dijk,
 
 integer :: a,b,c,aa,bb,cc,icntr
 
-call smp_sync()
 
 icntr = 0
 x3 = zero
@@ -274,8 +269,6 @@ dijk = eh(i) + eh(j) + eh(k)
 ! else
 !   etd = etd + x3
 ! end if
-
-call smp_sync()
 
 return
 9000 format(3I5,1F20.15)

@@ -39,7 +39,7 @@ if(smp_np.gt.1) call smp_sync()
 call dgemm('n','n',nu,nr,nu,one,t2_i(1,i),nu,ve_j(t3off),nu,one,v3(t3off),nu)        ! #3: Type B
 
 ! transform
-call trant3_smp(v3,nu,2)
+call trant3_acc(v3,nu,2)
 
 ! #2 - 15263748 
 call dgemm('n','n',nr,nu,no,om,t2_j(sr,1),nu2,vm_ii,no,one,v3(sr),nu2)               ! #2: Type A
@@ -51,7 +51,7 @@ call trant3_1(nu,v3)
 call dgemm('n','n',nu,nr,nu,one,t2_j(1,i),nu,ve_i(t3off),nu,one,v3(t3off),nu)        ! #5: Type B
 
 ! transform
-call trant3_smp(v3,nu,3)
+call trant3_acc(v3,nu,3)
 
 ! #0, #4 - 12345678
 call dgemm('n','n',nr,nu,no,om,t2_i(sr,1),nu2,vm_ji,no,one,v3(sr),nu2)               ! #0: Type A

@@ -15,15 +15,13 @@ C   You should have received a copy of the GNU General Public License
 C   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 C =============================================================================
 
-      SUBROUTINE T3SQUA_SMP(I,J,K,NORM,NURM,T1,T2,T3,EH,EP)
+      SUBROUTINE T3SQUA_ACC(I,J,K,NORM,NURM,T1,T2,T3,EH,EP)
       use common_cc
       IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       LOGICAL IEJ,JEK
       INTEGER A,B,C
       DIMENSION T1(NO,NU),T2(NU,NU,NO,NO),T3(NU,NU,NU),EH(NO),EP(NU)
 C -RESTART-      common/lame  / my_first_time
-
-      if(smp_np.gt.1) CALL smp_sync()
 
       DIJK=EH(I)+EH(J)+EH(K)
       X3=ZERO
@@ -54,6 +52,5 @@ C -RESTART-      common/lame  / my_first_time
       JEK=J.EQ.K
       IF(IEJ.OR.JEK) CF=HALF
       ETD=ETD+CF*X3
-      if(smp_np.gt.1) CALL smp_sync()
 
       END

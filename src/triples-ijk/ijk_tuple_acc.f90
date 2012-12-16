@@ -50,31 +50,32 @@ nr = nu2
 ! different disjoint portion of v3.
 
 !$acc data present(v3,t2_i,t2_j,t2_k,ve_i,ve_j,ve_k,vm_ij,vm_ji,vm_ik,vm_ki,vm_jk,vm_kj)
-
-
 !$acc host_data use_device(t2_i,t2_j,t2_k,ve_i,ve_j,ve_k,vm_ij,vm_ji,vm_ik,vm_ki,vm_jk,vm_kj)
+
 ! #2 & #9
+!$acc wait
 !$acc host_data use_device(v3)
 call dgemm('n','n',nr,nu,no,om,t2_j,nu2,vm_ki,no,zero,v3,nu2)       ! #2: Type A
-
-!$acc wait  ! for ve_j
-
 call dgemm('t','t',nr,nu,nu,one,ve_j,nu,t2_k(1,i),nu,one,v3,nu2)    ! #9: Type BT
 !$acc end host_data
+!$acc wait
 
 ! transform v3
 call trant3_1(nu,v3) 
 
 ! #4 & #7
+!$acc wait
 !$acc host_data use_device(v3)
 call dgemm('t','t',nu,nr,no,om,vm_ji,no,t2_k,nu2,one,v3,nu)         ! #4: Type AT
 call dgemm('n','n',nu,nr,nu,one,t2_j(1,i),nu,ve_k,nu,one,v3,nu)     ! #7: Type B
 !$acc end host_data
+!$acc wait
 
 ! transform v3
 call trant3_4(nu,v3)
 
 ! #0 & #11
+!$acc wait
 !$acc host_data use_device(v3)
 call dgemm('n','n',nr,nu,no,om,t2_i,nu2,vm_kj,no,one,v3,nu2)        ! #0: Type A
 call dgemm('t','t',nr,nu,nu,one,ve_i,nu,t2_k(1,j),nu,one,v3,nu2)    ! #11: Type BT
@@ -82,11 +83,13 @@ call dgemm('t','t',nr,nu,nu,one,ve_i,nu,t2_k(1,j),nu,one,v3,nu2)    ! #11: Type 
 call dgemm('n','n',nu,nr,nu,one,t2_i(1,k),nu,ve_j,nu,one,v3,nu)     ! #8: Type B
 call dgemm('t','t',nu,nr,no,om,vm_ik,no,t2_j,nu2,one,v3,nu)         ! #3: Type AT
 !$acc end host_data
+!$acc wait
 
 ! transform v3
 call trant3_1(nu,v3)
 
 ! #1 & #10
+!$acc wait
 !$acc host_data use_device(v3)
 call dgemm('n','n',nr,nu,no,om,t2_i,nu2,vm_jk,no,one,v3,nu2)        ! #1: Type A
 call dgemm('t','t',nr,nu,nu,one,ve_i,nu,t2_j(1,k),nu,one,v3,nu2)    ! #10: Type BT
@@ -94,13 +97,13 @@ call dgemm('t','t',nr,nu,nu,one,ve_i,nu,t2_j(1,k),nu,one,v3,nu2)    ! #10: Type 
 call dgemm('n','n',nu,nr,nu,one,t2_i(1,j),nu,ve_k,nu,one,v3,nu)     ! #6: Type B
 call dgemm('t','t',nu,nr,no,om,vm_ij,no,t2_k,nu2,one,v3,nu)         ! #5: Type AT
 !$acc end host_data
+!$acc end host_data
+!$acc wait
 
 ! transform v3
 call trant3_1(nu,v3)
 
-!$acc end host_data
 !$acc end data
-
 end subroutine ijk_tuple
 
 !-------------------------------------
