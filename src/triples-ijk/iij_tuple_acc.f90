@@ -35,40 +35,44 @@ call div_even(nu2,1,0,nr,sr)
 !$acc host_data use_device(t2_i,t2_j,vm_ij,vm_ji,vm_ii,ve_i,ve_j)
 
 ! #1, #3 - 12563478
+!$acc wait
 !$acc host_data use_device(v3)
 call dgemm('n','n',nr,nu,no,om,t2_i(sr,1),nu2,vm_ij,no,zero,v3(sr),nu2)              ! #1: Type A
-
-!$acc wait  ! for ve_j
-
 call dgemm('n','n',nu,nr,nu,one,t2_i(1,i),nu,ve_j(t3off),nu,one,v3(t3off),nu)        ! #3: Type B
 !$acc end host_data
+!$acc wait
 
 ! transform
 call trant3_acc(v3,nu,2)
 
 ! #2 - 15263748 
+!$acc wait
 !$acc host_data use_device(v3)
 call dgemm('n','n',nr,nu,no,om,t2_j(sr,1),nu2,vm_ii,no,one,v3(sr),nu2)               ! #2: Type A
 !$acc end host_data
+!$acc wait
 
 ! transform
 call trant3_1(nu,v3)
 
 ! #5 - 15372648
+!$acc wait
 !$acc host_data use_device(v3)
 call dgemm('n','n',nu,nr,nu,one,t2_j(1,i),nu,ve_i(t3off),nu,one,v3(t3off),nu)        ! #5: Type B
 !$acc end host_data
+!$acc wait
 
 ! transform
 call trant3_acc(v3,nu,3)
 
 ! #0, #4 - 12345678
+!$acc wait
 !$acc host_data use_device(v3)
 call dgemm('n','n',nr,nu,no,om,t2_i(sr,1),nu2,vm_ji,no,one,v3(sr),nu2)               ! #0: Type A
 call dgemm('n','n',nu,nr,nu,one,t2_i(1,j),nu,ve_i(t3off),nu,one,v3(t3off),nu)        ! #4: Type B
 !$acc end host_data
-
 !$acc end host_data
-!$acc end data
+!$acc wait
 
+!$acc end data
 end subroutine iij_tuple_formv3

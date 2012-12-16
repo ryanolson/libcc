@@ -108,10 +108,12 @@ C
       VOEOFF = (K - 1)*NU2*NO + (J - 1)*NU2  + SR
 
 !$acc data present(t3,voe,t1)
+!$acc wait
 !$acc host_data use_device(t3,voe,t1)
       CALL DGEMM('N','N',NU,1,NR,ONE,T3(T3OFF),NU,VOE(VOEOFF),NU2,ONE,
      *           T1(1,I),NU)
 !$acc end host_data
+!$acc wait
 !$acc end data
       RETURN
       END

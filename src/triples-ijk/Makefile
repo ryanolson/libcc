@@ -28,7 +28,7 @@ OBJ = ddcc_aux.o ddcc_t_ijj_iij_big.o common_functions.o program.o
 #OBJ90 = ijj_tuple.o iij_tuple.o
 OBJ90 = 
 OBJCPU = ijk_tuple.o ddcc_t_ijk_big.o t1wt3.o triples_cpu.o t3squa.o ijj_tuple.o iij_tuple.o
-OBJACC = ijk_tuple_acc.o ddcc_t_ijk_big.o t1wt3_acc.o triples.o iij_tuple_acc.o ijj_tuple_acc.o t3squa_acc.o
+OBJACC = ijk_tuple_acc.o ddcc_t_ijk_big.o t1wt3_acc.o triples.o iij_tuple_acc.o ijj_tuple_acc.o t3squa_acc.o dgemm_async.o
 #OBJACC = ijk_tuple_acc.o ddcc_t_ijk_big.o t1wt3_acc.o triples.o
 OBJCUDA = ijk_tuple_cuda_kernels.o triples.o \
 	      t1wt3_ijk_cuda_kernels.o \
@@ -64,6 +64,9 @@ $(PROGRAM).x-pat : triples.x
 
 %.o : %.F90 common_cc.f90 Makefile
 	$(FC) $(FCFLAGS) -c $*.F90
+
+%.o : %.cpp Makefile
+	CC -c $*.cpp
 
 remove_objects:
 	@echo Removing Object Files ...
