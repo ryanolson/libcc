@@ -33,7 +33,7 @@ x3 = zero
 denom = one
 dijk = eh(i) + eh(j) + eh(k)
 
-!$acc parallel loop private(t1ai,t1aj,t1ak) reduction(+:x3) private(dabc,denom,d1,d2,d3,f,t3_ab1,t3_ab2,t3_ab3,t3_ab4,t3_ab5,t3_ab6)
+!$acc parallel loop private(t1ai,t1aj,t1ak) reduction(+:x3) private(dabc,denom,d1,d2,d3,f,t3_ab1,t3_ab2,t3_ab3,t3_ab4,t3_ab5,t3_ab6) async(5)
    do a = 1, nu
     t1ai = t1(a,i)
     t1aj = t1(a,j)
@@ -83,7 +83,7 @@ dijk = eh(i) + eh(j) + eh(k)
 !$acc end parallel loop
 
 
-!$acc parallel loop private(t1bi,t1bj,t1bk) private(dabc,denom,t3_ab1,t3_ab2,t3_ab3,t3_ab4,t3_ab5,t3_ab6) 
+!$acc parallel loop private(t1bi,t1bj,t1bk) private(dabc,denom,t3_ab1,t3_ab2,t3_ab3,t3_ab4,t3_ab5,t3_ab6) async(5)
    do b = 1, nu
     t1bi = t1(b,i)
     t1bj = t1(b,j)

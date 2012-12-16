@@ -148,6 +148,7 @@ endif
 !$acc data copyout(v1(1:nou))  &
 !$acc& copyin(eh,ep,t2(1:nu2*no*no),vm(1:no*nu*no*no),voe(1:no2u2),t3(1:nu3))  &
 !$acc& create(ve_i(1:nu3),ve_j(1:nu3),ve_k(1:nu3),v3(1:nu3),tmp_i,tmp_j,tmp_k)
+!$acc wait
 
 #ifdef USE_OPEN_ACC
 !$acc kernels
@@ -178,19 +179,6 @@ do iwrk = sr, sr+nr-1
    ! OpenACC CODE ----------------------------
 
 #ifdef USE_OPEN_ACC
-     if(i.ne.iold) then
-!      if(smp_me.eq.comm_core) then
-          ilo = nu*(i-1) + 1
-          ihi = ilo + nu - 1
-          call ddi_get(d_vvvo,1,nutr,ilo,ihi,tmp_i)
-!$acc update device(tmp_i(1:nutr*nu)) async(1)
-          call ddcc_t_getve_acc(1,nu,i,tmp_i,ve_i)
-          call trant3_1_async(1,nu,ve_i)
-!      end if
-!      comm_core = comm_core+1
-!      if(comm_core.eq.smp_np) comm_core=0
-     end if
-
      if(j.ne.jold) then
 !      if(smp_me.eq.comm_core) then
           ilo = nu*(j-1) + 1
@@ -212,6 +200,19 @@ do iwrk = sr, sr+nr-1
 !$acc update device(tmp_k(1:nutr*nu)) async(3)
           call ddcc_t_getve_acc(3,nu,k,tmp_k,ve_k)
           call trant3_1_async(3,nu,ve_k)
+!      end if
+!      comm_core = comm_core+1
+!      if(comm_core.eq.smp_np) comm_core=0
+     end if
+
+     if(i.ne.iold) then
+!      if(smp_me.eq.comm_core) then
+          ilo = nu*(i-1) + 1
+          ihi = ilo + nu - 1
+          call ddi_get(d_vvvo,1,nutr,ilo,ihi,tmp_i)
+!$acc update device(tmp_i(1:nutr*nu)) async(1)
+          call ddcc_t_getve_acc(1,nu,i,tmp_i,ve_i)
+          call trant3_1_async(1,nu,ve_i)
 !      end if
 !      comm_core = comm_core+1
 !      if(comm_core.eq.smp_np) comm_core=0
@@ -313,6 +314,8 @@ icntr = 0
 
 if(smp_me.eq.0) call ddi_dlbnext(mytask)
 !call ddi_smp_bcast(1237,'I',mytask,1,0)
+
+!$acc wait
 
 ! ----------- iij and ijj tuples -------------
 do i=1,no
