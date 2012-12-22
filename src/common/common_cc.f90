@@ -80,6 +80,27 @@ end module
   return
   end subroutine trant3_1
 
+  subroutine trant3_3(n,v)
+  implicit none
+  integer :: n, a, b, c
+  double precision :: v(n,n,n), x
+  integer :: icntr,nr,sr,ltr
+
+!$acc parallel loop private(x)
+      DO B=1,N
+      DO A=1,N
+      DO C=1,A
+         X=V(A,B,C)
+         V(A,B,C)=V(C,B,A)
+         V(C,B,A)=X
+      end do
+      end do
+      end do
+!$acc end parallel loop
+
+  return
+  end subroutine trant3_3
+
   subroutine trant3_4(n,v)
   implicit none
   integer :: n, a, b, c 
