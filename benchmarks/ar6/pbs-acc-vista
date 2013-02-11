@@ -9,7 +9,6 @@
 #
 cd $PBS_O_WORKDIR
 module load craype-accel-nvidia35
-aprun -n4 -N1 ../triples-acc.x | tee out
-
-
-
+aprun -n4 -N1 triples-acc.x | tee out.$PBS_JOBID
+set results = `./validate out.$PBS_JOBID`
+echo VALIDATION = $results
