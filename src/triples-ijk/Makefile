@@ -77,6 +77,7 @@ remove_objects:
 	@rm -f *.cg
 	@rm -f *.ptx
 	@rm -f *.cub
+	@rm -f *.cu
 
 clean: remove_objects
 	@echo Removing Binaries ...
