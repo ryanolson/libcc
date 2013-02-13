@@ -146,8 +146,8 @@ endif
 
 
 !$acc data copyout(v1(1:nou))  &
-!$acc& copyin(eh,ep,t2(1:nu2*no*no),vm(1:no*nu*no*no),voe(1:no2u2),t3(1:nu3))  &
-!$acc& create(ve_i(1:nu3),ve_j(1:nu3),ve_k(1:nu3),v3(1:nu3),tmp_i,tmp_j,tmp_k)
+!$acc& copyin(eh,ep,t2(1:nu2*no*no),vm(1:no*nu*no*no),voe(1:no2u2),t3(1:nu3),etd)  &
+!$acc& create(ve_i(1:nu3),ve_j(1:nu3),ve_k(1:nu3),v3(1:nu3),tmp_i,tmp_j,tmp_k,x3)
 !$acc wait
 
 do iwrk = 1,10

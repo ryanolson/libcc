@@ -16,7 +16,7 @@
 ! =============================================================================
 
 subroutine t1wt3_ijk(i,j,k,no,nu,v3,voe_ij,voe_ji,voe_ik,voe_ki,voe_jk,voe_kj,t1,eh,ep)
-use common_cc, only: nu3, nu2, no2, one, om, zero, two, ddi_me, etd, half, eight, four
+use common_cc, only: nu3, nu2, no2, one, om, zero, two, ddi_me, etd, half, eight, four, x3
 implicit none
 
 integer,intent(in) :: i,j,k,no,nu
@@ -24,7 +24,7 @@ double precision :: v3(nu,nu,nu), t1(nu,no)
 double precision :: voe_ij(nu,nu), voe_ji(nu,nu), voe_ik(nu,nu), voe_ki(nu,nu), voe_jk(nu,nu), voe_kj(nu,nu)
 double precision :: eh(no), ep(nu)
 
-double precision :: t3_ab1, t3_ab2, t3_ab3, t3_ab4, t3_ab5, t3_ab6, denom, dijk, dabc, x3, f, d1, d2, d3
+double precision :: t3_ab1, t3_ab2, t3_ab3, t3_ab4, t3_ab5, t3_ab6, denom, dijk, dabc, f, d1, d2, d3
 double precision :: t1ai, t1bi, t1aj, t1bj, t1ak, t1bk
 
 integer :: a,b,c,aa,bb,cc,icntr
@@ -120,13 +120,17 @@ dijk = eh(i) + eh(j) + eh(k)
    end do
 !$acc end parallel loop
 
-!$acc wait(5)
-
-if(i.eq.j .or. j.eq.k) then
-  etd = etd + x3*half
-else
+!$acc update device( etd, x3 ) async(5)
+!$acc kernels present( etd, x3) async(5)
   etd = etd + x3
-end if
+!$acc end kernels
+!$acc update host( etd ) async(5)
+
+!if(i.eq.j .or. j.eq.k) then
+!  etd = etd + x3*half
+!else
+!  etd = etd + x3
+!end if
 
 return
 9000 format(3I5,1F20.15)

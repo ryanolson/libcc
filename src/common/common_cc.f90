@@ -29,7 +29,7 @@ integer :: working_comm, working_smp_comm, working_compute_comm
 
 integer :: flops
 
-double precision :: ets, etd
+double precision :: ets, etd, x3
 
 double precision :: zero, one, two, four, eight, om, half
 parameter(zero=0.0D+00,one=1.0D+00,two=2.0D+00,four=4.0D+00,eight=8.0D+00,om=-1.0D+00,half=0.5D+00)
