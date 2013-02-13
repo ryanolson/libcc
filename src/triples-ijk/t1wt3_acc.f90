@@ -119,7 +119,8 @@ dijk = eh(i) + eh(j) + eh(k)
       t1(b,k) = t1bk
    end do
 !$acc end parallel loop
-   
+
+!$acc wait(5)
 
 if(i.eq.j .or. j.eq.k) then
   etd = etd + x3*half

@@ -95,6 +95,8 @@ do cc = 1,nu,16
 
 end do
 
+!$acc wait(5)
+
 if(i.eq.j .or. j.eq.k) then
   etd = etd + x3*half
 else

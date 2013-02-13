@@ -150,6 +150,13 @@ endif
 !$acc& create(ve_i(1:nu3),ve_j(1:nu3),ve_k(1:nu3),v3(1:nu3),tmp_i,tmp_j,tmp_k)
 !$acc wait
 
+do iwrk = 1,10
+!$acc update device( ve_i(iwrk:iwrk) ) async(iwrk)
+end do
+!$acc wait
+
+call dgemm_async_setup(10, 1)
+
 #ifdef USE_OPEN_ACC
 !$acc kernels
   v1(1:nou) = 0.0D+00   ! initialize on GPU only
