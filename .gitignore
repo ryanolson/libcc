@@ -1,0 +1,12 @@
+*.hg
+*.x
+*.o
+*.lst
+*.dat
+*.log
+*.out
+*.o*
+*.ptx
+*.cub
+*.cu
+*.cg

@@ -7,7 +7,7 @@ PROGRAM_ACC=triples-acc
 FC = ftn
 FCFLAGS_PGI = -i8 -fastsse -Munroll -tp shanghai-64 -Mfpmisalign
 #FCFLAGS_CCE = -sdefault64 -target=linux -rm -Oipa5 -Onoomp
-FCFLAGS_CCE = -sdefault64 -rm -Onoomp
+FCFLAGS_CCE = -sdefault64 -rmd -Onoomp
 
 NVCC = nvcc
 NVFLAGS = -arch sm_20 -Xptxas=-v
@@ -17,7 +17,7 @@ CUDA_LIBS = -lcublas -lcudart
 #FCFLAGS = $(FCFLAGS_CCE) -DGPU -DUSE_CUDA -F
 
 # use for OpenACC version
-FCFLAGS = $(FCFLAGS_CCE) -DGPU  -DUSE_OPEN_ACC -F -hacc_model=fast_addr
+FCFLAGS = $(FCFLAGS_CCE) -DGPU  -DUSE_OPEN_ACC -F -hacc_model=fast_addr 
 
 # use for CPU version
 #FCFLAGS = $(FCFLAGS_CCE) -F
@@ -77,6 +77,7 @@ remove_objects:
 	@rm -f *.cg
 	@rm -f *.ptx
 	@rm -f *.cub
+	@rm -f *.cu
 
 clean: remove_objects
 	@echo Removing Binaries ...

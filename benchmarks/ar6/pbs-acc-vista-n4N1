@@ -1,0 +1,15 @@
+#!/usr/bin/tcsh
+#PBS -N ar6-acc-n4N1
+#PBS -l mppwidth=64
+#PBS -l mppnppn=16
+#PBS -l mppnodes=\"10-11,14-17,20-21,32-159,170-181,192-229,250-255,256-287,288-383\"
+#PBS -l walltime=04:00:00
+#PBS -j oe
+#PBS -S /usr/bin/tcsh
+#
+cd $PBS_O_WORKDIR
+module load craype-accel-nvidia35
+aprun -n4 -N1 triples-acc.x | tee out.$PBS_JOBID
+set results = `./validate out.$PBS_JOBID`
+echo VALIDATION = $results
+rm out.$PBS_JOBID

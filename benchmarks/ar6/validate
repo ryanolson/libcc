@@ -1,0 +1,28 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+my $i = 0;
+my $file_count = $#ARGV + 1;
+
+# valid values are:
+# ets/etd/ets+etd=   0.0000956274  -0.0483425109  -0.0482468835
+
+for( $i=0; $i<$file_count; $i++) {
+  my @lines = `grep ets $ARGV[$i]`;
+  my $result = 'OK';
+  if($#lines != 0) {
+     $result = 'FAILED; err=1';
+  } else {
+     my $line = $lines[0];
+     my @tokens = split(' ', $line);
+     if(abs($tokens[1]) < (abs(0.0000956274) - 0.0000000002)) { $result = 'FAILED; err=2'; }
+     if(abs($tokens[1]) > (abs(0.0000956274) + 0.0000000002)) { $result = 'FAILED; err=2'; }
+     if(abs($tokens[2]) < (abs(-0.0483425109) - 0.0000000002)) { $result = 'FAILED; err=3'; }
+     if(abs($tokens[2]) > (abs(-0.0483425109) + 0.0000000002)) { $result = 'FAILED; err=3'; }
+     if(abs($tokens[3]) < (abs(-0.0482468835) - 0.0000000002)) { $result = 'FAILED; err=4'; }
+     if(abs($tokens[3]) > (abs(-0.0482468835) + 0.0000000002)) { $result = 'FAILED; err=4'; }
+     if($#ARGV == 0) { print "$result\n"; }
+     else { print "$ARGV[$i] - $result\n"; }
+  }
+}
