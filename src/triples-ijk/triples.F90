@@ -294,28 +294,6 @@ end do
 ! ---------- end of ijk-tuples loop ---------------
 
 
-#ifdef USE_CUDA
-call ijk_gpu_finalize(no,nu,etd)   ! deallocate device-arrays, copy back "v1, etd"
-deallocate(vei,vej)
-end if ! gpu_driver == 1
-#endif
-
-! call ddi_sync(1234)
-
-! remote sync at this point in hybrid code
-! this was used to measure the ijk tuple time
-!
-! call ddi_sync(1234)
-! if(ddi_me.eq.0) then
-!    ijk_stop = mpi_wtime()
-!    print *,"IJK-tuples time=",(ijk_stop-ijk_start),"  etd=",etd
-! end if
-
-
-#ifdef USE_CUDA
-!if(gpu_driver .eq. 0) then    ! <--- vjg commented out so iij/ijj tuples would run
-#endif
-
 ! counters and load-balancing for iij and ijj tuples
 icntr = 0
 
@@ -391,32 +369,16 @@ do i=1,no
 end do
 ! ----------- end of iij and ijj tuples -------------
 
+if(etd.eq.zero) then
+!$acc wait
+!$acc update host( etd )
+!$acc wait
+endif
+
 !$acc end data       
-
-! if(smp_me.eq.0) write(6,*) 'cpu node ',ddi_my,' finshed iij/ijj'
-#ifdef USE_CUDA
-!end if  ! gpu_driver == 0   ! vjg commented out 
-#endif
-
-! switch scopes
-#ifdef USE_CUDA
-call ddi_sync(1234)
-working_smp_comm = global_smp_comm
-working_compute_comm = global_compute_comm
-call mpi_comm_rank(working_smp_comm, smp_me, ierr)
-call mpi_comm_size(working_smp_comm, smp_np, ierr)
-call mpi_comm_rank(working_compute_comm, ddi_me, ierr)
-call mpi_comm_size(working_compute_comm, ddi_np, ierr)
-call ddi_sync(1234)
-#endif
-
-
-!call ddi_gsumf(123,eh,no)
-!call ddi_gsumf(124,ep,nu)
 
 999 continue
 call ddi_sync(1235)
-
 call ddi_gsumf(125,v1,nou)
 call ddi_gsumf(126,etd,1)
 

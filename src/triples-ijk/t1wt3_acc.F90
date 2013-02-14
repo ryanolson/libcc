@@ -15,6 +15,8 @@
 !   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ! =============================================================================
 
+#define ETD_X3_ON_DEVICE 1
+
 subroutine t1wt3_ijk(i,j,k,no,nu,v3,voe_ij,voe_ji,voe_ik,voe_ki,voe_jk,voe_kj,t1,eh,ep)
 use common_cc, only: nu3, nu2, no2, one, om, zero, two, ddi_me, etd, half, eight, four, x3
 implicit none
@@ -32,6 +34,13 @@ integer :: a,b,c,aa,bb,cc,icntr
 x3 = zero
 denom = one
 dijk = eh(i) + eh(j) + eh(k)
+
+#if ETD_X3_ON_DEVICE
+!$acc data present( etd, x3 )
+!$acc kernels present( x3 ) async(5)
+  x3 = zero
+!$acc end kernels
+#endif
 
 !$acc parallel loop private(t1ai,t1aj,t1ak) reduction(+:x3) private(dabc,denom,d1,d2,d3,f,t3_ab1,t3_ab2,t3_ab3,t3_ab4,t3_ab5,t3_ab6) async(5)
    do a = 1, nu
@@ -82,7 +91,6 @@ dijk = eh(i) + eh(j) + eh(k)
    end do
 !$acc end parallel loop
 
-
 !$acc parallel loop private(t1bi,t1bj,t1bk) private(dabc,denom,t3_ab1,t3_ab2,t3_ab3,t3_ab4,t3_ab5,t3_ab6) async(5)
    do b = 1, nu
     t1bi = t1(b,i)
@@ -120,17 +128,16 @@ dijk = eh(i) + eh(j) + eh(k)
    end do
 !$acc end parallel loop
 
-!$acc update device( etd, x3 ) async(5)
+#if ETD_X3_ON_DEVICE
 !$acc kernels present( etd, x3) async(5)
   etd = etd + x3
 !$acc end kernels
 !$acc update host( etd ) async(5)
-
-!if(i.eq.j .or. j.eq.k) then
-!  etd = etd + x3*half
-!else
-!  etd = etd + x3
-!end if
+!$acc end data
+#else
+!$acc wait(5)
+etd = etd + x3
+#endif
 
 return
 9000 format(3I5,1F20.15)
