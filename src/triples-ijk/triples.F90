@@ -369,12 +369,6 @@ do i=1,no
 end do
 ! ----------- end of iij and ijj tuples -------------
 
-if(etd.eq.zero) then
-!$acc wait
-!$acc update host( etd )
-!$acc wait
-endif
-
 !$acc end data       
 
 999 continue
