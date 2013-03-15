@@ -16,9 +16,6 @@ integer :: nr, sr, iwrk, i, j, k, mytask, divisor, partial, icntr
 integer :: iold, jold, kold, comm_core
 integer :: ilo,ihi
 
-#ifdef USE_CUDA
-integer :: gpu_driver
-#endif
 
 integer :: n_ijk_tuples, n_iij_tuples, n_ijj_tuples
 integer :: ierr
@@ -46,11 +43,6 @@ if(smp_me.ne.0) goto 999
 ! allocate( tmp(nu2) )
 #endif
 
-! gpu
-#ifdef USE_CUDA
-gpu_driver = 0
-if(smp_me.lt.gpu_nd) gpu_driver=1
-#endif
 
 ! load-balancing strategy
 ! =======================
@@ -128,22 +120,6 @@ if(smp_me.eq.0) then
 endif
 #endif
 
-! switch scopes
-#ifdef USE_CUDA
-call ddi_sync(1234)
-working_smp_comm = hybrid_smp_comm
-working_compute_comm = hybrid_compute_comm
-call mpi_comm_rank(working_smp_comm, smp_me, ierr)
-call mpi_comm_size(working_smp_comm, smp_np, ierr)
-call mpi_comm_rank(working_compute_comm, ddi_me, ierr)
-call mpi_comm_size(working_compute_comm, ddi_np, ierr)
-call ddi_sync(1234)
-
-if(gpu_driver.eq.1) then
-   call ijk_gpu_init(no,nu,eh,ep,v1,t2,vm,voe)
-endif
-#endif // ifdef USE_CUDA
-
 
 !$acc data copyout(v1(1:nou))  &
 !$acc& copyin(eh,ep,t2(1:nu2*no*no),vm(1:no*nu*no*no),voe(1:no2u2),t3(1:nu3),etd)  &
@@ -165,11 +141,6 @@ call dgemm_async_setup(10, 1)
 
 if(ddi_me.eq.0) ijk_start = mpi_wtime()
 
-#ifdef USE_CUDA
-if(gpu_driver.eq.1) then
-allocate( vei(nu3), vej(nu3) )
-#endif
-
 
 ! ---------- ijk-tuples loop ---------------
 
@@ -178,10 +149,6 @@ do iwrk = sr, sr+nr-1
   call ddcc_t_task(mytask,no,i,j,k)
 
   comm_core = 0
-
-# ifdef USE_CUDA
-  if(gpu_driver.eq.0) then
-# endif
 
    ! OpenACC CODE ----------------------------
 
@@ -228,51 +195,8 @@ do iwrk = sr, sr+nr-1
 !    if(smp_np.gt.1) call smp_sync()
 #endif
 
-# ifdef USE_CUDA
-  else ! gpu_driver.eq.1
-
-   ! CUDA CODE ------------------------------
-     if(i.ne.iold) then
-!      if(smp_me.eq.comm_core) call ddcc_t_getve(nu,i,tmp,vei)
-       ilo = nu*(i-1) + 1
-       ihi = ilo + nu       ! should one be subtracted?
-       if(smp_me.eq.comm_core) call ddi_get(d_vvvo,1,nutr,ilo,ihi,vei)
-       comm_core = comm_core+1
-       if(comm_core.eq.smp_np) comm_core=0
-     end if
-!   
-     if(j.ne.jold) then
-       ilo = nu*(j-1) + 1
-       ihi = ilo + nu       ! should one be subtracted?
-       if(smp_me.eq.comm_core) call ddi_get(d_vvvo,1,nutr,ilo,ihi,vej)
-       if(comm_core.eq.smp_np) comm_core=0
-     end if
-   
-     if(k.ne.kold) then
-       ilo = nu*(k-1) + 1
-       ihi = ilo + nu       ! should one be subtracted?
-       if(smp_me.eq.comm_core) call ddi_get(d_vvvo,1,nutr,ilo,ihi,ve_k)
-       comm_core = comm_core+1
-       if(comm_core.eq.smp_np) comm_core=0
-     end if
-     ! NOTE: ddcc_t_ijk_gpu must expand and perfrom a trant3_1 operation
-     ! on vei, vej, vek prior to use!
-
-  end if ! gpu_driver.eq.1
-# endif
-
-# ifdef USE_CUDA
-  if(gpu_driver.eq.0) then
-# endif
-
      call ddcc_t_ijk_acc(no,nu,i,j,k,v1,t2,vm,v3,voe,eh,ep,ve_i,ve_j,ve_k)
 
-# ifdef USE_CUDA
-  else
-     call ddcc_t_ijk_gpu(no,nu,i,j,k,v1,t2,vm,voe,eh,ep,vei,vej,ve_k) !  call ijk_gpu_driver
-  end if
-# endif
-! if(smp_np.gt.1) call smp_sync()
 
   iold = i
   jold = j
