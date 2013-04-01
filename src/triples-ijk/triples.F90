@@ -217,6 +217,13 @@ end do
 
 ! ---------- end of ijk-tuples loop ---------------
 
+998 continue
+!call ddi_sync(1234)
+if(ddi_me.eq.0) then 
+   ijk_stop = mpi_wtime()
+   write(6,*) 'ijk time on rank 0 = ',(ijk_stop-ijk_start)
+endif
+!if(smp_me.ne.0) goto 999
 
 ! counters and load-balancing for iij and ijj tuples
 icntr = 0
